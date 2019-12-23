@@ -70,7 +70,7 @@
                         {{ _(desc) }}
                     </td>
                     <td class="uk-text-meta">
-                        <div uk-tooltip="title: {{ cfg.get('manifest.authorUrl') }} . '<br/>' . {{ cfg.get('manifest.authorEmail') }}">
+                        <div uk-tooltip="title: {{ cfg.get('manifest.authorUrl') ~ '<br/>' ~ cfg.get('manifest.authorEmail') }}">
                             {{ cfg.get('manifest.author') }}
                         </div>
                     </td>

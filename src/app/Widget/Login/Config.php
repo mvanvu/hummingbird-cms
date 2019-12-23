@@ -6,7 +6,7 @@ return [
 	'description' => 'widget-login-desc',
 	'version'     => '1.0.0',
 	'author'      => 'Mai Vu',
-	'authorEmail' => 'rainy@joomtech.net',
-	'authorUrl'   => 'https://www.joomtech.net',
+	'authorEmail' => 'mvanvu@gmail.com',
+	'authorUrl'   => 'https://github.com/mvanvu',
 	'updateUrl'   => null,
 ];
