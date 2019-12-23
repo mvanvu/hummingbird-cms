@@ -1,0 +1,73 @@
+<?php
+
+return [
+	[
+		'name'     => 'siteName',
+		'type'     => 'Text',
+		'label'    => 'site-name',
+		'required' => true,
+		'filters'  => ['string', 'trim'],
+	],
+	[
+		'name'          => 'siteOffline',
+		'type'          => 'Check',
+		'label'         => 'site-offline',
+		'checkboxValue' => 'Y',
+		'value'         => 'N',
+		'filters'       => ['yesNo'],
+	],
+	[
+		'name'    => 'siteOfflineMsg',
+		'type'    => 'TextArea',
+		'label'   => 'offline-message',
+		'rows'    => 3,
+		'cols'    => 15,
+		'value'   => 'This site is down for maintenance.<br />Please check back again soon.',
+		'showOn'  => 'siteOffline : is checked',
+		'filters' => ['basicHtml'],
+	],
+	[
+		'name'    => 'listLimit',
+		'type'    => 'Number',
+		'label'   => 'default-list-limit',
+		'min'     => 1,
+		'value'   => 20,
+		'filters' => ['uint'],
+	],
+	[
+		'name'    => 'siteMetaDesc',
+		'type'    => 'TextArea',
+		'label'   => 'site-meta-desc',
+		'rows'    => 3,
+		'cols'    => 15,
+		'filters' => ['string', 'trim'],
+	],
+	[
+		'name'    => 'siteMetaKeys',
+		'type'    => 'TextArea',
+		'label'   => 'site-meta-keys',
+		'rows'    => 3,
+		'cols'    => 15,
+		'filters' => ['string', 'trim'],
+	],
+	[
+		'name'    => 'siteRobots',
+		'type'    => 'Select',
+		'label'   => 'robots',
+		'options' => [
+			''                  => 'robot-index-follow',
+			'noindex, follow'   => 'robot-no-index-follow',
+			'index, nofollow'   => 'robot-index-no-follow',
+			'noindex, nofollow' => 'robot-no-index-no-follow',
+		],
+		'rules'   => ['Options'],
+	],
+	[
+		'name'    => 'siteContentRights',
+		'type'    => 'TextArea',
+		'label'   => 'content-rights',
+		'rows'    => 3,
+		'cols'    => 15,
+		'filters' => ['string', 'trim'],
+	],
+];

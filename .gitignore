@@ -1,0 +1,11 @@
+.idea
+docker/db/*
+src/vendor/*
+src/cache/*
+src/app/Tmpl/Site/Hummingbird/Tmpl/*
+src/public/assets/compressed/*
+src/public/assets/images/printer/*
+src/public/upload/thumbs/*
+src/public/install.php
+src/config.ini
+src/tests/.phpunit.result.cache

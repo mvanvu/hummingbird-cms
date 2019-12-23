@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  hummingbird-cms:
+    build: .
+    volumes:
+      - ./src:/var/www/html
+      - ./src/tests:/tests
+    ports:
+      - 8000:80
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    volumes:
+      - ./docker/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=hummingbird_cms
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=dbpass
