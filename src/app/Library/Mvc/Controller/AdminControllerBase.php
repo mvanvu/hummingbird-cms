@@ -387,8 +387,7 @@ class AdminControllerBase extends ControllerBase
 		foreach ($formsManager->getForms() as $formName => $entityForm)
 		{
 			/** @var Form $entityForm */
-			$entityForm->bind($persistentData);
-			$entityForm->setFieldsTranslationData($translationsData);
+			$entityForm->bind($persistentData, $translationsData);
 		}
 
 		if ($paramsFormsManager->count())
@@ -410,8 +409,7 @@ class AdminControllerBase extends ControllerBase
 					}
 				}
 
-				$paramForm->bind($paramData);
-				$paramForm->setFieldsTranslationData($paramsTranslationsData);
+				$paramForm->bind($paramData, $paramsTranslationsData);
 			}
 
 			$this->prepareParamsFormsManager($paramsFormsManager);

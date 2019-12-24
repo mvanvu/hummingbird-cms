@@ -19,6 +19,18 @@ class CmsUcmItem extends Select
 
 	public function getOptions()
 	{
+		/**
+		 * @var Nested     $class
+		 * @var Dispatcher $dispatcher
+		 */
+
+		$dispatcher = Factory::getService('dispatcher');
+
+		if (empty($this->context))
+		{
+			$this->context = $dispatcher->getParam('context');
+		}
+
 		$options    = parent::getOptions();
 		$modelClass = 'MaiVu\\Hummingbird\\Lib\\Mvc\\Model\\' . UcmItemHelper::prepareContext($this->context);
 
@@ -27,17 +39,7 @@ class CmsUcmItem extends Select
 			return $options;
 		}
 
-		/**
-		 * @var Nested     $class
-		 * @var Dispatcher $dispatcher
-		 */
-		$class      = new $modelClass;
-		$dispatcher = Factory::getService('dispatcher');
-
-		if (empty($this->context))
-		{
-			$this->context = $dispatcher->getParam('context');
-		}
+		$class = new $modelClass;
 
 		if ($class instanceof Nested)
 		{

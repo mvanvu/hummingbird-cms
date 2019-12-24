@@ -305,7 +305,7 @@ class AdminUcmItemController extends AdminControllerBase
 			$k0                    = 'fieldId' . $walk;
 			$k1                    = 'itemId' . $walk;
 			$k2                    = 'value' . $walk;
-			$insertFieldsValues[]  = '(:' . $k0 . ', :' . $k1 . ', :' . $k2 . ')';
+			$insertFieldsValues[]  = '(:' . $k0 . ',:' . $k1 . ',:' . $k2 . ')';
 			$insertFieldsBind[$k0] = $fieldId;
 			$insertFieldsBind[$k1] = $this->model->id;
 			$insertFieldsBind[$k2] = $insertValue;
@@ -325,7 +325,7 @@ class AdminUcmItemController extends AdminControllerBase
 							$k0                   = 'translationId' . $walk;
 							$k1                   = 'originalValue' . $walk;
 							$k2                   = 'translatedValue' . $walk;
-							$insertTransValues[]  = '(:' . $k0 . ', :' . $k1 . ', :' . $k2 . ')';
+							$insertTransValues[]  = '(:' . $k0 . ',:' . $k1 . ',:' . $k2 . ')';
 							$insertTransBind[$k0] = $langCode . '.ucm_field_values.fieldId=' . $fieldId . ',itemId=' . $this->model->id . '.value';
 							$insertTransBind[$k1] = $insertValue;
 							$insertTransBind[$k2] = is_array($tranValue) ? json_encode($tranValue) : $tranValue;
@@ -344,12 +344,12 @@ class AdminUcmItemController extends AdminControllerBase
 
 		if ($insertFieldsValues)
 		{
-			$db->execute('INSERT INTO ' . $prefix . 'ucm_field_values(fieldId, itemId, value) VALUES ' . implode(', ', $insertFieldsValues), $insertFieldsBind);
+			$db->execute('INSERT INTO ' . $prefix . 'ucm_field_values(fieldId,itemId,value) VALUES ' . implode(', ', $insertFieldsValues), $insertFieldsBind);
 		}
 
 		if ($insertTransValues)
 		{
-			$db->execute('INSERT INTO ' . $prefix . 'translations(translationId, originalValue, translatedValue) VALUES ' . implode(',', $insertTransValues), $insertTransBind);
+			$db->execute('INSERT INTO ' . $prefix . 'translations(translationId,originalValue,translatedValue) VALUES ' . implode(',', $insertTransValues), $insertTransBind);			
 		}
 	}
 
@@ -364,8 +364,7 @@ class AdminUcmItemController extends AdminControllerBase
 		 * @var Mysql       $db
 		 * @var FormManager $form
 		 * @var FormManager $formFields
-		 */
-
+		 */		
 
 		$formsFields = UcmField::buildUcmFormsFields($this->model->context, $validData['parentId']);
 		$formFields  = UcmField::buildUcmFormFields($this->model->context, $validData['parentId']);
@@ -373,7 +372,7 @@ class AdminUcmItemController extends AdminControllerBase
 		$fieldsData  = isset($formData['fields']) ? $formData['fields'] : [];
 		$languages   = Language::getExistsLanguages();
 
-		if (Language::isMultilingual() && $this->model->id)
+		if (Language::isMultilingual() && !empty($validData['id']))
 		{
 			$db     = Factory::getService('db');
 			$prefix = $this->modelsManager->getModelPrefix();
@@ -381,7 +380,7 @@ class AdminUcmItemController extends AdminControllerBase
 			// Purge translations data
 			$db->execute('DELETE FROM ' . $prefix . 'translations WHERE translationId LIKE :translationId',
 				[
-					'translationId' => '%.ucm_field_values.fieldId=%,itemId=' . $this->model->id . '.%',
+					'translationId' => '%.ucm_field_values.fieldId=%,itemId=' . $validData['id'] . '.%',
 				]
 			);
 		}

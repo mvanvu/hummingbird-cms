@@ -43,6 +43,11 @@ The CMS based on Phalcon v4 and UIKit v3
 git clone https://github.com/mvanvu/hummingbird-cms.git
 ```
 
+## Add current user to www-data group (to fix write config INI file during install)
+```sh
+sudo usermod -a -G www-data $USER
+```
+
 ## Chmod permissions
 ```sh
 cd hummingbird-cms
@@ -50,7 +55,6 @@ sudo chgrp -R www-data src
 sudo chmod -R g+w src
 sudo chmod -R g+s src
 ```
-
 
 ## Composer install
 ```sh

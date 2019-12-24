@@ -34,7 +34,7 @@ class AdminUcmFieldController extends AdminControllerBase
 	{
 		$generalForm = $formsManager->get('general');
 		$generalForm->getField('context')->setValue($this->context);
-		$generalForm->getField('cid')->setValue($this->context . '-category');
+		$generalForm->getField('cid')->set('context', $this->context . '-category');
 
 		if ($this->model->id
 			&& $this->model->categories->count()

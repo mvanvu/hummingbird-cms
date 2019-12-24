@@ -66,23 +66,9 @@ class Form
 		$subject = $this->prefixNameField . $fieldName . $this->suffixNameField;
 
 		return str_replace('{prefix}', $replace, $subject);
-	}
+	}	
 
-	public function setFieldsTranslationData(array $translationsData = [])
-	{
-		/** @var Field $field */
-		foreach ($this->fields as $field)
-		{
-			$fieldName = $field->getName(true);
-
-			if (isset($translationsData[$fieldName]))
-			{
-				$field->setTranslationData($translationsData[$fieldName]);
-			}
-		}
-	}
-
-	public function bind($data)
+	public function bind($data, array $translationsData = [])
 	{
 		$registry     = new Registry($data);
 		$filteredData = [];
@@ -92,6 +78,11 @@ class Form
 		{
 			$fieldName                = $field->getName(true);
 			$filteredData[$fieldName] = $field->applyFilters($registry->get($fieldName));
+
+			if (isset($translationsData[$fieldName]))
+			{
+				$field->setTranslationData($translationsData[$fieldName]);
+			}
 		}
 
 		$this->data->merge($filteredData);
