@@ -56,20 +56,20 @@ jQuery(document).ready(function ($) {
                                 if ('!' === first) {
                                     values = showOnData[i].value.substring(1);
 
-                                    if (-1 !== values.indexOf(',')) {
-                                        values = values.split(',');
+                                    if (-1 === values.indexOf(',')) {
+                                        willShow = (values !== value);
+                                    } else {
+                                        willShow = (values.split(',').indexOf(value) === -1);
                                     }
-
-                                    willShow = (values.indexOf(value) === -1);
-
                                 } else {
                                     values = showOnData[i].value;
 
-                                    if (-1 !== values.indexOf(',')) {
-                                        values = values.split(',');
+                                    if (-1 === values.indexOf(',')) {
+                                        willShow = (values === value);
+                                    } else {
+                                        willShow = (values.split(',').indexOf(value) !== -1);
                                     }
 
-                                    willShow = (values.indexOf(value) !== -1);
                                 }
 
                                 break;

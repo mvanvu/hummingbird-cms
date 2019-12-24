@@ -49,10 +49,10 @@ if ($request->isAjax() && $request->isPost())
 
 	$loader->register();
 	$dbParams = [
-		'host'     => $request->getPost('dbHost', 'string', 'mysql'),
-		'username' => $request->getPost('dbUser', 'string', 'dbuser'),
-		'password' => $request->getPost('dbPass', 'string', 'dbpass'),
-		'dbname'   => $request->getPost('dbName', 'string', 'hummingbird_cms'),
+		'host'     => $request->getPost('dbHost', null, 'mysql'),
+		'username' => $request->getPost('dbUser', null, 'dbuser'),
+		'password' => $request->getPost('dbPass', null, 'dbpass'),
+		'dbname'   => $request->getPost('dbName', null, 'hummingbird_cms'),
 		'charset'  => 'utf8mb4',
 	];
 
