@@ -29,6 +29,7 @@ The CMS based on Phalcon v4 and UIKit v3
 - Roles
 - Custom admin path
 - Template override
+- Auto compress JS and CSS
 - ...
 
 ## Core assets - a Hurge thank you to
