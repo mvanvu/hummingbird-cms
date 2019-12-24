@@ -6,7 +6,6 @@ services:
     build: .
     volumes:
       - ./src:/var/www/html
-      - ./src/tests:/tests
     ports:
       - 8000:80
     depends_on:

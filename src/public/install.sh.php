@@ -1,5 +1,7 @@
 <?php
 
+defined('BASE_PATH') or die;
+
 if (!version_compare(PHP_VERSION, '7.2', 'ge'))
 {
 	die('Hummingbird CMS require PHP version 7.2 or greater');
@@ -19,8 +21,7 @@ if (!class_exists('Phalcon\\Version')
 	die('Hummingbird CMS require Phalcon version 4.0 or greater');
 }
 
-$basePath   = dirname(__DIR__);
-$envIniFile = $basePath . '/config.ini';
+$envIniFile = BASE_PATH . '/config.ini';
 
 if (is_file($envIniFile))
 {
@@ -38,7 +39,7 @@ $request = new Request;
 
 if ($request->isAjax() && $request->isPost())
 {
-	$appPath = $basePath . '/app';
+	$appPath = BASE_PATH . '/app';
 	$loader  = new Loader;
 	$loader->registerNamespaces(
 		[
@@ -75,7 +76,7 @@ if ($request->isAjax() && $request->isPost())
 		} while (is_numeric($firstChar));
 
 		$dbPrefix   = strtolower($dbPrefix . '_');
-		$sqlContent = str_replace('#__', $dbPrefix, file_get_contents($basePath . '/install.sql'));
+		$sqlContent = str_replace('#__', $dbPrefix, file_get_contents(BASE_PATH . '/install.sql'));
 		$queries    = Database::splitSql($sqlContent);
 
 		foreach ($queries as $query)

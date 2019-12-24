@@ -1,5 +1,7 @@
 <?php
 
+define('BASE_PATH', dirname(__DIR__));
+
 // We are in a docker if this is a cli env
 $isEnvDev = $_SERVER['HTTP_HOST'] === 'localhost:8000';
 require_once __DIR__ . '/install.sh.php';
