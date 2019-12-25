@@ -185,7 +185,7 @@ class AdminMediaController extends AdminControllerBase
 					'file'      => ltrim($this->getCurrentDirs(false) . '/' . $fileName, '/'),
 					'type'      => 'image',
 					'mime'      => $mime,
-					'createdAt' => (string) new Date,
+					'createdAt' => (new Date)->toSql(),
 					'createdBy' => User::getInstance()->id,
 				];
 
