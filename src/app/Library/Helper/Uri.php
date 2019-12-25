@@ -365,7 +365,9 @@ class Uri
 			$theUri .= '?' . http_build_query($query);
 		}
 
-		return str_replace(["'", '"', '<', '>'], ['%27', '%22', '%3C', '%3E'], rtrim($theUri, '/'));
+		$theUri = str_replace(["'", '"', '<', '>'], ['%27', '%22', '%3C', '%3E'], rtrim($theUri, '/'));
+
+		return $theUri ?: '/';
 	}
 
 	public function __toString()
