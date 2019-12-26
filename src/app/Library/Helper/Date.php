@@ -53,7 +53,8 @@ class Date extends DateTime
 		}
 
 		$tz   = User::getInstance()->getTimezone();
-		$diff = $tz->getName() !== parent::getTimezone()->getName();
+		$stz  = parent::getTimezone();
+		$diff = $tz->getName() !== $stz->getName();
 
 		if ($diff)
 		{
@@ -64,7 +65,7 @@ class Date extends DateTime
 
 		if ($diff)
 		{
-			parent::setTimezone(self::$stz);
+			parent::setTimezone($stz);
 		}
 
 		return $formattedDate;
@@ -106,7 +107,22 @@ class Date extends DateTime
 
 	public function toSql()
 	{
-		return $this->toFormat('Y-m-d H:i:s');
+		$stz  = parent::getTimezone();
+		$utc  = 'UTC' === $stz->getName();
+
+		if (!$utc)
+		{
+			parent::setTimezone('UTC');
+		}
+
+		$sqlDate = parent::format('Y-m-d H:i:s');
+
+		if (!$utc)
+		{
+			parent::setTimezone($stz);
+		}
+
+		return $sqlDate;
 	}
 
 	public static function relative($date, $time = null, $unit = null)
