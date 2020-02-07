@@ -12,7 +12,7 @@
                     </div>
                     <div class="uk-width-auto">
                         <a class="uk-link-reset"
-                           href="{{ helper('Uri::getInstance', ['uri' : '/', 'client': 'site']) ~ '/' }}"
+                           href="{{ helper('Uri::getInstance', ['uri' : '/', 'client': 'site']) }}"
                            title="{{ _('view-site') }}" uk-tooltip target="_blank">
                             <span uk-icon="icon: home"></span>
                         </a>

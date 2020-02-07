@@ -10,7 +10,7 @@ use MaiVu\Hummingbird\Lib\Mvc\Model\UcmItem;
 
 class LanguageSwitcher extends Widget
 {
-	protected function getRenderData()
+	public function getRenderData()
 	{
 		$displayUcmItem = State::getMark('displayUcmItem');
 		$languages      = Language::getExistsLanguages();

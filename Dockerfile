@@ -63,8 +63,8 @@ RUN echo "extension=zephir_parser.so" >> /etc/php/7.3/cli/php.ini
 
 # Phalcon v4
 WORKDIR /
-RUN wget https://github.com/phalcon/cphalcon/archive/v4.0.0.tar.gz && tar -zxvf v4.0.0.tar.gz
-WORKDIR /cphalcon-4.0.0
+RUN wget https://github.com/phalcon/cphalcon/archive/v4.0.3.tar.gz && tar -zxvf v4.0.3.tar.gz
+WORKDIR /cphalcon-4.0.3
 RUN wget https://github.com/phalcon/zephir/releases/download/0.12.11/zephir.phar && chmod +x zephir.phar
 RUN php zephir.phar fullclean && php zephir.phar build
 

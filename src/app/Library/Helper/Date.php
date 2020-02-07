@@ -112,7 +112,7 @@ class Date extends DateTime
 
 		if (!$utc)
 		{
-			parent::setTimezone('UTC');
+			parent::setTimezone(new DateTimeZone('UTC'));
 		}
 
 		$sqlDate = parent::format('Y-m-d H:i:s');

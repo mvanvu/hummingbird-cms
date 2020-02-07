@@ -10,7 +10,7 @@ use MaiVu\Hummingbird\Lib\Mvc\Model\PostCategory;
 
 class FlashNews extends Widget
 {
-	protected function getContent()
+	public function getContent()
 	{
 		$cid      = $this->widget->get('params.categoryIds', []);
 		$postsNum = $this->widget->get('params.postsNum', 5, 'uint');

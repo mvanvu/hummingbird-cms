@@ -7,7 +7,7 @@ use MaiVu\Hummingbird\Lib\Widget;
 
 class Menu extends Widget
 {
-	protected function getContent()
+	public function getContent()
 	{
 		if ($items = MenuHelper::getMenuItems($this->widget->get('params.menuType')))
 		{

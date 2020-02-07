@@ -1,11 +1,12 @@
 {
   "name": "mvanvu/hummingbird-cms",
   "type": "project",
-  "description": "A cms built with Phalcon PHP and UIkit",
+  "description": "A cms built with PHP Phalcon v4 and UIkit v3",
   "keywords": [
     "php",
     "hummingbird",
     "cms",
+    "phalcon",
     "uikit"
   ],
   "homepage": "https://github.com/mvanvu/hummingbird-cms",

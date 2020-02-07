@@ -2,8 +2,8 @@
 
 namespace MaiVu\Hummingbird\Lib;
 
-use MaiVu\Php\Registry;
 use MaiVu\Hummingbird\Lib\Mvc\View\ViewBase;
+use MaiVu\Php\Registry;
 use ReflectionClass;
 
 class Widget
@@ -22,24 +22,24 @@ class Widget
 
 	}
 
-	protected function getTitle()
+	public function getTitle()
 	{
-		return $this->widget->get('title', null);
+		return $this->widget->get('title');
 	}
 
-	protected function getRenderData()
+	public function getRenderData()
 	{
 		return [
 			'widget' => $this->widget,
 		];
 	}
 
-	protected function getPartialId()
+	public function getPartialId()
 	{
 		return $this->widget->get('params.displayLayout', $this->widget->get('manifest.name'));
 	}
 
-	protected function getContent()
+	public function getContent()
 	{
 		$content = $this->widget->get('params.content', null);
 
@@ -52,7 +52,7 @@ class Widget
 			->getPartial('Content/' . $this->getPartialId(), $this->getRenderData());
 	}
 
-	protected function getRenderer()
+	public function getRenderer()
 	{
 		static $renderers = [];
 		$class = get_class($this);
@@ -66,10 +66,10 @@ class Widget
 		$reflectionClass   = new ReflectionClass($this);
 		$renderers[$class]->setViewsDir(
 			[
-				TPL_SITE_PATH . '/Tmpl',
-				TPL_SITE_PATH,
-				dirname($reflectionClass->getFileName()) . '/Tmpl',
-				TPL_SYSTEM_PATH,
+				TPL_SITE_PATH . '/Tmpl/Widget',
+				TPL_SITE_PATH . '/Widget',
+				dirname($reflectionClass->getFileName()) . '/Tmpl/',
+				TPL_SYSTEM_PATH . '/Widget/',
 			]
 		);
 
@@ -97,7 +97,7 @@ class Widget
 			}
 
 			return $this->getRenderer()
-				->getPartial('Widget/Wrapper/' . $wrapper, $widgetData);
+				->getPartial('Wrapper/' . $wrapper, $widgetData);
 		}
 
 		return null;

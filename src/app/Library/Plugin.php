@@ -2,9 +2,8 @@
 
 namespace MaiVu\Hummingbird\Lib;
 
+use MaiVu\Hummingbird\Lib\Factory;
 use MaiVu\Php\Registry;
-use MaiVu\Hummingbird\Lib\Mvc\View\ViewBase;
-use ReflectionClass;
 
 class Plugin
 {
@@ -32,21 +31,7 @@ class Plugin
 
 	public function getRenderer()
 	{
-		/** @var ViewBase $view */
-		$view            = ViewBase::getInstance();
-		$reflectionClass = new ReflectionClass($this);
-		$view->setViewsDir(
-			[
-				TPL_SITE_PATH . '/Tmpl',
-				TPL_SITE_PATH,
-				dirname($reflectionClass->getFileName()) . '/Tmpl',
-				TPL_SYSTEM_PATH,
-			]
-		);
-
-		$view->disable();
-
-		return $view;
+		return Factory::getService('view');
 	}
 
 	public function activate()
