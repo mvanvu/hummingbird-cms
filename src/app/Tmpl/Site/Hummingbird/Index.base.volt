@@ -38,11 +38,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.1/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.1/dist/js/uikit-icons.min.js"></script>
-    {{ trigger('onSiteHead', ['Cms', 'System']) | j2nl }}
+    {{ trigger('onSiteHead', ['System', 'Cms']) | j2nl }}
 </head>
 <body>
 {# Hook before content #}
-{{ trigger('onSiteBeforeContent', [], ['Cms', 'System']) | j2nl }}
+{{ trigger('onSiteBeforeContent', [], ['System', 'Cms']) | j2nl }}
 
 {# Block before content #}
 {% block siteBeforeContent %}{% endblock %}
@@ -54,11 +54,11 @@
 {% block siteAfterContent %}{% endblock %}
 
 {# Hook after content #}
-{{ trigger('onSiteAfterContent', [], ['Cms', 'System']) | j2nl }}
+{{ trigger('onSiteAfterContent', [], ['System', 'Cms']) | j2nl }}
 
 {% block afterBody %}{% endblock %}
 
 {# Hook after render #}
-{{ trigger('onSiteAfterRender', [], ['Cms', 'System']) | j2nl }}
+{{ trigger('onSiteAfterRender', [], ['System', 'Cms']) | j2nl }}
 </body>
 </html>

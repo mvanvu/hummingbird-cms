@@ -81,11 +81,14 @@ class Volt
 				$resolvedArgs = implode(',', $resolvedArgs);
 
 				return $helperPrefix . $helperMethod . '(' . $resolvedArgs . ')';
-		}
 
-		if (function_exists($name))
-		{
-			return $name . '(' . $resolvedArgs . ')';
+			default:
+
+				if (function_exists($name))
+				{
+					return $name . '(' . $resolvedArgs . ')';
+				}
+
 		}
 	}
 
@@ -103,11 +106,13 @@ class Volt
 
 			case 'void':
 				return 'MaiVu\\Hummingbird\\Lib\\Helper\\Volt::voidFilter(' . $resolvedArgs . ')';
-		}
 
-		if (function_exists($name))
-		{
-			return $name . '(' . $resolvedArgs . ')';
+			default:
+
+				if (function_exists($name))
+				{
+					return $name . '(' . $resolvedArgs . ')';
+				}
 		}
 	}
 

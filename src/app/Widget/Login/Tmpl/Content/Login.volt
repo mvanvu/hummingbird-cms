@@ -31,14 +31,14 @@
                         </a>
                     </div>
                 </div>
-                {{ trigger('onBeforeLoginSubmitButton', [], ['Cms', 'System']) | j2nl }}
+                {{ trigger('onBeforeLoginSubmitButton', [], ['System', 'Cms']) | j2nl }}
                 <div class="uk-margin">
                     <button class="uk-button uk-button-primary uk-width-1-1" type="submit">
                         {{ _('login') }}
                     </button>
                 </div>
                 {{ helper('Form::tokenInput') }}
-                {{ trigger('onAfterLoginForm', [], ['Cms', 'System']) | j2nl }}
+                {{ trigger('onAfterLoginForm', [], ['System', 'Cms']) | j2nl }}
             </form>
         {% else %}
             <h2 class="uk-text-lead">

@@ -39,7 +39,7 @@
                             </a>
                         </div>
                     </div>
-                    {{ trigger('onBeforeLoginSubmitButton', [], ['Cms', 'System']) | j2nl }}
+                    {{ trigger('onBeforeLoginSubmitButton', [], ['System', 'Cms']) | j2nl }}
                     <div class="uk-margin">
                         <button class="uk-button uk-button-primary uk-width-1-1" type="submit">
                             {{ _('login') }}
@@ -47,7 +47,7 @@
                     </div>
 
                     {{ helper('Form::tokenInput') }}
-                    {{ trigger('onAfterLoginForm', [], ['Cms', 'System']) | j2nl }}
+                    {{ trigger('onAfterLoginForm', [], ['System', 'Cms']) | j2nl }}
                 </form>
             </div>
 
@@ -113,14 +113,14 @@
                                        value="{{ isSet(registerData['confirmPassword']) ? registerData['confirmPassword'] : '' }}"/>
                             </div>
                         </div>
-                        {{ trigger('onBeforeRegisterSubmitButton', [], ['Cms', 'System']) | j2nl }}
+                        {{ trigger('onBeforeRegisterSubmitButton', [], ['System', 'Cms']) | j2nl }}
                         <div class="uk-margin">
                             <button class="uk-button uk-button-primary uk-width-1-1" type="submit">
                                 {{ _('register') }}
                             </button>
                         </div>
                         {{ helper('Form::tokenInput') }}
-                        {{ trigger('onAfterRegisterForm', [], ['Cms', 'System']) | j2nl }}
+                        {{ trigger('onAfterRegisterForm', [], ['System', 'Cms']) | j2nl }}
                     </form>
                 </div>
             {% endif %}

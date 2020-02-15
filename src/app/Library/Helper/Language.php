@@ -71,6 +71,8 @@ class Language
 					self::$languagesSef[$content['sef']] = $langCode;
 					self::$languages[$langCode]          = $language;
 				}
+
+				ksort(self::$languages);
 			}
 		}
 

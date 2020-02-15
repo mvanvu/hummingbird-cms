@@ -163,7 +163,7 @@ class Factory
 
 			$di->setShared('router', function () {
 				$router = include CONFIG_PATH . '/Router.php';
-				Event::trigger('onBeforeServiceSetRouter', [$router], ['Cms', 'System']);
+				Event::trigger('onBeforeServiceSetRouter', [$router], ['System', 'Cms']);
 
 				return $router;
 			});

@@ -15,17 +15,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.1/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.1/dist/js/uikit-icons.min.js"></script>
-    {{ trigger('onAdminHead', ['Cms', 'System']) | j2nl }}
+    {{ trigger('onAdminHead', ['System', 'Cms']) | j2nl }}
 </head>
 <body>
 {# Hook before content #}
-{{ trigger('onAdminBeforeContent', [], ['Cms', 'System']) | j2nl }}
+{{ trigger('onAdminBeforeContent', [], ['System', 'Cms']) | j2nl }}
 
 {# Main content #}
 {% block adminContent %}{% endblock %}
 
 {# Hook after content #}
-{{ trigger('onAdminAfterContent', [], ['Cms', 'System']) | j2nl }}
+{{ trigger('onAdminAfterContent', [], ['System', 'Cms']) | j2nl }}
 
 {# Footer content #}
 {{ helper('Text::fetchJsData') }}
