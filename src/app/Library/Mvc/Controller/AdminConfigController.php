@@ -9,7 +9,6 @@ use MaiVu\Hummingbird\Lib\Helper\Toolbar;
 use MaiVu\Hummingbird\Lib\Helper\Mail as MailHelper;
 use MaiVu\Hummingbird\Lib\Helper\Config as CMSConfig;
 use MaiVu\Hummingbird\Lib\Mvc\Model\Config as ConfigModel;
-use MaiVu\Hummingbird\Lib\Form\Form;
 
 class AdminConfigController extends AdminControllerBase
 {

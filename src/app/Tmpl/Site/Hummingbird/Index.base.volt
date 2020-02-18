@@ -34,10 +34,10 @@
 
     {% block head %}{% endblock %}
     <link rel="shortcut icon" type="image/x-icon" href="{{ constant('ROOT_URI') ~ '/assets/images/favicon.ico' }}"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/uikit@3.2.6/dist/css/uikit.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/uikit@3.3.2/dist/css/uikit.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.1/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.1/dist/js/uikit-icons.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.2/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.3.2/dist/js/uikit-icons.min.js"></script>
     {{ trigger('onSiteHead', ['System', 'Cms']) | j2nl }}
 </head>
 <body>

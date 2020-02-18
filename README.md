@@ -36,7 +36,7 @@ The CMS based on Phalcon v4 and UIKit v3
 - Jquery v1.12.4
 - Jquery ui v1.12.1
 - Jquery nested
-- UIkit v3.2.6
+- UIkit v3.3.2
 
 # Installation for Development
 ## Clone this repo
