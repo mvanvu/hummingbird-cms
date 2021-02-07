@@ -1,0 +1,12 @@
+.idea
+docker/db/*
+docker/nginx/log/*
+src/vendor/*
+src/cache/*
+src/app/Tmpl/Site/*
+src/app/Plugin/Cms/Backup/*
+src/app/Plugin/Cms/Post/*
+src/app/Plugin/Cms/SocialLogin/*
+src/public/upload/thumbs/*
+src/config.php
+src/composer.phar

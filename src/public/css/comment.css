@@ -1,0 +1,22 @@
+.comments .uk-comment-list .uk-comment ~ ul {
+    padding-left: 35px;
+}
+
+.comments .uk-comment-list .uk-comment ~ ul,
+.comments .uk-comment-list .uk-comment ~ ul > li,
+.comments .uk-comment-list > li {
+    margin-top: 15px;
+}
+
+.comments .c-avatar {
+    width: 32px;
+    height: 32px;
+    background: #9e9e9e;
+    display: flex;
+    text-transform: capitalize;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 50%;
+    color: #fff;
+}

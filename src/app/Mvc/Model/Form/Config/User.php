@@ -1,0 +1,70 @@
+<?php
+
+return [
+	[
+		'name'    => 'allowUserRegistration',
+		'type'    => 'Switcher',
+		'label'   => 'allow-web-registration',
+		'value'   => 'Y',
+		'filters' => ['yesNo'],
+	],
+	[
+		'name'    => 'userEmailAsUsername',
+		'type'    => 'Switcher',
+		'label'   => 'email-as-username',
+		'value'   => 'Y',
+		'filters' => ['yesNo'],
+		'showOn'  => 'allowUserRegistration:Y',
+	],
+	[
+		'name'    => 'allowUserApiRegistration',
+		'type'    => 'Switcher',
+		'label'   => 'allow-api-registration',
+		'value'   => 'Y',
+		'filters' => ['yesNo'],
+	],
+	[
+		'name'    => 'newUserActivation',
+		'type'    => 'Select',
+		'label'   => 'new-user-activation',
+		'value'   => 'E',
+		'showOn'  => 'allowUserRegistration:Y',
+		'options' => [
+			'E' => 'activate-by-email',
+			'A' => 'auto-activate',
+			'N' => 'activate-by-admin',
+		],
+		'rules'   => ['Options'],
+		'class'   => 'uk-select uk-width-medium',
+	],
+	[
+		'name'    => 'newUserApiActivation',
+		'type'    => 'Select',
+		'label'   => 'new-user-api-activation',
+		'value'   => 'E',
+		'showOn'  => 'allowUserApiRegistration:Y',
+		'options' => [
+			'E' => 'activate-by-email',
+			'A' => 'auto-activate',
+			'N' => 'activate-by-admin',
+		],
+		'rules'   => ['Options'],
+		'class'   => 'uk-select uk-width-medium',
+	],
+	[
+		'name'    => 'mailToAdminWhenNewUser',
+		'type'    => 'Switcher',
+		'label'   => 'email-admin-when-new-user',
+		'value'   => 'Y',
+		'showOn'  => 'allowUserRegistration:Y',
+		'filters' => ['yesNo'],
+	],
+	[
+		'name'   => 'adminEmail',
+		'type'   => 'Email',
+		'label'  => 'admin-email',
+		'showOn' => 'allowUserRegistration:Y & mailToAdminWhenNewUser:Y',
+		'rules'  => ['Email'],
+		'class'  => 'uk-input uk-width-medium',
+	],
+];

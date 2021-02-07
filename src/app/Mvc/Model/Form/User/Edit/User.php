@@ -1,0 +1,66 @@
+<?php
+
+return [
+	[
+		'name' => 'id',
+		'type' => 'Hidden',
+	],
+	[
+		'name'     => 'name',
+		'type'     => 'Text',
+		'label'    => 'name',
+		'required' => true,
+		'filters'  => ['string', 'trim'],
+		'class'    => 'uk-input',
+	],
+	[
+		'name'     => 'email',
+		'type'     => 'Email',
+		'label'    => 'email',
+		'required' => true,
+		'filters'  => ['email'],
+		'rules'    => ['Email' => 'invalid-email-msg'],
+		'class'    => 'uk-input',
+	],
+	[
+		'name'         => 'username',
+		'type'         => 'Text',
+		'label'        => 'username',
+		'required'     => true,
+		'autocomplete' => 'off',
+		'filters'      => ['username'],
+		'class'        => 'uk-input',
+	],
+	[
+		'name'         => 'password',
+		'type'         => 'Password',
+		'label'        => 'password',
+		'autocomplete' => 'new-password',
+		'class'        => 'uk-input',
+		'required'     => true,
+	],
+	[
+		'name'         => 'confirmPassword',
+		'type'         => 'Password',
+		'label'        => 'confirm-password',
+		'autocomplete' => 'new-password',
+		'class'        => 'uk-input',
+		'rules'        => ['Confirm:password' => 'password-not-match'],
+	],
+	[
+		'name'     => 'roleId',
+		'type'     => 'CmsRole',
+		'label'    => 'user-role',
+		'required' => true,
+		'class'    => 'uk-select not-chosen',
+		'rules'    => ['Options'],
+		'value'    => 'R',
+	],
+	[
+		'name'    => 'active',
+		'type'    => 'Switcher',
+		'label'   => 'active',
+		'value'   => 'Y',
+		'filters' => ['yesNo'],
+	],
+];

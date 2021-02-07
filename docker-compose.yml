@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  ubuntu-18.4:
+    build: .
+    volumes:
+      - ./src:/var/www/hummingbird.local
+      - ./docker/nginx/log:/var/log/nginx
+      - ./docker/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+    ports:
+      - 9000:80
+      - 2053:2053
+    depends_on:
+      - mysql
+    extra_hosts:
+      - hummingbird.local:127.0.0.1
+
+  mysql:
+    image: mysql:5.7.9
+    restart: always
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    ports:
+      - 6603:3306
+    volumes:
+      - ./docker/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=hummingbird_cms
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=dbpass

@@ -1,0 +1,152 @@
+<?php
+
+define('BASE_PATH', dirname(__DIR__));
+
+// We are in a docker if this is a cli env
+
+$isEnvDev = $_SERVER['HTTP_HOST'] === 'localhost:9000'
+	|| $_SERVER['HTTP_HOST'] === '127.0.0.1:9000'
+	|| preg_match('/\.local:9000$/', $_SERVER['HTTP_HOST']);
+require_once __DIR__ . '/install.script.php';
+
+?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Installing Hummingbird CMS</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/uikit@3.5.16/dist/css/uikit.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.16/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.16/dist/js/uikit-icons.min.js"></script>
+</head>
+<body class="uk-background-muted">
+<div class="uk-container uk-container-small uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
+    <div class="uk-card uk-card-default uk-width-1-1">
+        <div class="uk-card-header">
+            <h3 class="uk-card-title">
+                Installing Hummingbird CMS
+            </h3>
+            <p class="uk-text-muted uk-margin-remove">
+				<?php if ($isEnvDev): ?>
+                    The Hummingbird CMS is running from <strong>DOCKER</strong>, the admin path is
+                    <em>admin</em> then you can login to the admin page at
+                    <a href="http://<?php echo $_SERVER['HTTP_HOST']; ?>/admin"
+                       target="_blank">http://<?php echo $_SERVER['HTTP_HOST']; ?>/admin</a>
+				<?php else: ?>
+                    After install you can login with the username/password:
+                    <strong>admin/admin</strong> and don't forget
+                                                 change them from the admin page. You must enter the admin path then you can access with your admin
+                                                 panel, for eg:<br/>
+                    The admin path is <em>my/admin</em> then you can login to the admin page at
+                    <em>http://<?php echo $_SERVER['HTTP_HOST']; ?>/my/admin</em>
+				<?php endif; ?>
+            </p>
+        </div>
+        <div class="uk-card-body">
+            <div class="uk-alert uk-alert-danger uk-margin uk-hidden" id="errorMessage"></div>
+            <div class="uk-grid-small uk-child-width-1-2@s" uk-grid>
+                <div>
+                    <h4 class="uk-heading-bullet">
+                        Database
+                    </h4>
+                    <div class="uk-margin-small">
+                        <input class="uk-input" name="dbHost" type="text" id="dbHost" placeholder="Server host"
+                               autocomplete="off" required<?php echo $isEnvDev ? ' value="mysql" disabled' : ''; ?>/>
+                    </div>
+                    <div class="uk-margin-small">
+                        <input class="uk-input" name="dbName" type="text" id="dbName" autocomplete="off"
+                               placeholder="Database name"
+                               required<?php echo $isEnvDev ? ' value="hummingbird_cms" disabled' : ''; ?>/>
+                    </div>
+                    <div class="uk-margin-small">
+                        <input class="uk-input" name="dbUser" type="text" id="dbUser" autocomplete="off"
+                               placeholder="User" required<?php echo $isEnvDev ? ' value="dbuser" disabled' : ''; ?>/>
+                    </div>
+                    <div class="uk-margin-small">
+                        <input class="uk-input" name="dbPass" type="password" id="dbPass" autocomplete="off"
+                               placeholder="Password"
+                               required<?php echo $isEnvDev ? ' value="dbpass" disabled' : ''; ?>/>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="uk-heading-bullet">
+                        Site configuration
+                    </h4>
+                    <div class="uk-margin-small">
+                        <input class="uk-input" name="siteName" type="text" id="siteName" autocomplete="off"
+                               placeholder="Enter your site name"<?php echo $isEnvDev ? ' value="Hummingbird CMS site name"' : ''; ?>
+                               required/>
+                    </div>
+                    <div class="uk-margin-small">
+                        <input class="uk-input" name="adminPrefix" type="text" id="adminPrefix" autocomplete="off"
+                               placeholder="Admin path eg: admin, my/admin..."
+                               required<?php echo $isEnvDev ? ' value="admin" disabled' : ''; ?>/>
+                    </div>
+                    <div class="uk-margin-small">
+                        <select class="uk-select" name="language">
+                            <option value="en-GB">
+                                English
+                            </option>
+                            <option value="vi-VN">
+                                Tiếng việt
+                            </option>
+                        </select>
+                    </div>
+                    <div class="uk-margin-small">
+                        <button class="uk-button uk-button-primary uk-width-1-1" id="btn-install" type="button">
+                            Install
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function ($) {
+
+        $('#btn-install').on('click', function () {
+            var
+                btn = $(this).prop('disabled', true),
+                invalid = false;
+            UIkit.notification({message: '<div uk-spinner></div> Please wait...', status: 'primary', timeout: 0});
+
+            $('input, select').each(function () {
+                if (this.required && this.value === '') {
+                    this.classList.add('uk-form-danger');
+                    invalid = true;
+                }
+            });
+
+            if (invalid) {
+                UIkit.notification.closeAll();
+                btn.prop('disabled', false);
+
+                return false;
+            }
+
+            $.ajax({
+                url: '',
+                type: 'post',
+                dataType: 'json',
+                data: $('input, select').serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        UIkit.notification(response.message, {status: 'success'});
+                        location.href = response.redirectUrl;
+                    } else {
+                        $('#errorMessage').text(response.message).removeClass('uk-hidden');
+                        UIkit.notification.closeAll();
+                        btn.prop('disabled', false);
+                    }
+                }
+            });
+        });
+    })(jQuery);
+</script>
+</body>
+</html>
