@@ -50,7 +50,7 @@ class Router
 			}
 
 			$router->addPost($uriPrefix . '/file/upload', 'FileSystem::upload');
-			$router->add($uriPrefix . '/public/storage/([A-Z0-9\/+=]+)',
+			$router->add($uriPrefix . '/storages/file/([A-Za-z0-9\/+=]+)',
 				[
 					'controller' => 'file_system',
 					'action'     => 'handle',

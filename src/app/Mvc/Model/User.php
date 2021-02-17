@@ -3,6 +3,8 @@
 namespace App\Mvc\Model;
 
 use App\Factory\Factory;
+use App\Helper\Database;
+use App\Helper\FileSystem;
 use App\Helper\Service;
 use App\Helper\State;
 use App\Helper\Text;
@@ -271,10 +273,10 @@ class User extends ModelBase
 		switch ($keyword)
 		{
 			case 'register':
-				return $this->role->type === 'R';
+				return in_array($this->role->type, ['R', 'M']);
 
 			case 'manager':
-				return $this->role->type === 'M';
+				return in_array($this->role->type, ['M', 'S']);
 
 			case 'super':
 				return $this->role->type === 'S';

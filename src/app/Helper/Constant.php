@@ -32,7 +32,13 @@ class Constant
 		if (!isset($namespaces[$namespace]))
 		{
 			$namespaces[$namespace] = PLUGIN_PATH . '/' . $group . '/' . $name;
-			(new Loader)->registerNamespaces([Constant::NAMESPACE_PLUGIN . '\\' . $group => $namespaces[$namespace]], true)->register();
+			(new Loader)
+				->registerNamespaces(
+					[
+						Constant::NAMESPACE_PLUGIN . '\\' . $group => $namespaces[$namespace],
+					]
+					, true
+				)->register();
 		}
 
 		return $namespace;

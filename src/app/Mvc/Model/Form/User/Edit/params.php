@@ -2,10 +2,10 @@
 
 return [
 	[
-		'name'    => 'avatar',
-		'type'    => 'CmsImage',
-		'label'   => 'avatar',
-		'filters' => ['fileExists'],
+		'name'      => 'avatar',
+		'type'      => 'CmsUpload',
+		'label'     => 'avatar',
+		'isPrivate' => false,
 	],
 	[
 		'name'  => 'timezone',

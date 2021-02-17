@@ -42,6 +42,7 @@
                 {% endif %}
 
                 {% set isCheckedIn = item.isCheckedIn() %}
+                {% set avatar = item.registry('params').get('avatar') %}
 
                 <tr{{ isSelf ? ' class="uk-text-bold"' : '' }}>
                     <td>
@@ -51,18 +52,23 @@
                             <input class="uk-checkbox" type="checkbox" name="cid[]" value="{{ item.id }}"/>
                         {% endif %}
                     </td>
-                    <td class="uk-table-link">
-                        {% if isCheckedIn %}
-                            {{ partial('Grid/CheckedIn', ['item': item, 'title': name]) }}
-                        {% else %}
-                            {% if canEdit OR (canManageOwn AND isSelf) %}
-                                <a class="uk-link-reset" href="{{ uri.routeTo('/edit/' ~ item.id) }}">
-                                    {{ name }}
-                                </a>
-                            {% else %}
-                                {{ name }}
+                    <td>
+                        <div class="uk-grid uk-grid-small">
+                            {% if avatar %}
+                                <img class="uk-preserve-width" src="{{ public(avatar) }}" width="55" alt=""/>
                             {% endif %}
-                        {% endif %}
+                            {% if isCheckedIn %}
+                                {{ partial('Grid/CheckedIn', ['item': item, 'title': name]) }}
+                            {% else %}
+                                {% if canEdit OR (canManageOwn AND isSelf) %}
+                                    <a class="uk-link-reset" href="{{ uri.routeTo('/edit/' ~ item.id) }}">
+                                        {{ name }}
+                                    </a>
+                                {% else %}
+                                    {{ name }}
+                                {% endif %}
+                            {% endif %}
+                        </div>
                     </td>
                     <td class="uk-text-nowrap">
                         {{ item.email }}

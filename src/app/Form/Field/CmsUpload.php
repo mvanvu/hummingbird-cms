@@ -19,6 +19,8 @@ class CmsUpload extends Select
 
 	protected $permission = 'media.upload';
 
+	protected $tmpUpload = true;
+
 	protected $isPrivate = true;
 
 	public function getOptions()
@@ -69,8 +71,8 @@ class CmsUpload extends Select
 
 				if ($this->isPrivate)
 				{
-					$file = BASE_PATH . '/storages/upload/' . $name;
-					$url  = ROOT_URI . '/storage/'
+					$file = BASE_PATH . '/storages/' . $name;
+					$url  = ROOT_URI . '/storages/file/'
 						. base64_encode(
 							$crypt->encrypt(
 								json_encode(
@@ -86,7 +88,7 @@ class CmsUpload extends Select
 				}
 				else
 				{
-					$url = ROOT_URI . '/upload/' . $fileBase;
+					$url = ROOT_URI . '/' . $fileBase;
 				}
 
 				$files[] = [

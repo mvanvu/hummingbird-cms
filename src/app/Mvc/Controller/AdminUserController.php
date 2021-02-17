@@ -3,6 +3,7 @@
 namespace App\Mvc\Controller;
 
 use App\Helper\Cookie;
+use App\Helper\FileSystem;
 use App\Helper\Language;
 use App\Helper\Text;
 use App\Helper\Uri;
@@ -94,6 +95,35 @@ class AdminUserController extends AdminControllerBase
 		parent::indexToolBar($activeState, $excludes);
 	}
 
+	public function doBeforeSave(&$validData, $isNew)
+	{
+		$oldAvatar = $this->model->registry('params')->get('avatar', '');
+		$newAvatar = $validData['params']['avatar'] ?? '';
+		preg_match('/^data:image\/(.+);base64,\s(.+)/', $newAvatar, $matches);
+
+		if (empty($newAvatar) && !empty($oldAvatar))
+		{
+			FileSystem::remove(PUBLIC_PATH . '/' . $oldAvatar);
+		}
+
+		if (!empty($matches[1]))
+		{
+			$dir  = PUBLIC_PATH . '/upload/u/' . $this->model->id;
+			$name = md5($matches[0]) . '_avatar.' . $matches[1];
+			$file = $dir . '/' . $name;
+
+			if (!is_dir($dir))
+			{
+				mkdir($dir, 0755, true);
+			}
+
+			if (file_put_contents($file, base64_decode($matches[2])))
+			{
+				$validData['params']['avatar'] = 'upload/u/' . $this->model->id . '/' . $name;
+			}
+		}
+	}
+
 	protected function prepareIndexQuery(BuilderInterface $query)
 	{
 		$query->leftJoin(Role::class, 'role.id = item.roleId', 'role');
@@ -121,21 +151,19 @@ class AdminUserController extends AdminControllerBase
 		$pass1    = $userForm->getField('password');
 		$pass2    = $userForm->getField('confirmPassword');
 
-
 		if ($id = $userForm->getField('id')->getValue())
 		{
 			if ($user->id == $id)
 			{
-				$userForm->getField('active')->set('disabled', true);
+				$userForm->getField('active')->set('readonly', true);
 				$role->set('class', 'uk-background-muted uk-select not-chosen uk-disabled');
-				$role->setValue($user->is('super') ? 1 : $user->role->id ?? 3);
 			}
 
 			$pass1->setValue('')->set('required', false);
 			$pass2->setValue('')->set('required', false);
 		}
 
-		if ($this->request->isPost() && $this->dispatcher->getActionName() === 'save')
+		if ($this->request->isPost() && in_array($this->dispatcher->getActionName(), ['save', 'save2close']))
 		{
 			$postData = $this->request->getPost($this->mainEditFormName, null, []);
 

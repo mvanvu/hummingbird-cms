@@ -14,6 +14,7 @@ class FileSystemController extends ControllerBase
 	{
 		$crypt     = Service::crypt();
 		$encrypted = $this->request->getPost('encrypted', 'string');
+		$tmpUpload = $this->request->getPost('tmpUpload') ?? '1';
 		$secret    = Config::get('secret.cryptKey');
 
 		if (empty($encrypted)
@@ -59,7 +60,7 @@ class FileSystemController extends ControllerBase
 		}
 
 		$userId     = $configData['targetUserId'] ?? $user->id;
-		$basePath   = $userId ? 'u/' . $userId : 'tmp' . time();
+		$basePath   = $userId ? 'u/' . $userId : 'tmp/' . uniqid(time());
 		$uploadPath .= '/' . $basePath;
 		$uploaded   = [];
 
@@ -114,30 +115,33 @@ class FileSystemController extends ControllerBase
 			$fileName = FileSystem::makeSafe($file->getName());
 			$realName = md5(uniqid($fileName) . time()) . '_' . $fileName;
 
-			if (!is_dir($uploadPath))
+			if (!$tmpUpload)
 			{
-				mkdir($uploadPath, 0755, true);
-			}
+				if (!is_dir($uploadPath))
+				{
+					mkdir($uploadPath, 0755, true);
+				}
 
-			if (!$file->moveTo($uploadPath . '/' . $realName))
-			{
-				return $this->response->setJsonContent(
-					[
-						'success' => false,
-						'message' => Text::_('cannot-upload-the-file', ['file' => $fileName]),
-					]
-				);
+				if (!$file->moveTo($uploadPath . '/' . $realName))
+				{
+					return $this->response->setJsonContent(
+						[
+							'success' => false,
+							'message' => Text::_('cannot-upload-the-file', ['file' => $fileName]),
+						]
+					);
+				}
 			}
-
+			
 			if ($isPrivate)
 			{
-				$file = $uploadPath . '/' . $realName;
-				$url  = ROOT_URI . '/public/storage/'
-					. base64_encode(
+				$url = $tmpUpload
+					? 'data:' . $mime . ';base64, ' . base64_encode(file_get_contents($file->getTempName()))
+					: ROOT_URI . '/storages/file/' . base64_encode(
 						$crypt->encrypt(
 							json_encode(
 								[
-									'file'       => $file,
+									'file'       => $uploadPath . '/' . $realName,
 									'role'       => $role,
 									'isPrivate'  => $isPrivate,
 									'permission' => $permission,
@@ -149,13 +153,15 @@ class FileSystemController extends ControllerBase
 			}
 			else
 			{
-				$url = ROOT_URI . '/upload/' . $basePath . '/' . $realName;
+				$url = $tmpUpload
+					? 'data:' . $mime . ';base64, ' . base64_encode(file_get_contents($file->getTempName()))
+					: ROOT_URI . '/upload/' . $basePath . '/' . $realName;
 			}
 
 			$data = [
 				'name'      => $fileName,
 				'url'       => $url,
-				'base'      => $basePath . '/' . $realName,
+				'base'      => $tmpUpload ? $url : $basePath . '/' . $realName,
 				'isPrivate' => $isPrivate,
 				'isImage'   => FileSystem::isImage($fileName),
 			];

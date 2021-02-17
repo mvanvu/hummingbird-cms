@@ -2,14 +2,15 @@
 
 namespace App\Mvc\Model;
 
-use App\Traits\Hooker;
-use Exception;
 use App\Helper\Date;
 use App\Helper\FileSystem;
 use App\Helper\Language;
+use App\Helper\Service;
 use App\Helper\StringHelper;
 use App\Helper\Text;
 use App\Helper\User as Auth;
+use App\Traits\Hooker;
+use Exception;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Form\FormsManager;
 use MaiVu\Php\Registry;
@@ -164,12 +165,12 @@ class ModelBase extends ModelPermission
 	{
 		if ($this->id && $this->standardMetadata)
 		{
-			$this->assign(
-				[
-					'checkedAt' => Date::now('UTC')->toSql(),
-					'checkedBy' => Auth::id(),
-				]
-			)->save();
+			Service::db()->update(
+				$this->getSource(),
+				['checkedAt', 'checkedBy'],
+				[Date::now('UTC')->toSql(), Auth::id()],
+				'id = ' . (int) $this->id
+			);
 		}
 
 		return $this;

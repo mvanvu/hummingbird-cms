@@ -54,7 +54,7 @@ return [
 		'required' => true,
 		'class'    => 'uk-select not-chosen',
 		'rules'    => ['Options'],
-		'value'    => 'R',
+		'value'    => 3,
 	],
 	[
 		'name'    => 'active',

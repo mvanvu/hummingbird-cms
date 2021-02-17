@@ -53,10 +53,7 @@ class Plugin
 				->register();
 		}
 
-		if (method_exists($this, 'onConstruct'))
-		{
-			$this->onConstruct();
-		}
+		$this->callback('onConstruct');
 	}
 
 	public function getRenderer(): ViewBase

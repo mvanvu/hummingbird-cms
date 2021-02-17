@@ -1,5 +1,6 @@
 <div class="upload-container">
-    <div class="uk-grid-small uk-flex-middle uk-flex-center uk-flex-wrap" id="{{ field.id }}-files" uk-grid uk-sortable>
+    <div class="uk-grid-small uk-flex-middle uk-flex-center uk-flex-wrap{{ files | length ? '' : ' uk-hidden' }}"
+         id="{{ field.id }}-files" uk-grid{{ field.multiple  ? ' uk-sortable' : '' }}>
         {% for file in files %}
             {{ partial('Form/Field/UploadedFile', ['file': file]) }}
         {% endfor %}
@@ -17,7 +18,7 @@
     <script>
         window.addEventListener('load', function () {
             (function ($) {
-                const bar = document.getElementById('{{ field.id }}-progressbar'),
+                var bar = document.getElementById('{{ field.id }}-progressbar'),
                     multiple = {{ field.multiple ? 'true' : 'false' }},
                     container = $('#{{ field.id }}-files'),
                     select = $('#{{ field.id }}'),
@@ -30,7 +31,7 @@
                             });
 
                         } else {
-                            const el = container.find('[data-file-base]').get(0);
+                            var el = container.find('[data-file-base]').get(0);
 
                             if (el.length) {
                                 select.append('<option value="' + el.data('fileBase') + '" selected></option>');
@@ -52,6 +53,7 @@
                     multiple: multiple,
                     params: {
                         encrypted: '{{ encrypted }}',
+                        tmpUpload: '{{ field.tmpUpload ? '1' : '0' }}',
                     },
 
                     beforeSend: function (environment) {
@@ -75,7 +77,7 @@
                     },
 
                     complete: function (response) {
-                        const json = JSON.parse(response.responseText);
+                        var json = JSON.parse(response.responseText);
 
                         if (json.success) {
                             if (json.data.length) {
@@ -87,6 +89,7 @@
                                     container.append(data.html);
                                 });
 
+                                container.removeClass('uk-hidden');
                                 updateValue();
                             }
                         } else {

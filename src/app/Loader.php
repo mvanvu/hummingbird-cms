@@ -14,7 +14,6 @@ class Loader
 			define('TMP_PATH', BASE_PATH . '/tmp');
 			define('APP_PATH', BASE_PATH . '/app');
 			define('PUBLIC_PATH', BASE_PATH . '/public');
-			define('CONFIG_PATH', APP_PATH . '/Config');
 			define('CACHE_PATH', BASE_PATH . '/cache');
 			define('MVC_PATH', APP_PATH . '/Mvc');
 			define('PLUGIN_PATH', APP_PATH . '/Plugin');

@@ -23,7 +23,7 @@ class CmsRole extends Select
 			{
 				$params = ['order' => 'name ASC'];
 
-				if ($user->is('manager'))
+				if ($user->is('manager') && !$user->is('super'))
 				{
 					$params['conditions'] = 'type = \'R\'';
 				}

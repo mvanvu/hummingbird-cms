@@ -63,7 +63,6 @@ class AdminControllerBase extends ControllerBase
 
 	public function onConstruct()
 	{
-		Constant::getNamespacePlugin('Cms', 'Post');
 		$action = $this->dispatcher->getActionName();
 
 		if (is_string($this->model))

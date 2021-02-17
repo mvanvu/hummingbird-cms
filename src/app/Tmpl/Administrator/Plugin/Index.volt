@@ -66,13 +66,16 @@
                         {% endif %}
                     </td>
                     <td class="uk-text-nowrap">
-                        <a class="btn-uninstall uk-button uk-button-small uk-text-small {{ protected ? 'uk-disabled uk-text-muted' : 'uk-button-danger' }}">
-                            {{ _('uninstall') }}
-                        </a>
-                        <a class="btn-export uk-button uk-button-small uk-button-primary uk-text-small"
-                           href="{{ uri.routeTo('export/' ~ item.id) }}">
-                            {{ icon('cloud-download') ~ '&nbsp;' ~ _('download') }}
-                        </a>
+                        <ul class="uk-iconnav uk-flex-center">
+                            {% if !protected %}
+                            <li>
+                                <a class="btn-uninstall uk-text-danger" uk-icon="icon: close" uk-tooltip="{{ _('uninstall') }}"></a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a class="btn-export uk-text-success" href="{{ uri.routeTo('export/' ~ item.id) }}" uk-icon="icon: cloud-download" uk-tooltip="{{ _('download') }}"></a>
+                            </li>
+                        </ul>
                     </td>
                     <td class="uk-text-nowrap">
                         {{ helper('Date::relative', item.createdAt) }}
