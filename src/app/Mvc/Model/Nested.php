@@ -2,7 +2,9 @@
 
 namespace App\Mvc\Model;
 
+use App\Helper\Date;
 use App\Helper\Service;
+use App\Helper\User as Auth;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Db\Enum;
 use stdClass;
@@ -44,9 +46,11 @@ class Nested extends UcmItem
 
 			if (empty($root->id))
 			{
-				$db->execute('INSERT INTO ' . $source . '(context, title, state, lft, rgt) VALUES (:context, \'system-node-root\', \'P\', 0, 1)',
+				$db->execute('INSERT INTO ' . $source . '(context, title, state, lft, rgt, createdAt, createdBy) VALUES (:context, \'system-node-root\', \'P\', 0, 1, :createdAt, :createdBy)',
 					[
-						'context' => $this->context,
+						'context'   => $this->context,
+						'createdAt' => Date::now('UTC')->toSql(),
+						'createdBy' => Auth::id(),
 					]
 				);
 

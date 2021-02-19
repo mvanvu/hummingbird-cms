@@ -28,7 +28,8 @@
                        href="{{ package['source'] }}">
                         {% set plugin = helper('Event::getPlugin', package['group'], package['name']) %}
                         {% if plugin %}
-                            {% if version_compare(package['version'], plugin.get('manifest.version'), 'gt') %}
+                            {% set plgConfig = helper('Event::createConfig', plugin) %}
+                            {% if version_compare(package['version'], plgConfig.get('manifest.version'), 'gt') %}
                                 <span class="uk-text-warning">
                                     {{ icon('cloud-download') ~ '&nbsp;' ~ _('update') ~ '&nbsp;' ~ _('version-s', ['version': package['version']]) }}
                                 </span>

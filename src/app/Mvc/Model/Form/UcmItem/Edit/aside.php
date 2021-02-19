@@ -28,7 +28,7 @@ return [
 		'type'     => 'CmsTag',
 		'label'    => 'tags',
 		'multiple' => true,
-		'rules'    => ['Options'],
+		//'rules'    => ['Options'],
 		'class'    => 'uk-select',
 	],
 ];
