@@ -7,24 +7,24 @@
             </a>
         </li>
         <li class="uk-nav-divider"></li>
-        {% if systemMenus is not empty %}
-            {% for moduleTitle, moduleMenus in systemMenus %}
-                {% if moduleTitle is numeric %}
+        {% if adminMenus is not empty %}
+            {% for name, menus in adminMenus %}
+                {% if menus['items'] is empty %}
                     <li>
-                        <a class="uk-nav-header" href="{{ moduleMenus['url'] }}">
-                            {{ moduleMenus['title'] }}
+                        <a class="uk-nav-header" href="{{ menus['url'] }}">
+                            {{ menus['title'] }}
                         </a>
                     </li>
                 {% else %}
                     <li class="uk-open uk-parent">
                         <a class="uk-nav-header" href="#">
-                            {{ moduleTitle }}
+                            {{ menus['title'] }}
                         </a>
                         <ul class="uk-nav-sub">
-                            {% for moduleMenu in moduleMenus %}
+                            {% for item in menus['items'] %}
                                 <li>
-                                    <a href="{{ moduleMenu['url'] }}">
-                                        {{ moduleMenu['title'] }}
+                                    <a href="{{ item['url'] }}">
+                                        {{ item['title'] }}
                                     </a>
                                 </li>
                             {% endfor %}

@@ -48,7 +48,7 @@ class Queue
 							'priority'   => $priority,
 							'createdAt'  => Date::now('UTC')->toSql(),
 							'createdBy'  => User::getActive()->id ?? 0,
-							'handling'   => 'N',
+							'handling'   => 'Y',
 							'failedAt'   => null,
 						]
 					);
@@ -97,6 +97,22 @@ class Queue
 
 	public static function executeJob(QueueJob $job)
 	{
+		$payload = $job->payload ? unserialize($job->payload) : [];
+
+		if (!empty($payload['fromPlugin'])
+			&& is_string($payload['fromPlugin'])
+			&& false !== strpos($payload['fromPlugin'], '/')
+		)
+		{
+			list ($group, $name) = explode('/', $payload['fromPlugin'], 2);
+
+			if ($plugin = Event::getPlugin($group, $name))
+			{
+				// Run autoload from plugin
+				Event::getHandler($plugin);
+			}
+		}
+
 		if (class_exists($job->handler))
 		{
 			$console = Console::getInstance();
@@ -120,7 +136,7 @@ class Queue
 					}
 					else
 					{
-						$job->assign(['failedAt' => Date::now()->toSql(), 'handling' => 'N'])->save();
+						$job->assign(['failedAt' => Date::now('UTC')->toSql(), 'handling' => 'N'])->save();
 						Log::addEntry('queue-failed', ['handler' => $job->queueJobId . ':' . $job->handler]);
 						$console->out('Failed. ' . $job->queueJobId . ':' . $job->handler . ' return FALSE');
 					}

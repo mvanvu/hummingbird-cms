@@ -115,7 +115,15 @@ class Factory
 	{
 		if (!is_file(BASE_PATH . '/config.php'))
 		{
-			if (is_file(BASE_PATH . '/public/install.php'))
+			$installDistFile = PUBLIC_PATH . '/install.php-dist';
+			$installFile     = PUBLIC_PATH . '/install.php';
+
+			if (is_file($installDistFile) && !is_file($installDistFile))
+			{
+				rename($installDistFile, $installFile);
+			}
+
+			if (is_file($installFile))
 			{
 				$protocol = 'http';
 

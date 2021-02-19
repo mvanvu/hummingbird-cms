@@ -12,7 +12,6 @@ use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User;
 use Phalcon\Mvc\Controller;
-use stdClass;
 
 class ControllerBase extends Controller
 {
@@ -83,14 +82,12 @@ class ControllerBase extends Controller
 			]
 		);
 
-		$source              = new stdClass;
-		$source->systemMenus = [];
-		Event::trigger('onRegisterSystemMenus', [$source]);
-		$user = User::getActive();
+		$menus = [];
+		$user  = User::getActive();
 
 		if ($user->authorise('media.manage'))
 		{
-			$source->systemMenus[] = [
+			$menus['media'] = [
 				'title' => IconSvg::render('pictures') . ' ' . Text::_('media'),
 				'url'   => Uri::route('media/index'),
 			];
@@ -98,7 +95,7 @@ class ControllerBase extends Controller
 
 		if ($user->authorise('tag.manage'))
 		{
-			$source->systemMenus[] = [
+			$menus['tag'] = [
 				'title' => IconSvg::render('tag') . ' ' . Text::_('tag'),
 				'url'   => Uri::route('tag/index'),
 			];
@@ -106,26 +103,29 @@ class ControllerBase extends Controller
 
 		if ($user->is('super'))
 		{
-			$source->systemMenus[IconSvg::render('ios-settings') . ' ' . Text::_('system')] = [
-				[
-					'title' => IconSvg::render('cog') . ' ' . Text::_('settings'),
-					'url'   => Uri::route('config/index'),
-				],
-				[
-					'title' => IconSvg::render('plug') . ' ' . Text::_('sys-plugins'),
-					'url'   => Uri::route('plugin/index'),
-				],
-				[
-					'title' => IconSvg::render('settings') . ' ' . Text::_('sys-widgets'),
-					'url'   => Uri::route('widget/index'),
-				],
-				[
-					'title' => IconSvg::render('menu') . ' ' . Text::_('menus'),
-					'url'   => Uri::route('menu/index'),
-				],
-				[
-					'title' => IconSvg::render('theatre') . ' ' . Text::_('templates'),
-					'url'   => Uri::route('template/index'),
+			$menus['system'] = [
+				'title' => IconSvg::render('ios-settings') . ' ' . Text::_('system'),
+				'items' => [
+					[
+						'title' => IconSvg::render('cog') . ' ' . Text::_('settings'),
+						'url'   => Uri::route('config/index'),
+					],
+					[
+						'title' => IconSvg::render('plug') . ' ' . Text::_('sys-plugins'),
+						'url'   => Uri::route('plugin/index'),
+					],
+					[
+						'title' => IconSvg::render('settings') . ' ' . Text::_('sys-widgets'),
+						'url'   => Uri::route('widget/index'),
+					],
+					[
+						'title' => IconSvg::render('menu') . ' ' . Text::_('menus'),
+						'url'   => Uri::route('menu/index'),
+					],
+					[
+						'title' => IconSvg::render('theatre') . ' ' . Text::_('templates'),
+						'url'   => Uri::route('template/index'),
+					],
 				],
 			];
 		}
@@ -157,10 +157,14 @@ class ControllerBase extends Controller
 				$userRoleText = 'users';
 			}
 
-			$source->systemMenus[IconSvg::render('users') . ' ' . Text::_($userRoleText)] = $userRoleMenus;
+			$menus['user'] = [
+				'title' => IconSvg::render('users') . ' ' . Text::_($userRoleText),
+				'items' => $userRoleMenus,
+			];
 		}
 
-		$this->view->setVar('systemMenus', $source->systemMenus);
+		Event::trigger('onRegisterAdminMenus', [&$menus]);
+		$this->view->setVar('adminMenus', $menus);
 	}
 
 	protected function notFound()

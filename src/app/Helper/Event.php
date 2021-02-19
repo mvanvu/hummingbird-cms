@@ -120,7 +120,7 @@ class Event
 
 	public static function getPlugin(string $group, string $name): ?PluginModel
 	{
-		return static::getPlugins()[$group][Constant::getNamespacePlugin($group, $name)] ?? null;
+		return static::getPlugins()[$group][$name] ?? null;
 	}
 
 	public static function getGroup($group)
