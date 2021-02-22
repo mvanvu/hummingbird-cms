@@ -4,6 +4,7 @@ defined('BASE_PATH') or die;
 
 use App\Helper\Database;
 use Phalcon\Db\Adapter\Pdo\Mysql;
+use Phalcon\Di\FactoryDefault;
 use Phalcon\Http\Request;
 use Phalcon\Loader;
 use Phalcon\Security;
@@ -93,11 +94,14 @@ if ($request->isAjax() && $request->isPost())
 		$adminPrefix = $request->getPost('adminPrefix', null, 'admin');
 		$configData  = $connection->fetchOne('SELECT data FROM ' . $dbPrefix . 'config_data WHERE context = \'cms.config\'');
 		$configData  = json_decode($configData['data'], true);
+		$scryptKey   = $security->hash($security->getRandom()->uuid());
+		$container   = new FactoryDefault;
+		$container->getShared('crypt')->setKey($scryptKey);
+		$security->setDI($container);
 
 		// Update config
 		$configData['siteName']              = $siteName;
 		$configData['siteLanguage']          = $language;
-		$configData['administratorLanguage'] = $language;
 		$configData['administratorLanguage'] = $language;
 		$configData['adminPrefix']           = $adminPrefix;
 		$configData['development']           = 'Y';
@@ -112,11 +116,12 @@ if ($request->isAjax() && $request->isPost())
 		$userSecret = $security->getRandom()->uuid();
 		$apiSecret  = $security->getRandom()->uuid();
 		$now        = (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
-		$connection->execute('UPDATE ' . $dbPrefix . 'users SET secret = :secret, createdAt =:now, createdBy = 0 WHERE username = :admin',
+		$connection->execute('UPDATE ' . $dbPrefix . 'users SET secret = :secret, createdAt =:now, createdBy = 0, password = :password WHERE username = :admin',
 			[
-				'secret' => $userSecret,
-				'admin'  => 'admin',
-				'now'    => $now,
+				'now'      => $now,
+				'secret'   => $userSecret,
+				'password' => $security->hash('admin'),
+				'admin'    => 'admin',
 			]
 		);
 		$connection->execute('UPDATE ' . $dbPrefix . 'templates SET createdAt =:now, createdBy = 1 WHERE 1',
@@ -145,7 +150,7 @@ return [
 		'prefix' => '{$dbPrefix}',
 	],
 	'secret'      => [
-		'cryptKey' => '{$security->hash($security->getRandom()->uuid())}',
+		'cryptKey' => '{$scryptKey}',
 		'rootKey'  => '{$userSecret}',
 		'apiKey'   => '{$apiSecret}',
 	],

@@ -2,9 +2,11 @@
 
 namespace App\Mvc\Controller;
 
+use App\Factory\Factory;
 use App\Helper\Cookie;
 use App\Helper\FileSystem;
 use App\Helper\Language;
+use App\Helper\Service;
 use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User as Auth;
@@ -12,6 +14,7 @@ use App\Mvc\Model\Role;
 use App\Mvc\Model\User;
 use MaiVu\Php\Form\FormsManager;
 use Phalcon\Mvc\Model\Query\BuilderInterface;
+use Phalcon\Security;
 
 class AdminUserController extends AdminControllerBase
 {
@@ -121,6 +124,11 @@ class AdminUserController extends AdminControllerBase
 			{
 				$validData['params']['avatar'] = 'upload/u/' . $this->model->id . '/' . $name;
 			}
+		}
+
+		if (!empty($validData['password']))
+		{
+			$validData['password'] = Service::security()->hash($validData['password']);
 		}
 	}
 
