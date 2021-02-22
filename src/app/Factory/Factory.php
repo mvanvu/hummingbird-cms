@@ -118,7 +118,7 @@ class Factory
 			$installDistFile = PUBLIC_PATH . '/install.php-dist';
 			$installFile     = PUBLIC_PATH . '/install.php';
 
-			if (is_file($installDistFile) && !is_file($installDistFile))
+			if (is_file($installDistFile) && !is_file($installFile))
 			{
 				rename($installDistFile, $installFile);
 			}
@@ -140,6 +140,6 @@ class Factory
 			}
 		}
 
-		return new Registry(BASE_PATH . '/config.php');
+		return Registry::create(BASE_PATH . '/config.php');
 	}
 }
