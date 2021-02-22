@@ -128,13 +128,13 @@ class Event
 		return static::getPlugins()[$group] ?? [];
 	}
 
-	public static function exists($group, $plugin = null): bool
+	public static function exists($group, string $plugin = null): bool
 	{
 		$plugins = static::getPlugins();
 
 		if (isset($plugins[$group]))
 		{
-			return null === $plugin || (is_string($plugin) && isset($plugins[$group][$plugin]));
+			return null === $plugin || isset($plugins[$group][$plugin]);
 		}
 
 		return false;
