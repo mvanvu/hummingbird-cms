@@ -22,11 +22,10 @@ The CMS based on Phalcon v4 and UIKit v3
 - Menus
 - Widgets
 - Plugins
-- Mailer
-- Users
-- Roles
-- Templates
-- Custom admin path
+- Mailer (Thanks phpmailer/phpmailer)
+- Users, roles, permissions
+- Templates (support assignment for menus)
+- Custom admin URL
 - ...
 
 ## Core assets
