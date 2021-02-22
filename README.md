@@ -71,7 +71,6 @@ docker-compose up -d
 
 ## Prepare to install
 - Add 127.0.0.1 hummingbird.local to your hosts (/etc/hosts)
-- Rename /src/public/install.php-dist to /src/public/install.php
 - Browse http://hummingbird.local:9000/ and enjoy
 
 ## Development
