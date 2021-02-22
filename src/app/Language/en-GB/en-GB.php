@@ -523,4 +523,5 @@ return [
 	'api-secret-key'                    => 'Api secret key',
 	'api-registration-key-desc'         => 'This is a secret key that will be created once and used in the header API-SECRET-KEY when you call register method from API',
 	'email-as-username'                 => 'Email as username',
+	'install-packages-channel'          => 'Install packages channel',
 ];

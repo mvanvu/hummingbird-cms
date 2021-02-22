@@ -41,6 +41,14 @@ return [
 		'class'   => 'uk-input uk-width-medium',
 	],
 	[
+		'name'    => 'packagesChannel',
+		'type'    => 'Text',
+		'label'   => 'install-packages-channel',
+		'filters' => ['string', 'trim'],
+		'class'   => 'uk-input uk-width-medium',
+		'hint'    => 'https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json',
+	],
+	[
 		'name'  => 'sysSendFromMail',
 		'type'  => 'Email',
 		'label' => 'send-from-mail',

@@ -3,7 +3,7 @@
 namespace App\Mvc\Controller;
 
 use App\Helper\Assets;
-use App\Helper\Constant;
+use App\Helper\Config;
 use App\Helper\Event;
 use App\Helper\FileSystem;
 use App\Helper\Language;
@@ -148,11 +148,17 @@ class AdminPluginController extends AdminControllerBase
 
 	public function getPackagesAction()
 	{
-		$t           = '?' . time();
-		$packageFile = 'https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json' . $t;
-		$packages    = [];
+		$t               = '?' . time();
+		$packagesChannel = Config::get('packagesChannel');
 
-		foreach (json_decode(file_get_contents($packageFile), true) as $url => $title)
+		if (empty($packagesChannel) || !preg_match('/^https?:.+\.json$/', $packagesChannel))
+		{
+			$packagesChannel = 'https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json';
+		}
+
+		$packages = [];
+
+		foreach (json_decode(file_get_contents($packagesChannel . $t), true) as $url => $title)
 		{
 			$package = json_decode(file_get_contents($url . $t), true);
 
@@ -239,7 +245,7 @@ class AdminPluginController extends AdminControllerBase
 
 					if (($name = (string) $manifest->get('name', ''))
 						&& ($group = (string) $manifest->get('group', ''))
-						&& preg_match('/^[0-9]\.[0-9](\.[0-9]{1,2})?$/', $version)
+						&& preg_match('/^[0-9]\.[0-9](\.[0-9]{1,3})?$/', $version)
 						&& preg_match($regex, $group)
 						&& preg_match($regex, $group)
 						&& $manifest->has('author')

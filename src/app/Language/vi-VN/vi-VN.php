@@ -515,4 +515,5 @@ return [
 	'api-secret-key'                    => 'Khóa bảo mật API',
 	'api-registration-key-desc'         => 'Khóa dùng trong header API-SECRET-KEY khi chạy đăng ký người dùng từ API',
 	'email-as-username'                 => 'Đăng nhập bằng email',
+	'install-packages-channel'          => 'URL gói cài đặt',
 ];
