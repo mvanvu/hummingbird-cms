@@ -26,9 +26,8 @@
                 <div class="uk-width-auto">
                     <a class="uk-button uk-button-text uk-button-small btn-install"
                        href="{{ package['source'] }}">
-                        {% set plugin = helper('Event::getPlugin', package['group'], package['name']) %}
-                        {% if plugin %}
-                            {% set plgConfig = helper('Event::createConfig', plugin) %}
+                        {% if plugins[package['group']][package['name']] is defined %}
+                            {% set plgConfig = helper('Event::createConfig', plugins[package['group']][package['name']]) %}
                             {% if version_compare(package['version'], plgConfig.get('manifest.version'), 'gt') %}
                                 <span class="uk-text-warning">
                                     {{ icon('cloud-download') ~ '&nbsp;' ~ _('update') ~ '&nbsp;' ~ _('version-s', ['version': package['version']]) }}

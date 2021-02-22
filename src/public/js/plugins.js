@@ -102,17 +102,12 @@ _$.ready(function ($) {
         }
     });
 
-    installModal.on('shown', function () {
-        if (!installModal.hasClass('loaded')) {
-            installModal.addClass('loaded');
-            $.http.get($hb.uri.base + '/plugin/get-packages', function (html) {
-                installModal.find('.uk-modal-body').html(html);
-            });
-        }
-    });
-
     $('a.toolbar-installation-packages').on('click', function (e) {
         e.preventDefault();
         UIkit.modal(installModal.element).show();
+    });
+
+    $.http.get($hb.uri.base + '/plugin/get-packages', function (html) {
+        installModal.find('.uk-modal-body').html(html);
     });
 });

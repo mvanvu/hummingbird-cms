@@ -157,6 +157,7 @@ class AdminPluginController extends AdminControllerBase
 		}
 
 		$packages = [];
+		$plugins  = [];
 
 		foreach (json_decode(file_get_contents($packagesChannel . $t), true) as $url => $title)
 		{
@@ -168,11 +169,17 @@ class AdminPluginController extends AdminControllerBase
 			}
 		}
 
+		foreach (Plugin::find() as $plugin)
+		{
+			$plugins[$plugin->group][$plugin->name] = $plugin;
+		}
+
 		return $this->response->setJsonContent(
 			$this->view->getPartial(
 				'Plugin/Packages',
 				[
 					'packages' => $packages,
+					'plugins'  => $plugins,
 					'language' => Language::getActiveCode(),
 				]
 			)
