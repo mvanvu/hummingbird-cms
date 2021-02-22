@@ -2,7 +2,6 @@
 
 namespace App\Mvc\Controller;
 
-use App\Factory\Factory;
 use App\Helper\Cookie;
 use App\Helper\FileSystem;
 use App\Helper\Language;
@@ -14,7 +13,6 @@ use App\Mvc\Model\Role;
 use App\Mvc\Model\User;
 use MaiVu\Php\Form\FormsManager;
 use Phalcon\Mvc\Model\Query\BuilderInterface;
-use Phalcon\Security;
 
 class AdminUserController extends AdminControllerBase
 {
