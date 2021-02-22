@@ -28,6 +28,11 @@ The CMS based on Phalcon v4 and UIKit v3
 - Custom admin URL
 - ...
 
+## Install packages channel
+- Support live install plugin from the packages channel
+- Default install channel: https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json
+- Also, support custom packages channel URL from the back-end system configuration
+
 ## Core assets
 - Mini query js (official)
 - UIkit v3.6.16
