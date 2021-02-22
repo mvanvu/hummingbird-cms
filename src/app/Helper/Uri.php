@@ -394,22 +394,24 @@ class Uri
 		return $this->vars;
 	}
 
-	public static function home()
+	public static function back()
 	{
-		return static::route('/');
-	}
-
-	public static function route($baseUri = '', $query = false, $full = false)
-	{
-		$baseUri = static::clean($baseUri);
-		static $routes = [];
-
-		if (!isset($routes[$baseUri]))
+		if ($referer = Service::request()->getServer('HTTP_REFERER'))
 		{
-			$routes[$baseUri] = static::getInstance(['uri' => $baseUri]);
+			$uri = Uri::fromUrl($referer);
+
+			if ($uri->isInternal())
+			{
+				$redirectUri = $uri->toString(true);
+			}
 		}
 
-		return $routes[$baseUri]->toString($query, $full);
+		return Uri::redirect($redirectUri ?? Uri::home());
+	}
+
+	public function isInternal()
+	{
+		return $this->getVar('client') !== null && $this->getVar('host') === static::getHost();
 	}
 
 	public static function redirect($url, $status = 302)
@@ -435,6 +437,24 @@ HTML;
 		}
 
 		return $response->redirect($url, true, $status)->send();
+	}
+
+	public static function home()
+	{
+		return static::route('/');
+	}
+
+	public static function route($baseUri = '', $query = false, $full = false)
+	{
+		$baseUri = static::clean($baseUri);
+		static $routes = [];
+
+		if (!isset($routes[$baseUri]))
+		{
+			$routes[$baseUri] = static::getInstance(['uri' => $baseUri]);
+		}
+
+		return $routes[$baseUri]->toString($query, $full);
 	}
 
 	public function setVar($name, $value)
@@ -479,11 +499,6 @@ HTML;
 		$this->vars['query'][$name] = $value;
 
 		return $this;
-	}
-
-	public function isInternal()
-	{
-		return $this->getVar('client') !== null && $this->getVar('host') === static::getHost();
 	}
 
 	public function __toString()

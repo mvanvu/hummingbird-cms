@@ -33,20 +33,8 @@ class System extends Plugin
 				exit(0);
 			}
 
-			$redirectUri = Uri::home();
-
-			if ($referer = $request->getServer('HTTP_REFERER'))
-			{
-				$uri = Uri::fromUrl($referer);
-
-				if ($uri->isInternal())
-				{
-					$redirectUri = $uri->toString(true);
-				}
-			}
-
 			Service::flashSession()->warning(Text::_('invalid-token-notice'));
-			Uri::redirect($redirectUri);
+			Uri::back();
 
 			return false;
 		}
