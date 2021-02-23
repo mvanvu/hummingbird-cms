@@ -58,6 +58,7 @@ class Router
 				],
 				['GET', 'DELETE']
 			);
+
 			Event::trigger('onInitRouter', [$router], ['Cms']);
 		}
 

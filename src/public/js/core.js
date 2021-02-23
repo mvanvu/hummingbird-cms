@@ -81,6 +81,7 @@ var cmsCore = $hb = window.cmsCore || {
             }
 
             window.hbSocketQueues = window.hbSocketQueues || [];
+
             try {
                 sok.instance = new WebSocket(url);
                 sok.instance.addEventListener('open', function () {
@@ -101,10 +102,15 @@ var cmsCore = $hb = window.cmsCore || {
                     }
                 });
 
-                options.params.headers = {
-                    Authorization: _$.cookie('PHPSESSID'),
-                    referer: document.location.href,
-                };
+                options.params.headers = options.params.headers || {};
+
+                if (options.params.headers.Authorization === undefined) {
+                    options.params.headers.Authorization = _$.cookie('PHPSESSID');
+                }
+
+                if (options.params.headers.referer === undefined) {
+                    options.params.headers.referer = document.location.href;
+                }
 
                 sok.send = function (data, params) {
                     params = Object.assign(options.params, params || {});

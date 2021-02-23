@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Helper\Config;
 use App\Helper\Constant;
+use App\Helper\Event;
 use App\Helper\Language;
 use App\Helper\Text;
 use App\Loader;
@@ -106,6 +107,9 @@ class Factory
 			Form::setFieldTranslator(function (string $text, array $placeHolders = []) {
 				return Text::_($text, $placeHolders);
 			});
+
+			// Global event
+			Event::trigger('onBootApplication', [static::$application]);
 		}
 
 		return static::$application;

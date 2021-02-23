@@ -8,6 +8,7 @@ src/app/Tmpl/Site/*
 src/app/Plugin/Cms/Backup/*
 src/app/Plugin/Cms/Post/*
 src/app/Plugin/Cms/SocialLogin/*
+src/app/Plugin/Socket/*
 src/public/upload/*
 src/config.php
 src/composer.phar

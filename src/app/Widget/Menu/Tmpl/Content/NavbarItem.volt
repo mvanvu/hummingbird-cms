@@ -31,7 +31,8 @@
 
     {% set itemContent = itemContent ~ closed %}
     {% set itemContent = itemContent ~ renderer.getPartial('Content/NavbarSub', ['items': children, 'level': level]) %}
-
+{% else %}
+    {% set itemContent = itemContent ~ closed %}
 {% endif %}
 
 <li class="{{ itemClass }}">

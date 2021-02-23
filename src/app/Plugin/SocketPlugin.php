@@ -8,6 +8,7 @@ use App\Helper\State;
 use App\Helper\User;
 use App\Mvc\Model\SocketData;
 use App\Mvc\Model\User as UserModel;
+use App\Traits\Hooker;
 use Exception;
 use MaiVu\Php\Registry;
 use Ratchet\App as SocketApp;
@@ -56,6 +57,8 @@ class SocketPlugin extends Plugin implements MessageComponentInterface
 	 */
 
 	protected $storeContext = '';
+
+	use Hooker;
 
 	final public function onBootSocket(SocketApplication $app)
 	{
@@ -133,11 +136,11 @@ class SocketPlugin extends Plugin implements MessageComponentInterface
 			}
 
 			$this->client = $client;
-			$this->message();
+			$this->callback('message');
 
 			if ($from->resourceId != $client->resourceId)
 			{
-				$this->broadcast();
+				$this->callback('broadcast');
 			}
 		}
 
@@ -145,16 +148,6 @@ class SocketPlugin extends Plugin implements MessageComponentInterface
 		{
 			$this->store();
 		}
-	}
-
-	protected function message()
-	{
-
-	}
-
-	protected function broadcast()
-	{
-
 	}
 
 	protected function store()
