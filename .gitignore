@@ -10,6 +10,7 @@ src/app/Plugin/Cms/*
 !src/app/Plugin/Cms/System/*
 src/app/Plugin/Api/*
 src/app/Plugin/Cli/*
+src/app/Plugin/Socket/*
 src/public/upload/*
 src/config.php
 src/composer.phar
