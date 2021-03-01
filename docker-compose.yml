@@ -13,8 +13,6 @@ services:
       - 2053:2053
     depends_on:
       - mysql
-    extra_hosts:
-      - hummingbird.local:127.0.0.1
 
   mysql:
     image: mysql:5.7.9

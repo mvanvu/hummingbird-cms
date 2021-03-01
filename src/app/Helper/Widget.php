@@ -12,20 +12,33 @@ class Widget
 	/** @var array */
 	protected static $widgets = null;
 
+	protected static $extraPaths = [];
+
+	public static function setExtraPath(string $path): array
+	{
+		$path = FileSystem::cleanPath($path);
+
+		if (!in_array($path, static::$extraPaths) && is_dir($path))
+		{
+			static::$extraPaths[] = $path;
+		}
+
+		return static::$extraPaths;
+	}
+
 	public static function renderPosition($position, $wrapper = null)
 	{
-		$results     = '';
-		$widgetItems = static::getWidgetItems();
+		$results = [];
 
-		if (isset($widgetItems[$position]))
+		if ($widgetItems = (static::getWidgetItems()[$position] ?? null))
 		{
 			foreach ($widgetItems[$position] as $widget)
 			{
-				$results .= static::render($widget, $wrapper) . PHP_EOL;
+				$results[] = static::render($widget, $wrapper);
 			}
 		}
 
-		return rtrim($results, PHP_EOL);
+		return implode(PHP_EOL, $results);
 	}
 
 	public static function getWidgetItems()
@@ -83,28 +96,22 @@ class Widget
 		if (null === static::$widgets)
 		{
 			static::$widgets = [];
-			$widgetPaths     = [
-				Template::getTemplatePath() . '/Widget',
-				WIDGET_PATH,
-			];
+			$widgetPaths     = [];
+			$tmplPath        = Template::getTemplatePath() . '/Widget';
 
-			if ($group = Event::getGroup('Cms'))
+			if (is_dir($tmplPath))
 			{
-				foreach ($group as $plugin)
-				{
-					$widgetPaths[] = PLUGIN_PATH . '/Cms/' . $plugin->name . '/Widget';
-				}
+				$widgetPaths[] = $tmplPath;
 			}
 
-			foreach ($widgetPaths as $widgetPath)
+			$widgetPaths[] = WIDGET_PATH;
+
+			foreach (array_merge($widgetPaths, static::$extraPaths) as $widgetPath)
 			{
-				if (is_dir($widgetPath))
+				foreach (FileSystem::scanDirs($widgetPath) as $widgetDir)
 				{
-					foreach (FileSystem::scanDirs($widgetPath) as $widgetDir)
-					{
-						(new Loader)->registerNamespaces([Constant::NAMESPACE_WIDGET => $widgetDir], true)->register();
-						static::appendWidget($widgetDir);
-					}
+					(new Loader)->registerNamespaces([Constant::NAMESPACE_WIDGET => $widgetDir], true)->register();
+					static::appendWidget($widgetDir);
 				}
 			}
 		}
@@ -120,10 +127,7 @@ class Widget
 
 		if (class_exists($widgetClass) && is_file($configFile))
 		{
-			$widgetConfig = new Registry;
-			$widgetConfig->set('isCmsCore', in_array($widgetClass, Config::get('core.widgets', [])));
-			$widgetConfig->set('manifest', $widgetConfig->parse($configFile));
-			static::$widgets[$widgetClass] = $widgetConfig;
+			static::$widgets[$widgetClass] = Registry::create()->set('manifest', Registry::parseData($configFile));
 		}
 	}
 

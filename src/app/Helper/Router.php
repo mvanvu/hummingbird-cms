@@ -6,7 +6,7 @@ use Phalcon\Mvc\Router as PhalconRouter;
 
 class Router
 {
-	public static function getInstance()
+	public static function getInstance(): PhalconRouter
 	{
 		static $router = null;
 
@@ -58,8 +58,6 @@ class Router
 				],
 				['GET', 'DELETE']
 			);
-
-			Event::trigger('onInitRouter', [$router], ['Cms']);
 		}
 
 		return $router;

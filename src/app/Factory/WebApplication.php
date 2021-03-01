@@ -21,6 +21,7 @@ class WebApplication extends Application
 
 		try
 		{
+			// Global event
 			EventHelper::trigger('onBootCms', [$this], ['Cms']);
 			Template::initialize();
 

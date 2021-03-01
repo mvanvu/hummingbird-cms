@@ -7,6 +7,7 @@ use App\Helper\Constant;
 use App\Helper\Event;
 use App\Helper\Language;
 use App\Helper\Text;
+use App\Helper\Uri;
 use App\Loader;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Registry;
@@ -108,7 +109,6 @@ class Factory
 				return Text::_($text, $placeHolders);
 			});
 
-			// Global event
 			Event::trigger('onBootApplication', [static::$application]);
 		}
 
@@ -129,14 +129,7 @@ class Factory
 
 			if (is_file($installFile))
 			{
-				$protocol = 'http';
-
-				if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-				{
-					$protocol .= 's';
-				}
-
-				header('location: ' . $protocol . '://' . $_SERVER['HTTP_HOST'] . '/install.php');
+				header('location: ' . Uri::getHost() . '/install.php');
 			}
 			else
 			{

@@ -32,6 +32,11 @@ class CliApplication extends AbstractApplication
 	{
 		try
 		{
+			if (!$this->console->hasArgument('skip-plugins'))
+			{
+				Event::trigger('onBootCli', [$this], ['Cli']);
+			}
+
 			if ($queueJobId = $this->console->getArgument('queueJobId'))
 			{
 				if ($queueJobId === 'all')
@@ -43,11 +48,6 @@ class CliApplication extends AbstractApplication
 					/** @var QueueJob $queueJob */
 					Queue::executeJob($queueJob);
 				}
-			}
-
-			if (!$this->console->hasArgument('skip-plugins'))
-			{
-				Event::trigger('onBootCli', [$this], ['Cli']);
 			}
 		}
 		catch (Throwable $throwable)

@@ -77,6 +77,14 @@ RUN php zephir.phar fullclean && php zephir.phar build
 RUN echo "extension=phalcon.so" >> /etc/php/7.4/cli/php.ini
 RUN echo "extension=phalcon.so" >> /etc/php/7.4/fpm/php.ini
 
+# Install Swoole for WebSocket
+WORKDIR /
+RUN wget https://github.com/swoole/swoole-src/archive/v4.6.3.tar.gz && tar -zxvf v4.6.3.tar.gz
+WORKDIR swoole-src-4.6.3
+RUN phpize && ./configure --enable-openssl --enable-sockets && make && make install
+RUN echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini
+RUN echo "extension=swoole.so" >> /etc/php/7.4/fpm/php.ini
+
 WORKDIR /
 # Composer
 # RUN wget -qO- https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
@@ -87,7 +95,6 @@ RUN ln -s /etc/nginx/sites-available/hummingbird.local /etc/nginx/sites-enabled
 RUN nginx -t
 RUN service nginx restart
 RUN service php7.4-fpm restart
-
 VOLUME /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80

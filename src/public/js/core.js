@@ -44,6 +44,7 @@ var cmsCore = $hb = window.cmsCore || {
         create: function (context, options) {
             var sok = {
                 instance: null,
+                options: {},
                 send: function () {
                 },
             };
@@ -61,7 +62,7 @@ var cmsCore = $hb = window.cmsCore || {
                 host: location.host,
                 port: 2053, // Default port which supports the both Cloudflare and localhost
                 ssl: location.protocol === 'https:',
-                path: '',
+                plugin: '',
                 params: {},
                 onOpen: null,
                 onMessage: null,
@@ -69,11 +70,8 @@ var cmsCore = $hb = window.cmsCore || {
                 onClose: null,
             }, options || {});
 
-            if (location.origin.match(/:[0-9]+$/g)) {
-                options.host = 'localhost';
-            }
-
-            var url = (options.ssl ? 'wss' : 'ws') + '://' + options.host + ':' + options.port.toString() + '/websocket/' + options.path,
+            options.host = options.host.replace(/:[0-9]+$/g, '');
+            var url = (options.ssl ? 'wss' : 'ws') + '://' + options.host + ':' + options.port.toString() + '/websocket/' + options.plugin,
                 token = document.head.querySelector('meta[name="csrf"]');
 
             if (token) {
@@ -83,15 +81,25 @@ var cmsCore = $hb = window.cmsCore || {
             window.hbSocketQueues = window.hbSocketQueues || [];
 
             try {
+                sok.options = options;
                 sok.instance = new WebSocket(url);
                 sok.instance.addEventListener('open', function () {
                     if (window.hbSocketQueues.length) {
                         for (var i = 0, n = window.hbSocketQueues.length; i < n; i++) {
                             sok.instance.send(window.hbSocketQueues[i]);
-                            window.hbSocketQueues[i].splice(i, 1);
+                            window.hbSocketQueues.splice(i, 1);
                         }
                     }
                 });
+
+                if (typeof options.onClose !== 'function') {
+                    options.onClose = function () {
+                        console.log('Socket is closed. Reconnect will be attempted in 3 seconds...');
+                        setTimeout(function() {
+                            $hb.socket.create(context, options);
+                        }, 3000);
+                    };
+                }
 
                 ['Open', 'Message', 'Error', 'Close'].forEach(function (listener) {
                     var callBack = 'on' + listener;
@@ -102,25 +110,17 @@ var cmsCore = $hb = window.cmsCore || {
                     }
                 });
 
-                options.params.headers = options.params.headers || {};
-
-                if (options.params.headers.Authorization === undefined) {
-                    options.params.headers.Authorization = _$.cookie('PHPSESSID');
-                }
-
-                if (options.params.headers.referer === undefined) {
-                    options.params.headers.referer = document.location.href;
-                }
-
-                sok.send = function (data, params) {
-                    params = Object.assign(options.params, params || {});
-                    params.message = data;
-                    params = JSON.stringify(params);
+                sok.send = function (message, params) {
+                    var data = JSON.stringify(
+                        Object.assign({
+                            message: message
+                        }, params || {})
+                    );
 
                     if (sok.instance.readyState === 1) {
-                        sok.instance.send(params);
+                        sok.instance.send(data);
                     } else {
-                        window.hbSocketQueues.push(params);
+                        window.hbSocketQueues.push(data);
                     }
                 };
             } catch (err) {

@@ -23,9 +23,7 @@ class LanguageSwitcher extends Widget
 				$code = $language->get('locale.code');
 				$sef  = $language->get('locale.sef');
 
-				if (($translations = $displayUcmItem->getTranslations($code))
-					&& !empty($translations['route'])
-				)
+				if (($translations = $displayUcmItem->getTranslations($code)) && !empty($translations['route']))
 				{
 					$routes[$code] = Uri::getInstance(['uri' => $translations['route'], 'language' => $sef]);
 				}

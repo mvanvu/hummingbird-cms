@@ -180,7 +180,7 @@ class Volt
 				return 'implode(PHP_EOL, ' . $resolvedArgs . ')';
 
 			case 'void':
-				return 'App\\Helper\\Volt::voidFilter(' . $resolvedArgs . ')';
+				return Volt::class . '::voidFilter(' . $resolvedArgs . ')';
 
 			default:
 

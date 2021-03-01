@@ -53,7 +53,7 @@ class State
 
 	public static function getById($sessionId): Registry
 	{
-		$returnData  = new Registry;
+		$returnData  = Registry::create();
 		$sessionData = Service::session()->getAdapter()->read($sessionId);
 
 		if (empty($sessionData))

@@ -11,14 +11,14 @@ class Event
 	/**
 	 * @var array
 	 */
-	protected static $events = [];
+	protected static $handlers = [];
 
 	/**
 	 * @var array
 	 */
 	protected static $plugins = null;
 
-	public static function trigger($eventName, $arguments = [], $groups = null)
+	public static function trigger(string $eventName, array $arguments = [], $groups = null)
 	{
 		$results = [];
 		$plugins = static::getPlugins();
@@ -41,7 +41,7 @@ class Event
 				 * @var  PluginModel $config
 				 * @var  Plugin      $handler
 				 */
-				foreach ($plugins[$group] as $class => $plugin)
+				foreach ($plugins[$group] as $name => $plugin)
 				{
 					$handler = static::getHandler($plugin);
 
@@ -49,11 +49,11 @@ class Event
 					{
 						if ($handler->isDetached())
 						{
-							unset(static::$plugins[$group][$class]);
+							unset(static::$plugins[$group][$name]);
 						}
-						elseif (is_callable([$handler, $eventName]))
+						else
 						{
-							$results[] = call_user_func_array([$handler, $eventName], $arguments);
+							$results[] = $handler->callback($eventName, $arguments);
 						}
 					}
 				}
@@ -71,13 +71,14 @@ class Event
 			{
 				static::loadPluginLanguage($entity->group, $entity->name);
 				static::$plugins[$entity->group][$entity->name] = $entity;
+				Widget::setExtraPath(PLUGIN_PATH . '/' . $entity->group . '/' . $entity->name . '/Widget');
 			}
 		}
 
 		return static::$plugins;
 	}
 
-	public static function loadPluginLanguage($group, $plugin)
+	public static function loadPluginLanguage(string $group, string $plugin)
 	{
 		$langCode = Language::getActiveCode();
 		$langFile = PLUGIN_PATH . '/' . $group . '/' . $plugin . '/app/Language/' . $langCode . '.php';
@@ -90,22 +91,21 @@ class Event
 
 	public static function getHandler(PluginModel $plugin): ?Plugin
 	{
-		static $handlers = [];
 		$class = Constant::getNamespacePlugin($plugin->group, $plugin->name);
 
-		if (!array_key_exists($class, $handlers))
+		if (!array_key_exists($class, static::$handlers))
 		{
 			if (class_exists($class))
 			{
-				$handlers[$class] = new $class(static::createConfig($plugin));
+				static::$handlers[$class] = new $class(static::createConfig($plugin));
 			}
 			else
 			{
-				$handlers[$class] = null;
+				static::$handlers[$class] = null;
 			}
 		}
 
-		return $handlers[$class];
+		return static::$handlers[$class];
 	}
 
 	public static function createConfig(PluginModel $plugin): Registry
@@ -118,23 +118,33 @@ class Event
 		);
 	}
 
+	public static function getHandlerByGroupName(string $group, string $name): ?Plugin
+	{
+		return static::$handlers[Constant::getNamespacePlugin($group, $name)] ?? null;
+	}
+
+	public static function getHandlerByClass(string $class): ?Plugin
+	{
+		return static::$handlers[$class] ?? null;
+	}
+
 	public static function getPlugin(string $group, string $name): ?PluginModel
 	{
 		return static::getPlugins()[$group][$name] ?? null;
 	}
 
-	public static function getGroup($group)
+	public static function getGroup(string $group)
 	{
 		return static::getPlugins()[$group] ?? [];
 	}
 
-	public static function exists($group, string $plugin = null): bool
+	public static function exists(string $group, string $name = null): bool
 	{
 		$plugins = static::getPlugins();
 
 		if (isset($plugins[$group]))
 		{
-			return null === $plugin || isset($plugins[$group][$plugin]);
+			return null === $name || isset($plugins[$group][$name]);
 		}
 
 		return false;

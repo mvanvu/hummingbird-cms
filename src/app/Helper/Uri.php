@@ -457,6 +457,14 @@ HTML;
 		return $routes[$baseUri]->toString($query, $full);
 	}
 
+	public static function is(string $stringPath): bool
+	{
+		$stringPath  = ltrim(rawurldecode($stringPath), '/');
+		$currentPath = ltrim(Uri::getActive(true), '/');
+
+		return $stringPath === $currentPath || preg_match('#^' . str_replace('\*', '.*', preg_quote($stringPath, '#')) . '\z#u', $currentPath) === 1;
+	}
+
 	public function setVar($name, $value)
 	{
 		$this->vars[$name] = $value;

@@ -25,11 +25,10 @@ class ModelPermission extends PhalconModel
 			$this->permitPkgName = lcfirst(array_pop($className));
 		}
 
-		$user    = Auth::getActive();
-		$isOwner = property_exists($this, 'createdBy') && $this->createdBy == $user->id;
+		$isOwner = property_exists($this, 'createdBy') && $this->createdBy == Auth::id();
 
-		if ($user->authorise($this->permitPkgName . '.' . $action)
-			|| ($isOwner && $user->authorise($this->permitPkgName . '.manageOwn'))
+		if (Auth::authorise($this->permitPkgName . '.' . $action)
+			|| ($isOwner && Auth::authorise($this->permitPkgName . '.manageOwn'))
 		)
 		{
 			return true;

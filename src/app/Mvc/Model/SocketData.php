@@ -2,13 +2,11 @@
 
 namespace App\Mvc\Model;
 
-use Phalcon\Mvc\Model;
-
-class SocketData extends Model
+class SocketData extends ModelBase
 {
 	/**
 	 *
-	 * @var string
+	 * @var integer
 	 */
 	public $id;
 
@@ -17,6 +15,12 @@ class SocketData extends Model
 	 * @var integer
 	 */
 	public $userId;
+
+	/**
+	 *
+	 * @var string
+	 */
+	public $context;
 
 	/**
 	 *
