@@ -3,8 +3,6 @@
 namespace App\Mvc\Model;
 
 use App\Factory\Factory;
-use App\Helper\Database;
-use App\Helper\FileSystem;
 use App\Helper\Service;
 use App\Helper\State;
 use App\Helper\Text;
@@ -128,11 +126,6 @@ class User extends ModelBase
 
 	protected $standardMetadata = true;
 
-	/**
-	 * Validations and business logic
-	 *
-	 * @return boolean
-	 */
 	public function validation()
 	{
 		foreach (['username', 'email'] as $field)
@@ -370,6 +363,11 @@ class User extends ModelBase
 			{
 				$this->secret = $security->getRandom()->uuid();
 			}
+		}
+
+		if (empty($this->roleId) && ($role = Role::findFirst('type = \'R\'')))
+		{
+			$this->roleId = (int) $role->id;
 		}
 
 		if ($result = parent::save())

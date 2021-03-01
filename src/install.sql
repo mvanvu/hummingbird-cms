@@ -467,7 +467,7 @@ CREATE TABLE `#__users`
     `email`           varchar(255) COLLATE utf8mb4_unicode_ci   NOT NULL,
     `username`        varchar(150) COLLATE utf8mb4_unicode_ci   NOT NULL,
     `password`        varchar(225) COLLATE utf8mb4_unicode_ci   NOT NULL,
-    `roleId`          int(10) unsigned                          NOT NULL DEFAULT '3',
+    `roleId`          int(10) unsigned                          NOT NULL,
     `active`          enum ('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'N',
     `lastVisitedDate` datetime                                           DEFAULT NULL,
     `createdAt`       datetime                                  NOT NULL,
