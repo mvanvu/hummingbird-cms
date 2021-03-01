@@ -95,7 +95,7 @@ var cmsCore = $hb = window.cmsCore || {
                 if (typeof options.onClose !== 'function') {
                     options.onClose = function () {
                         console.log('Socket is closed. Reconnect will be attempted in 3 seconds...');
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $hb.socket.create(context, options);
                         }, 3000);
                     };
@@ -110,17 +110,18 @@ var cmsCore = $hb = window.cmsCore || {
                     }
                 });
 
-                sok.send = function (message, params) {
-                    var data = JSON.stringify(
-                        Object.assign({
-                            message: message
-                        }, params || {})
-                    );
+                sok.send = function (data) {
 
-                    if (sok.instance.readyState === 1) {
-                        sok.instance.send(data);
-                    } else {
-                        window.hbSocketQueues.push(data);
+                    if (typeof data === 'object') {
+                        data = JSON.stringify(data);
+                    }
+
+                    if (typeof data === 'string') {
+                        if (sok.instance.readyState === 1) {
+                            sok.instance.send(data);
+                        } else {
+                            window.hbSocketQueues.push(data);
+                        }
                     }
                 };
             } catch (err) {
