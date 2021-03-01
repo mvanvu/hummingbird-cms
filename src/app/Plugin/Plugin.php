@@ -63,27 +63,9 @@ class Plugin
 
 	final public function addAssets($assets): Plugin
 	{
-		static::addPublicAssets($assets, $this->config->get('manifest.group'), $this->config->get('manifest.name'));
+		Assets::addFromPlugin($assets, $this->config->get('manifest.group'), $this->config->get('manifest.name'));
 
 		return $this;
-	}
-
-	final public static function addPublicAssets($assets, string $group, string $name)
-	{
-		settype($assets, 'array');
-		$prefix = ROOT_URI . '/resources/' . $group . '-' . $name . '/public';
-
-		foreach ($assets as &$asset)
-		{
-			$asset = trim($asset, '/\\\\.');
-
-			if (strpos($asset, $prefix) !== 0)
-			{
-				$asset = $prefix . '/' . $asset;
-			}
-		}
-
-		Assets::add($assets);
 	}
 
 	public function onRegisterMenus(&$menus)

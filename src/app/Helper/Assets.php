@@ -97,4 +97,22 @@ class Assets
 			static::add('js/tab-state.js');
 		}
 	}
+
+	public static function addFromPlugin($assets, string $group, string $name)
+	{
+		settype($assets, 'array');
+		$prefix = ROOT_URI . '/resources/' . $group . '-' . $name . '/public';
+
+		foreach ($assets as &$asset)
+		{
+			$asset = trim($asset, '/\\\\.');
+
+			if (strpos($asset, $prefix) !== 0)
+			{
+				$asset = $prefix . '/' . $asset;
+			}
+		}
+
+		static::add($assets);
+	}
 }

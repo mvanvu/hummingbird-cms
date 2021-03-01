@@ -9,6 +9,7 @@ The CMS based on Phalcon v4 and UIKit v3
 - PHP ZIP extension
 - PHP mod-rewrite
 - <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx" rel="nofollow">Composer</a>
+- <a href="https://github.com/swoole/swoole-src">Swoole</a> (optional for Socket application)
 
 ## Included
 - <a href="https://github.com/mvanvu/php-registry">Php-registry</a>
@@ -80,7 +81,7 @@ docker-compose up -d
 ## Start to install
 Browse this URL http://localhost:9000/ and enjoy
 
-## Official plugins ({group} - {name}: {URL})
+## Official plugins ([group] - [name]: [URL])
 - Cms - Backup: https://github.com/mvanvu/hummingbird-cms-backup
 - Socket - ChatSample: https://github.com/mvanvu/hummingbird-cms-chatsample
 - Cms - Post: https://github.com/mvanvu/hummingbird-cms-post
