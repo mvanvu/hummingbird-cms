@@ -80,6 +80,8 @@ docker-compose up -d
 ## Start to install
 Browse this URL http://localhost:9000/ and enjoy
 
-## Development
-- Discover the Post plugin https://github.com/mvanvu/hummingbird-cms-post to know how to make a hummingbird plugin
-- Discover the ChatSample plugin https://github.com/mvanvu/hummingbird-cms-chatsample to know how to make a hummingbird socket plugin
+## Official plugins ({group} - {name}: {URL})
+- Cms - Backup: https://github.com/mvanvu/hummingbird-cms-backup
+- Socket - ChatSample: https://github.com/mvanvu/hummingbird-cms-chatsample
+- Cms - Post: https://github.com/mvanvu/hummingbird-cms-post
+- Cms - SocialLogin: https://github.com/mvanvu/hummingbird-cms-sociallogin
