@@ -5,10 +5,8 @@ src/storages/*
 src/vendor/*
 src/cache/*
 src/app/Tmpl/Site/*
-src/app/Plugin/Cms/Backup/*
-src/app/Plugin/Cms/Post/*
-src/app/Plugin/Cms/SocialLogin/*
-src/app/Plugin/Socket/*
+!src/app/Plugin/Cms/System
+src/app/Plugin/Cms/*
 src/app/Plugin/Api/*
 src/app/Plugin/Cli/*
 src/public/upload/*
