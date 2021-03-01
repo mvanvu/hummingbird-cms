@@ -77,9 +77,8 @@ docker-compose build
 docker-compose up -d
 ```
 
-## Prepare to install
-- Add 127.0.0.1 hummingbird.local to your hosts (/etc/hosts)
-- Browse http://hummingbird.local:9000/ and enjoy
+## Start to install
+Browse this URL http://localhost:9000/ and enjoy
 
 ## Development
 Discover the Post plugin https://github.com/mvanvu/hummingbird-cms-post to know how to make a hummingbird plugin
