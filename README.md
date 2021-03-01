@@ -7,7 +7,6 @@ The CMS based on Phalcon v4 and UIKit v3
 - MySql >= 5.7.9
 - Phalcon >= 4.1.0
 - PHP ZIP extension
-- PHP mod-rewrite
 - <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx" rel="nofollow">Composer</a>
 - <a href="https://github.com/swoole/swoole-src">Swoole</a> (optional for Socket application)
 
