@@ -82,6 +82,6 @@ Browse this URL http://localhost:9000/ and enjoy
 
 ## Official plugins ([group] - [name]: [URL])
 - Cms - Backup: https://github.com/mvanvu/hummingbird-cms-backup
-- Socket - ChatSample: https://github.com/mvanvu/hummingbird-cms-chatsample
 - Cms - Post: https://github.com/mvanvu/hummingbird-cms-post
 - Cms - SocialLogin: https://github.com/mvanvu/hummingbird-cms-sociallogin
+- Socket - ChatSample: https://github.com/mvanvu/hummingbird-cms-chatsample
