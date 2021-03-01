@@ -81,4 +81,5 @@ docker-compose up -d
 Browse this URL http://localhost:9000/ and enjoy
 
 ## Development
-Discover the Post plugin https://github.com/mvanvu/hummingbird-cms-post to know how to make a hummingbird plugin
+- Discover the Post plugin https://github.com/mvanvu/hummingbird-cms-post to know how to make a hummingbird plugin
+- Discover the ChatSample plugin https://github.com/mvanvu/hummingbird-cms-chatsample to know how to make a hummingbird socket plugin
