@@ -459,10 +459,26 @@ HTML;
 
 	public static function is(string $stringPath): bool
 	{
-		$stringPath  = ltrim(rawurldecode($stringPath), '/');
-		$currentPath = ltrim(Uri::getActive(true), '/');
+		$search  = [];
+		$replace = [];
+		preg_match_all('/~([^~]+)~/', $stringPath, $matches);
 
-		return $stringPath === $currentPath || preg_match('#^' . str_replace('\*', '.*', preg_quote($stringPath, '#')) . '\z#u', $currentPath) === 1;
+		if (!empty($matches[1]))
+		{
+			foreach ($matches[1] as $regex)
+			{
+				$search[]  = '~' . preg_quote($regex, '#') . '~';
+				$replace[] = $regex;
+			}
+		}
+
+		$search[]    = '\*';
+		$replace[]   = '.*';
+		$stringPath  = ltrim(rawurldecode($stringPath), '/');
+		$currentPath = ltrim(Uri::getActive()->toString(true), '/');
+		$pattern     = str_replace($search, $replace, preg_quote($stringPath, '#'));
+
+		return $stringPath === $currentPath || preg_match('#^' . $pattern . '\z#u', $currentPath) === 1;
 	}
 
 	public function setVar($name, $value)
