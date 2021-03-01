@@ -32,7 +32,9 @@ The CMS based on Phalcon v4 and UIKit v3
 - Web application
 - Api application
 - Cli application
-- Socket application
+- Socket application 
+  + Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>
+  + <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
 
 ## Install packages channel
 - Support live install plugin from the packages channel
