@@ -5,9 +5,9 @@ src/storages/*
 src/vendor/*
 src/cache/*
 src/app/Tmpl/Site/*
-src/app/Plugin/Cms/*
-!src/app/Plugin/Cms/System
+
 !src/app/Plugin/Cms/System/*
+src/app/Plugin/Cms/*
 src/app/Plugin/Api/*
 src/app/Plugin/Cli/*
 src/public/upload/*
