@@ -10,7 +10,7 @@ class Loader
 	{
 		if (!defined('CMS_VERSION'))
 		{
-			define('CMS_VERSION', '1.0-beta4');
+			define('CMS_VERSION', '1.0-alpha');
 			define('TMP_PATH', BASE_PATH . '/tmp');
 			define('APP_PATH', BASE_PATH . '/app');
 			define('PUBLIC_PATH', BASE_PATH . '/public');

@@ -1,4 +1,4 @@
-# Hummingbird CMS
+# Hummingbird CMS (ALPHA)
 The CMS based on Phalcon v4 and UIKit v3
 
 ## Requirements
