@@ -474,11 +474,13 @@ HTML;
 
 		$search[]    = '\*';
 		$replace[]   = '.*';
+		$search[]    = '\$';
+		$replace[]   = '$';
 		$stringPath  = ltrim(rawurldecode($stringPath), '/');
 		$currentPath = ltrim(Uri::getActive()->toString(true), '/');
 		$pattern     = str_replace($search, $replace, preg_quote($stringPath, '#'));
 
-		return $stringPath === $currentPath || preg_match('#^' . $pattern . '\z#u', $currentPath) === 1;
+		return $stringPath === $currentPath || preg_match('#' . $pattern . '\z#u', $currentPath) === 1;
 	}
 
 	public function setVar($name, $value)

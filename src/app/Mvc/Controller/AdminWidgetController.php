@@ -75,7 +75,6 @@ class AdminWidgetController extends AdminControllerBase
 	{
 		$this->tag->setTitle(Text::_('sys-widgets'));
 		$widgets = WidgetHelper::getWidgets();
-
 		$this->view->setVars(
 			[
 				'widgets'     => $widgets,
@@ -100,9 +99,7 @@ class AdminWidgetController extends AdminControllerBase
 	{
 		if ($this->request->isMethod('DELETE'))
 		{
-			$this->model->delete();
-
-			return $this->response->setJsonContent('OK');
+			return $this->response->setJsonContent($this->model->delete());
 		}
 
 		if ($config = WidgetHelper::getConfig($name))
@@ -120,6 +117,21 @@ class AdminWidgetController extends AdminControllerBase
 								'value'     => null,
 								'class'     => 'uk-input',
 								'filters'   => ['string', 'trim'],
+							],
+							[
+								'name'    => 'menuPattern',
+								'type'    => 'Switcher',
+								'label'   => 'menu-assigns',
+								'value'   => 'Y',
+								'filters' => ['yesNo'],
+							],
+							[
+								'name'        => 'pattern',
+								'type'        => 'Text',
+								'label'       => 'pattern',
+								'description' => 'pattern-desc',
+								'class'       => 'uk-input',
+								'showOn'      => 'menuPattern:Y',
 							],
 						]
 					),

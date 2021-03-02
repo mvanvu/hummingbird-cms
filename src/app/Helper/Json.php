@@ -7,24 +7,22 @@ use Throwable;
 
 class Json
 {
+	/**
+	 * @var ResponseInterface
+	 */
 	protected $response;
 
 	public function __construct(ResponseInterface $response = null)
 	{
-		if (null === $response)
-		{
-			$response = Service::response();
-		}
-
-		$this->response = $response;
+		$this->response = $response ?? Service::response();
 	}
 
-	public static function getInstance(ResponseInterface $response = null)
+	public static function getInstance(ResponseInterface $response = null): Json
 	{
 		return new Json($response);
 	}
 
-	public function response($data, $success = true, $message = null)
+	public function response($data, $success = true, $message = null): ResponseInterface
 	{
 		$jsonData = $this->responseData($data, $success, $message);
 
@@ -35,11 +33,10 @@ class Json
 			return $this->response;
 		}
 
-		return $this->response->setJsonContent($jsonData)
-			->send();
+		return $this->response->setJsonContent($jsonData)->send();
 	}
 
-	public function responseData($data, $success = true, $message = null)
+	public function responseData($data, $success = true, $message = null): array
 	{
 		if ($data instanceof Throwable)
 		{

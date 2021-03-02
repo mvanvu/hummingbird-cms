@@ -32,7 +32,7 @@ class Widget
 
 		if ($widgetItems = (static::getWidgetItems()[$position] ?? null))
 		{
-			foreach ($widgetItems[$position] as $widget)
+			foreach ($widgetItems as $widget)
 			{
 				$results[] = static::render($widget, $wrapper);
 			}
@@ -58,7 +58,8 @@ class Widget
 				]
 			);
 
-			$multilingual = Language::isMultilingual() && Uri::isClient('site');
+			$isSite       = Uri::isClient('site');
+			$multilingual = Language::isMultilingual() && $isSite;
 
 			foreach ($entities as $widget)
 			{
@@ -67,11 +68,20 @@ class Widget
 
 				if ($widgetConfig = static::getConfig($name))
 				{
-					$data = new Registry($widget->data);
+					$data = Registry::create($widget->data);
 
 					if ($multilingual && $translations = $widget->getTranslations())
 					{
 						$data->merge($translations);
+					}
+
+					if ($isSite
+						&& 'Y' === $data->get('menuPattern')
+						&& ($pattern = $data->get('pattern'))
+						&& !Uri::is($pattern)
+					)
+					{
+						continue;
 					}
 
 					$widgetConfig->set('id', $widget->id);
