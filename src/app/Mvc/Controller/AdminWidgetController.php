@@ -121,7 +121,7 @@ class AdminWidgetController extends AdminControllerBase
 							[
 								'name'    => 'menuPattern',
 								'type'    => 'Switcher',
-								'label'   => 'menu-assigns',
+								'label'   => 'uri-assigns',
 								'value'   => 'Y',
 								'filters' => ['yesNo'],
 							],

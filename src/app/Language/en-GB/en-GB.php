@@ -524,7 +524,7 @@ return [
 	'api-registration-key-desc'         => 'This is a secret key that will be created once and used in the header API-SECRET-KEY when you call register method from API',
 	'email-as-username'                 => 'Email as username',
 	'install-packages-channel'          => 'Install packages channel',
-	'menu-assigns'                      => 'Menu assigns',
+	'uri-assigns'                       => 'URI assigns',
 	'pattern'                           => 'Pattern',
 	'pattern-desc'                      => 'For eg:_BR_post/* => start with post/{with or without anything}_BR_post/~[1-9][0-9]*~ => start with post/{with or without integer}...',
 ];
