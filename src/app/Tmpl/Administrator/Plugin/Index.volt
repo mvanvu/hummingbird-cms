@@ -105,7 +105,10 @@
     <div class="uk-modal-dialog">
         <button class="uk-modal-close-default" type="button" uk-close></button>
         <div class="uk-modal-header uk-background-muted">
-            <h2 class="uk-modal-title">{{ _('installation-packages') }}</h2>
+            <div class="uk-modal-title">
+                {{ _('installation-packages') }}
+                <a href="" class="uk-icon-button clean-cache" uk-icon="bolt" uk-tooltip="Clean cache"></a>
+            </div>
         </div>
         <div class="uk-modal-body">
             <div class="uk-flex uk-flex-center">

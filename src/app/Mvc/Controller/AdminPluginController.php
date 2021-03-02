@@ -7,6 +7,7 @@ use App\Helper\Config;
 use App\Helper\Event;
 use App\Helper\FileSystem;
 use App\Helper\Language;
+use App\Helper\State;
 use App\Helper\Text;
 use App\Helper\Toolbar;
 use App\Helper\Uri;
@@ -146,27 +147,47 @@ class AdminPluginController extends AdminControllerBase
 		FileSystem::streamFolder(PLUGIN_PATH . '/' . $plugin->group . '/' . $plugin->name, $plugin->group . '-' . $plugin->name . '.zip');
 	}
 
+	public function cleanCacheAction()
+	{
+		FileSystem::remove(CACHE_PATH . '/admin-plugin-packages-channel.json');
+
+		return $this->getPackagesAction();
+	}
+
 	public function getPackagesAction()
 	{
-		$t               = '?' . time();
-		$packagesChannel = Config::get('packagesChannel');
-
-		if (empty($packagesChannel) || !preg_match('/^https?:.+\.json$/', $packagesChannel))
-		{
-			$packagesChannel = 'https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json';
-		}
-
-		$packages = [];
+		$cache    = State::get('cachePackagesChannel');
 		$plugins  = [];
+		$packages = [];
 
-		foreach (json_decode(file_get_contents($packagesChannel . $t), true) as $url => $title)
+		if (!$cache || !is_file(CACHE_PATH . '/' . $cache))
 		{
-			$package = json_decode(file_get_contents($url . $t), true);
+			$t               = '?' . time();
+			$packagesChannel = Config::get('packagesChannel');
 
-			if (!empty($package['source']))
+			if (empty($packagesChannel) || !preg_match('/^https?:.+\.json$/', $packagesChannel))
 			{
-				$packages[$title] = $package;
+				$packagesChannel = 'https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json';
 			}
+
+			foreach (json_decode(file_get_contents($packagesChannel . $t), true) as $url => $title)
+			{
+				$package = json_decode(file_get_contents($url . $t), true);
+
+				if (!empty($package['source']))
+				{
+					$packages[$title] = $package;
+				}
+			}
+
+			if (FileSystem::write(CACHE_PATH . '/admin-plugin-packages-channel.json', json_encode($packages, JSON_PRETTY_PRINT), true))
+			{
+				State::set('cachePackagesChannel', 'admin-plugin-packages-channel.json');
+			}
+		}
+		elseif (is_file(CACHE_PATH . '/' . $cache))
+		{
+			$packages = json_decode(file_get_contents(CACHE_PATH . '/' . $cache), true) ?: [];
 		}
 
 		foreach (Plugin::find() as $plugin)

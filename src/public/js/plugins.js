@@ -102,6 +102,21 @@ _$.ready(function ($) {
         }
     });
 
+    installModal.find('a.clean-cache').on('click', function (e) {
+        e.preventDefault();
+        var a = $(this);
+        a.addClass('uk-disabled');
+        installModal.find('.uk-modal-body').html('<div class="uk-flex uk-flex-center"><span uk-spinner="ratio: 1.5"></span></div>');
+         $.http.post(
+            $hb.uri.base + '/plugin/clean-cache',
+            {},
+            function (html) {
+                a.removeClass('uk-disabled');
+                installModal.find('.uk-modal-body').html(html);
+            }
+        );
+    });
+
     $('a.toolbar-installation-packages').on('click', function (e) {
         e.preventDefault();
         UIkit.modal(installModal.element).show();

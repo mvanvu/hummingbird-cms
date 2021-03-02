@@ -178,11 +178,16 @@ class FileSystem
 		return preg_match('/\.(?:' . $imageTypes . ')$/i', $fileName);
 	}
 
-	public static function write($file, $buffer)
+	public static function write($file, $buffer, bool $force = false)
 	{
 		if (function_exists('set_time_limit') && function_exists('ini_get'))
 		{
 			@set_time_limit(ini_get('max_execution_time'));
+		}
+
+		if ($force && !is_dir(dirname($file)))
+		{
+			mkdir(dirname($file), 0755, true);
 		}
 
 		return is_int(file_put_contents(static::cleanPath($file), $buffer));
