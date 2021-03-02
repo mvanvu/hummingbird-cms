@@ -43,7 +43,7 @@ The CMS based on Phalcon v4 and UIKit v3
 
 ## Core assets
 - Mini query js (official)
-- UIkit v3.6.16
+- UIkit v3.6.17
 
 # Installation for Development
 ## Clone this repo
