@@ -518,5 +518,5 @@ return [
 	'install-packages-channel'          => 'URL gói cài đặt',
 	'uri-assigns'                       => 'Hiển thị theo link',
 	'pattern'                           => 'Mẫu định dạng (Pattern regex)',
-	'pattern-desc'                      => 'VD:_BR_post/* => URL bắt đầu bằng post/{có hoặc không có tất cả các ký tự bất kỳ}_BR_post/~[1-9][0-9]*~ => URL bắt đầu bằng/{số nguyên dương bất kỳ}...',
+	'pattern-desc'                      => 'VD:_BR_post/* => Link hiện tại bắt đầu bằng post/{có hoặc không có tất cả các ký tự bất kỳ}_BR_post/~[1-9][0-9]*~ => Link hiện tại bắt đầu bằng/{số nguyên dương bất kỳ}...',
 ];

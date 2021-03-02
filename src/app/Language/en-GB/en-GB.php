@@ -526,5 +526,5 @@ return [
 	'install-packages-channel'          => 'Install packages channel',
 	'uri-assigns'                       => 'URI assigns',
 	'pattern'                           => 'Pattern',
-	'pattern-desc'                      => 'For eg:_BR_post/* => start with post/{with or without anything}_BR_post/~[1-9][0-9]*~ => start with post/{with or without integer}...',
+	'pattern-desc'                      => 'For eg:_BR_post/* => current URI start with post/{with or without anything}_BR_post/~[1-9][0-9]*~ => current URI start with post/{with or without integer}...',
 ];
