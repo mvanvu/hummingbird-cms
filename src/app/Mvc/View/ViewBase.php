@@ -30,7 +30,7 @@ class ViewBase extends View
 						mkdir(CACHE_PATH . '/volt', 0777, true);
 					}
 
-					return CACHE_PATH . '/volt' . '/' . str_replace([APP_PATH . '/', '/'], ['', '_'], $templatePath) . '.php';
+					return CACHE_PATH . '/volt/' . str_replace([APP_PATH . '/', '/'], ['', '_'], $templatePath) . '.php';
 				},
 			]
 		);

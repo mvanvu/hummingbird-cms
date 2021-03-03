@@ -107,6 +107,18 @@ class Assets
 		{
 			$asset = trim($asset, '/\\\\.');
 
+			if (!DEVELOPMENT_MODE && false === strpos($asset, '.min.'))
+			{
+				$ext   = FileSystem::getExt($asset);
+				$dir   = dirname($asset);
+				$fName = basename($asset, '.' . $ext);
+
+				if (is_file(PLUGIN_PATH . '/' . $group . '/' . $name . '/public/' . $dir . '/' . $fName . '.min.' . $ext))
+				{
+					$asset = $dir . '/' . $fName . '.min.' . $ext;
+				}
+			}
+
 			if (strpos($asset, $prefix) !== 0)
 			{
 				$asset = $prefix . '/' . $asset;

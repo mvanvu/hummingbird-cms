@@ -25,7 +25,11 @@ class Text
 
 	public static function _($string, array $placeholders = null)
 	{
-		return str_replace(['_EOL_', '\n', '_BR_'], [PHP_EOL, PHP_EOL, '<br/>'], Language::_($string, $placeholders));
+		return str_replace(
+			['_EOL_', '_BR_', '_Q_', '_QQ_'],
+			[PHP_EOL, '<br>', '\'', '"'],
+			Language::_($string, $placeholders)
+		);
 	}
 
 	public static function fetchJsData()
