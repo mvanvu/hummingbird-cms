@@ -180,7 +180,7 @@ class AdminPluginController extends AdminControllerBase
 				}
 			}
 
-			if (FileSystem::write(CACHE_PATH . '/admin-plugin-packages-channel.json', json_encode($packages, JSON_PRETTY_PRINT), true))
+			if (FileSystem::write(CACHE_PATH . '/admin-plugin-packages-channel.json', json_encode($packages), true))
 			{
 				State::set('cachePackagesChannel', 'admin-plugin-packages-channel.json');
 			}
