@@ -63,7 +63,7 @@ WORKDIR /
 # Phalcon v4
 # RUN curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | sudo bash
 # RUN apt-get install -y php7.4-phalcon
-RUN git clone git://github.com/phalcon/php-zephir-parser.git
+RUN git clone git://github.com/zephir-lang/php-zephir-parser.git
 WORKDIR php-zephir-parser
 RUN phpize && ./configure && make && make install
 RUN echo "extension=zephir_parser.so" >> /etc/php/7.4/cli/php.ini
@@ -71,7 +71,8 @@ RUN echo "extension=zephir_parser.so" >> /etc/php/7.4/cli/php.ini
 WORKDIR /
 RUN wget https://github.com/phalcon/cphalcon/archive/v4.1.0.tar.gz && tar -zxvf v4.1.0.tar.gz
 WORKDIR /cphalcon-4.1.0
-RUN wget https://github.com/phalcon/zephir/releases/download/0.12.20/zephir.phar && chmod +x zephir.phar
+
+RUN wget https://github.com/zephir-lang/zephir/releases/download/0.12.20/zephir.phar && chmod +x zephir.phar
 RUN php zephir.phar fullclean && php zephir.phar build
 
 RUN echo "extension=phalcon.so" >> /etc/php/7.4/cli/php.ini
