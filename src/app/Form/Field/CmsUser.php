@@ -13,9 +13,12 @@ class CmsUser extends Select
 
 		foreach (User::find('active = \'Y\'') as $user)
 		{
-			$options[$user->id] = $user->name;
+			$options[] = [
+				'value' => $user->id,
+				'text'  => $user->name,
+			];
 		}
 
-		return $options;
+		return parent::parseOptions($options);
 	}
 }

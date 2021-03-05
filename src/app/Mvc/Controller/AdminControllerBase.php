@@ -18,7 +18,6 @@ use MaiVu\Php\Filter;
 use MaiVu\Php\Form\FormsManager;
 use Phalcon\Db\Enum;
 use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Query\BuilderInterface;
 use Phalcon\Paginator\Adapter\QueryBuilder as Paginator;
 
 class AdminControllerBase extends ControllerBase
@@ -85,11 +84,20 @@ class AdminControllerBase extends ControllerBase
 		{
 			$ucAction         = ucfirst($action);
 			$this->renderView = $this->pickedView . '/' . $ucAction;
-			$viewPath         = TPL_ADMINISTRATOR_PATH . '/' . $this->renderView . '.volt';
+			$found            = false;
 
-			if (!is_file($viewPath))
+			foreach ($this->view->getViewsDir() as $viewDir)
 			{
-				$this->renderView = 'Global/Administrator/' . $ucAction;
+				if (is_file($viewDir . $this->renderView . '.volt'))
+				{
+					$found = true;
+					break;
+				}
+			}
+
+			if (!$found)
+			{
+				$this->renderView = 'Administrator/' . $ucAction;
 			}
 
 			$this->view->pick($this->renderView);

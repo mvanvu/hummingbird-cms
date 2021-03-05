@@ -134,7 +134,7 @@ class ModelBase extends ModelPermission
 
 	public function getFormsManager()
 	{
-		$formsManager = new FormsManager;
+		$formsManager = FormsManager::create();
 		$modelName    = $this->getIgnorePrefixModelName();
 		$basePath     = MVC_PATH . '/Model/Form/' . $modelName . '/Edit';
 

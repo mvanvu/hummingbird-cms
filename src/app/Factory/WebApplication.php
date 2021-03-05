@@ -68,7 +68,9 @@ class WebApplication extends Application
 			if ($willHandle)
 			{
 				EventHelper::trigger('onBeforeHandle', [$this], ['Cms']);
-				$this->handle($requestUri)->send();
+				$response = $this->handle($requestUri);
+				EventHelper::trigger('onBeforeSend', [$this, $response], ['Cms']);
+				$response->send();
 			}
 		}
 		catch (Throwable $e)
