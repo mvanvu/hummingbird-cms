@@ -72,7 +72,7 @@ class Uri
 				'format'   => null,
 			];
 
-			if (strpos($baseUri, ADMIN_URI_PREFIX) === 0)
+			if (strpos($baseUri . '/', ADMIN_URI_PREFIX . '/') === 0)
 			{
 				$results['client'] = 'administrator';
 				$baseUri           = ltrim(preg_replace('/^' . preg_quote(ADMIN_URI_PREFIX, '/') . '/', '', $baseUri), '/');

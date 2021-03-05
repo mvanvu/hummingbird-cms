@@ -226,6 +226,8 @@ return [
 	'config-file-not-found-msg'         => 'The config file not found.',
 	'plugin-has-exists-msg'             => 'The plugin %group% - %name% was already exists.',
 	'plugin-installed-success-msg'      => 'The plugin %group% - %name% installed successfully.',
+	'plugin-install-error-msg'          => 'Can\'t install the plugin %group% - %name%.',
+	'plugin-update-error-msg'           => 'Can\'t update the plugin %group% - %name%.',
 	'plugin-updated-success-msg'        => 'The plugin %group% - %name% updated successfully.',
 	'upload-zip-package'                => 'Upload package (zip)',
 	'admin-plugin-index-title'          => 'Manage plugins',

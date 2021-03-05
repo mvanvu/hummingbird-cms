@@ -302,7 +302,6 @@ class AdminPluginController extends AdminControllerBase
 						{
 							try
 							{
-
 								FileSystem::copy($basePath, $folder, true);
 								$plugin = $plugin ?: PluginModel::getInstance();
 								$plugin->assign(
@@ -337,12 +336,20 @@ class AdminPluginController extends AdminControllerBase
 
 									if ($isNew)
 									{
-										$handler->callback('install', [$plugin]);
+										if (false === $handler->callback('install', [$plugin]))
+										{
+											throw new RuntimeException(Text::_('plugin-install-error-msg', ['group' => $group, 'name' => $name]));
+										}
+
 										$message = Text::_('plugin-installed-success-msg', ['group' => $group, 'name' => $name]);
 									}
 									else
 									{
-										$handler->callback('update', [$plugin]);
+										if (false === $handler->callback('update', [$plugin]))
+										{
+											throw new RuntimeException(Text::_('plugin-update-error-msg', ['group' => $group, 'name' => $name]));
+										}
+
 										$message = Text::_('plugin-updated-success-msg', ['group' => $group, 'name' => $name]);
 									}
 
@@ -353,6 +360,8 @@ class AdminPluginController extends AdminControllerBase
 							catch (Throwable $e)
 							{
 								$message = $e->getMessage();
+								$plugin->delete();
+								FileSystem::remove($folder);
 							}
 						}
 					}

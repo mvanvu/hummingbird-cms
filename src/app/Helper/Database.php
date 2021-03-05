@@ -23,7 +23,7 @@ class Database
 	{
 		if (is_file($sqlFile)
 			&& ($data = file_get_contents($sqlFile))
-			&& ($queries = static::splitSql($sqlFile))
+			&& ($queries = static::splitSql($data))
 		)
 		{
 			try
