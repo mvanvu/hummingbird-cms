@@ -2,10 +2,10 @@
 
 namespace App\Mvc\Controller;
 
-use App\Helper\Date;
-use App\Helper\User;
-use App\Helper\Text;
 use App\Helper\Comment;
+use App\Helper\Date;
+use App\Helper\Text;
+use App\Helper\User;
 use App\Mvc\Model\UcmComment;
 use App\Mvc\Model\UcmItem;
 
@@ -88,7 +88,7 @@ class CommentController extends ControllerBase
 			$commentModel->referenceId      = $referenceId;
 			$commentModel->parentId         = 'reply' === $type ? $parentId : 0;
 			$commentModel->state            = $autoPublish ? 'P' : 'U';
-			$commentModel->createdAt        = Date::getInstance()->toSql();
+			$commentModel->createdAt        = Date::now('UTC')->toSql();
 			$commentModel->createdBy        = $user->getEntity()->id;
 
 			if ($commentModel->save())

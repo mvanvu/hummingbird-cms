@@ -19,7 +19,7 @@ class Loader
 			define('PLUGIN_PATH', APP_PATH . '/Plugin');
 			define('WIDGET_PATH', APP_PATH . '/Widget');
 			define('IS_CLI', php_sapi_name() === 'cli');
-			define('IS_API', isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/api/') === 0);
+			define('IS_API', isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/hb/io/api/') === 0);
 			define('IS_CMS', !IS_API && !IS_CLI);
 
 			if (!IS_CLI)

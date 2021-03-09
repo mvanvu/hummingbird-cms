@@ -71,7 +71,7 @@ var cmsCore = $hb = window.cmsCore || {
             }, options || {});
 
             options.host = options.host.replace(/:[0-9]+$/g, '');
-            var url = (options.ssl ? 'wss' : 'ws') + '://' + options.host + ':' + options.port.toString() + '/websocket/' + options.plugin,
+            var url = (options.ssl ? 'wss' : 'ws') + '://' + options.host + ':' + options.port.toString() + '/hb/io/ws/' + options.plugin,
                 token = document.head.querySelector('meta[name="csrf"]');
 
             if (token) {

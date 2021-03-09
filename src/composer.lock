@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "mvanvu/php-filter",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mvanvu/php-filter.git",
-                "reference": "7b98acf9d6c86de56399d4fbd87f6d267911b9b1"
+                "reference": "ed1601a01add7847efe1d3c63e182ddadb94a238"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mvanvu/php-filter/zipball/7b98acf9d6c86de56399d4fbd87f6d267911b9b1",
-                "reference": "7b98acf9d6c86de56399d4fbd87f6d267911b9b1",
+                "url": "https://api.github.com/repos/mvanvu/php-filter/zipball/ed1601a01add7847efe1d3c63e182ddadb94a238",
+                "reference": "ed1601a01add7847efe1d3c63e182ddadb94a238",
                 "shasum": ""
             },
             "require": {
@@ -50,9 +50,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mvanvu/php-filter/issues",
-                "source": "https://github.com/mvanvu/php-filter/tree/1.0.4"
+                "source": "https://github.com/mvanvu/php-filter/tree/1.0.5"
             },
-            "time": "2021-01-27T09:37:51+00:00"
+            "time": "2021-03-09T14:14:24+00:00"
         },
         {
             "name": "mvanvu/php-form",

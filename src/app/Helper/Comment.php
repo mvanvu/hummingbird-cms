@@ -2,21 +2,28 @@
 
 namespace App\Helper;
 
-use App\Factory\Factory;
 use App\Mvc\Model\UcmComment;
 
 class Comment
 {
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	public $referenceContext;
 
-	/** @var integer */
+	/**
+	 * @var integer
+	 */
 	public $referenceId;
 
-	/** @var integer */
+	/**
+	 * @var integer
+	 */
 	public $totalItems = 0;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	public $items = [];
 
 	public static function getInstance($referenceContext, $referenceId, $offset = 0, $limit = 5): Comment
@@ -26,7 +33,7 @@ class Comment
 
 		if (!isset($instances[$keyHash]))
 		{
-			$referenceClass             = 'App\\Mvc\\Model\\' . UcmItem::prepareContext($referenceContext);
+			$referenceClass             = Constant::NAMESPACE_MODEL . '\\' . UcmItem::prepareContext($referenceContext);
 			$queryBuilder               = Service::modelsManager()
 				->createBuilder()
 				->from(['comment' => UcmComment::class])
@@ -49,7 +56,7 @@ class Comment
 	public static function getTotalItems($referenceContext, $referenceId)
 	{
 		return (int) Service::db()
-			->fetchColumn('SELECT COUNT(id) FROM ' . Factory::getConfig()->get('db.prefix') . 'ucm_comments WHERE referenceContext = :context AND referenceId = :id AND state = :publish AND parentId = 0',
+			->fetchColumn('SELECT COUNT(id) FROM ' . Database::table('ucm_comments') . ' WHERE referenceContext = :context AND referenceId = :id AND state = :publish',
 				[
 					'context' => $referenceContext,
 					'id'      => $referenceId,

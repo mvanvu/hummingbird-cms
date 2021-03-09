@@ -74,6 +74,8 @@ return [
 	'avatar'                            => 'Avatar',
 	'media'                             => 'Media',
 	'comments'                          => 'Comments',
+	'comments-count'                    => 'Comments (%count%)',
+	'comments-count-1'                  => 'Comment (1)',
 	'tags'                              => 'Tags',
 	'settings'                          => 'Settings',
 	'checked-in-item-tip'               => 'Checked-in by %author% at %date%',

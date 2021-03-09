@@ -35,7 +35,7 @@ class Volt
 
 			if (is_file($publicResource))
 			{
-				return ROOT_URI . '/resources/public/' . Template::getTemplate()->id . '/' . $baseFile;
+				return ROOT_URI . '/hb/io/public/' . Template::getTemplate()->id . '/' . $baseFile;
 			}
 		}
 
@@ -73,6 +73,9 @@ class Volt
 		{
 			case '_':
 				return $helperPrefix . 'Text::_(' . $resolvedArgs . ')';
+
+			case '_s':
+				return $helperPrefix . 'Text::plural(' . $resolvedArgs . ')';
 
 			case 'addAssets':
 				return $helperPrefix . 'Assets::add(' . $resolvedArgs . ')';

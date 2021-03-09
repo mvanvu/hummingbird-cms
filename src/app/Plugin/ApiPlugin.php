@@ -6,6 +6,7 @@ use App\Factory\ApiApplication;
 use App\Helper\Text;
 use App\Helper\User;
 use App\Traits\User as UserTrait;
+use MaiVu\Php\Filter;
 
 abstract class ApiPlugin extends Plugin
 {
@@ -36,9 +37,9 @@ abstract class ApiPlugin extends Plugin
 	protected $rawData = null;
 
 	/**
-	 * @var null|string
+	 * @var string
 	 */
-	protected $prefix = null;
+	protected $prefix = '';
 
 	/**
 	 * @var string
@@ -62,7 +63,14 @@ abstract class ApiPlugin extends Plugin
 	{
 		$this->app        = $app;
 		$this->requestUri = $this->app->request->getURI(true);
-		$this->apiPrefix  = '/api/' . $this->apiVersion . ($this->prefix ? '/' . $this->prefix : '');
+		$this->prefix     = Filter::toSlug($this->prefix);
+
+		if (empty($this->prefix))
+		{
+			$this->prefix = $this->config['manifest.name'];
+		}
+
+		$this->apiPrefix = '/hb/io/api/' . $this->prefix . '/' . $this->apiVersion;
 		static $requestData = null;
 
 		if (null === $requestData)
@@ -78,7 +86,7 @@ abstract class ApiPlugin extends Plugin
 			$this->data = $requestData;
 		}
 
-		if ($this->prefix && 0 === strpos($this->requestUri, $this->apiPrefix))
+		if (0 === strpos($this->requestUri, $this->apiPrefix . '/'))
 		{
 			// Only route for the Api plugin which has a prefix
 			// Route for login

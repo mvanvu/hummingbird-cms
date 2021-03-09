@@ -2,6 +2,7 @@
 
 namespace App\Mvc\Controller;
 
+use App\Helper\Assets;
 use App\Helper\Constant;
 use App\Helper\Event;
 use App\Helper\Image;

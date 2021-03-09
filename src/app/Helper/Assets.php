@@ -51,7 +51,7 @@ class Assets
 
 					if (is_file($publicResource))
 					{
-						$file  = ROOT_URI . '/resources/public/' . Template::getTemplate()->id . '/' . $file;
+						$file  = ROOT_URI . '/hb/io/public/' . Template::getTemplate()->id . '/' . $file;
 						$local = false;
 					}
 				}
@@ -101,7 +101,7 @@ class Assets
 	public static function addFromPlugin($assets, string $group, string $name)
 	{
 		settype($assets, 'array');
-		$prefix = ROOT_URI . '/resources/' . $group . '-' . $name . '/public';
+		$prefix = ROOT_URI . '/hb/io/public/' . $group . '/' . $name;
 
 		foreach ($assets as &$asset)
 		{

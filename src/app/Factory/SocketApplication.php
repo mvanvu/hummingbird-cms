@@ -55,7 +55,7 @@ class SocketApplication extends CliApplication
 
 			Event::trigger('onBootSocket', [$this], ['Socket']);
 			$this->socket->on('open', function (Server $server, Request $request) {
-				preg_match('#^/websocket/([a-zA-Z0-9_]+)#', $request->server['request_uri'], $matches);
+				preg_match('#^/hb/io/ws/([a-zA-Z0-9_]+)#', $request->server['request_uri'], $matches);
 
 				if (!empty($matches[1]))
 				{

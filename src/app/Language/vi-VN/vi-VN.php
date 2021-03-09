@@ -71,6 +71,8 @@ return [
 	'avatar'                            => 'Hình đại diện',
 	'media'                             => 'Hình ảnh',
 	'comments'                          => 'Bình luận',
+	'comments-count'                    => 'Bình luận (%count%)',
+	'comments-count-1'                  => 'Bình luận (1)',
 	'tags'                              => 'Nhãn',
 	'settings'                          => 'Cài đặt',
 	'checked-in-item-tip'               => 'Đang xem bởi %author% ngày %date%',

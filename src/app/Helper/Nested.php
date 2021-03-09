@@ -35,19 +35,19 @@ class Nested
 		}
 
 		$this->sources = [
-			'1' => [],
+			'i' => [],
 			'p' => [],
 		];
 
 		foreach ($sources->getItems() as $source)
 		{
-			if ('1' == $source->level)
+			if ($source->parentId && (int) $source->level > 2)
 			{
-				$this->sources['1'][] = $source;
+				$this->sources['p'][$source->parentId][] = $source;
 			}
 			else
 			{
-				$this->sources['p'][$source->parentId][] = $source;
+				$this->sources['i'][] = $source;
 			}
 		}
 
@@ -60,22 +60,30 @@ class Nested
 
 		if (null === $items)
 		{
-			$items = $this->sources['1'];
+			$items = $this->sources['i'];
 		}
 
 		foreach ($items as $item)
 		{
-			$hasChildren = isset($this->sources['p'][$item->id]);
+			$isNotRoot   = $item->level != '1' && $item->title != 'system-node-root';
+			$hasChildren = !empty($this->sources['p'][$item->id]);
 			$title       = htmlspecialchars($item->title);
-			$tree        .= '<li class="dd-item ' . ($hasChildren ? 'has-children' : 'no-children') . '" data-id="' . $item->id . '" data-title="' . $title . '">'
-				. $this->makeHandle($item);
+
+			if ($isNotRoot)
+			{
+				$tree .= '<li class="dd-item ' . ($hasChildren ? 'has-children' : 'no-children') . '" data-id="' . $item->id . '" data-title="' . $title . '">'
+					. $this->makeHandle($item);
+			}
 
 			if ($hasChildren)
 			{
 				$tree .= $this->makeTree($this->sources['p'][$item->id]);
 			}
 
-			$tree .= '</li>';
+			if ($isNotRoot)
+			{
+				$tree .= '</li>';
+			}
 		}
 
 		$tree .= '</ol>';
