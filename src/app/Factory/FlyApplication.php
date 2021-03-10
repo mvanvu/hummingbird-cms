@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use App\Console\Fly;
+use App\Helper\Constant;
 use Throwable;
 
 class FlyApplication extends CliApplication
@@ -16,15 +18,16 @@ class FlyApplication extends CliApplication
 			{
 				if (false !== strpos($k, ':'))
 				{
-					list($class, $argument) = explode(':', $k, 2);
-					$fly = 'App\\Console\\Fly\\' . ucfirst($class);
+					list($class, $param) = explode(':', $k, 2);
+					$ns = Constant::getNamespaceFly(ucfirst($class));
 
-					if (class_exists($fly) && is_callable($fly . '::execute'))
+					if (class_exists($ns) && ($fly = new $ns) instanceof Fly)
 					{
-						call_user_func_array($fly . '::execute', [$this, $argument]);
+						$fly->execute($this, $param);
 						break;
 					}
 				}
+
 			}
 		}
 		catch (Throwable $e)

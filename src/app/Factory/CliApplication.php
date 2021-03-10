@@ -6,9 +6,7 @@ namespace App\Factory;
 
 use App\Helper\Console;
 use App\Helper\Event;
-use App\Helper\Queue;
 use App\Mvc\Model\Log;
-use App\Mvc\Model\QueueJob;
 use Phalcon\Application\AbstractApplication;
 use Phalcon\Di\DiInterface;
 use Throwable;
@@ -32,23 +30,7 @@ class CliApplication extends AbstractApplication
 	{
 		try
 		{
-			if (!$this->console->hasArgument('skip-plugins'))
-			{
-				Event::trigger('onBootCli', [$this], ['Cli']);
-			}
-
-			if ($queueJobId = $this->console->getArgument('queueJobId'))
-			{
-				if ($queueJobId === 'all')
-				{
-					Queue::executeAll();
-				}
-				elseif ($queueJob = QueueJob::findFirst(['queueJobId = :queueJobId:', 'bind' => ['queueJobId' => $queueJobId]]))
-				{
-					/** @var QueueJob $queueJob */
-					Queue::executeJob($queueJob);
-				}
-			}
+			Event::trigger('onBootCli', [$this], ['Cli']);
 		}
 		catch (Throwable $throwable)
 		{

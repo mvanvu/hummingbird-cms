@@ -24,6 +24,8 @@ class Constant
 
 	const NAMESPACE_RULE = 'App\\Form\\Rule';
 
+	const NAMESPACE_FLY = 'App\\Console\\Fly';
+
 	public static function getNamespacePlugin(string $group, string $name)
 	{
 		static $namespaces = [];
@@ -49,4 +51,8 @@ class Constant
 		return Constant::NAMESPACE_WIDGET . '\\' . $name;
 	}
 
+	public static function getNamespaceFly(string $name)
+	{
+		return Constant::NAMESPACE_FLY . '\\' . $name;
+	}
 }

@@ -91,7 +91,7 @@ class Console
 
 	public function execute($queue, ...$args)
 	{
-		$cmd = ($_SERVER['_'] ?? 'php') . ' ' . PUBLIC_PATH . '/index.php';
+		$cmd = ($_SERVER['_'] ?? 'php') . ' ' . BASE_PATH . '/fly';
 
 		if ($args)
 		{

@@ -2,12 +2,13 @@
 
 namespace App\Console\Fly;
 
+use App\Console\Fly;
 use App\Factory\FlyApplication;
 use App\Helper\Event;
 
-class Plugin
+class Plugin implements Fly
 {
-	public static function execute(FlyApplication $app, string $argument)
+	public function execute(FlyApplication $app, string $argument)
 	{
 		if (strpos($argument, '/'))
 		{
