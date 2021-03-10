@@ -102,7 +102,7 @@ class BaseApplication
 		$di->setShared('config', $config);
 		$di->setShared('db', $db);
 		$di->setShared('session', function () use ($db) {
-			session_name('HB_SESSION_ID');
+
 			$session = (new Manager)->setAdapter(Session::getInstance($db));
 			$session->start();
 

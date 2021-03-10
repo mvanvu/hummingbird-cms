@@ -18,6 +18,24 @@ class Queue
 
 	public static function add(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
 	{
+		if ($job = static::make($handler, $payload, $priority))
+		{
+			Console::getInstance()->executeQueue('--skip-plugins --queueJobId=' . $job->queueJobId);
+		}
+
+		return $job;
+	}
+
+	/**
+	 * @param string $handler
+	 * @param null   $payload
+	 * @param int    $priority
+	 *
+	 * @return QueueJob|false
+	 */
+
+	public static function make(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	{
 		if (class_exists($handler))
 		{
 			try
@@ -55,9 +73,7 @@ class Queue
 
 					if ($queueJob->save())
 					{
-						Console::getInstance()->executeQueue('--skip-plugins --queueJobId=' . $queueJob->queueJobId);
-
-						return true;
+						return $queueJob;
 					}
 				}
 			}
@@ -67,6 +83,24 @@ class Queue
 		}
 
 		return false;
+	}
+
+	public static function execute(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	{
+		if ($job = static::make($handler, $payload, $priority))
+		{
+			static::executeJob($job);
+		}
+
+		static::cliMessage('Failed. ' . $handler . ' return FALSE');
+	}
+
+	public static function cliMessage(string $message, bool $error = false)
+	{
+		if (IS_CLI)
+		{
+			Console::getInstance()->{$error ? 'error' : 'out'}($message);
+		}
 	}
 
 	public static function executeAll()
@@ -115,8 +149,6 @@ class Queue
 
 		if (class_exists($job->handler))
 		{
-			$console = Console::getInstance();
-
 			try
 			{
 				$class = new ReflectionClass($job->handler);
@@ -132,13 +164,13 @@ class Queue
 					{
 						$job->delete();
 						Log::addEntry('queue-completed', ['handler' => $job->queueJobId . ':' . $job->handler]);
-						$console->out('Completed. ' . $job->queueJobId . ':' . $job->handler);
+						static::cliMessage('Completed. ' . $job->queueJobId . ':' . $job->handler);
 					}
 					else
 					{
 						$job->assign(['failedAt' => Date::now('UTC')->toSql(), 'handling' => 'N'])->save();
 						Log::addEntry('queue-failed', ['handler' => $job->queueJobId . ':' . $job->handler]);
-						$console->out('Failed. ' . $job->queueJobId . ':' . $job->handler . ' return FALSE');
+						static::cliMessage('Failed. ' . $job->queueJobId . ':' . $job->handler . ' return FALSE');
 					}
 				}
 			}
@@ -146,7 +178,7 @@ class Queue
 			{
 				$job->assign(['failedAt' => Date::now('UTC')->toSql(), 'handling' => 'N'])->save();
 				Log::addEntry('queue-failed', ['handler' => get_class($e)]);
-				$console->error('Failed. ' . $e->getMessage());
+				static::cliMessage('Failed. ' . $e->getMessage());
 			}
 		}
 	}

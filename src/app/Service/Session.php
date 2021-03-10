@@ -30,6 +30,7 @@ class Session extends AbstractAdapter
 
 		if (!headers_sent())
 		{
+			session_name('HB_SESSION_ID');
 			session_set_save_handler(
 				[$this, 'open'],
 				[$this, 'close'],
