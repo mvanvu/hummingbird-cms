@@ -84,18 +84,18 @@ class Console
 		fwrite(STDOUT, PHP_EOL . $message);
 	}
 
-	public function executeNow(...$args)
+	public function executeNow(string $args = null)
 	{
-		return $this->execute(false, ...$args);
+		return $this->execute(false, $args);
 	}
 
-	public function execute($queue, ...$args)
+	public function execute($queue, string $args = null)
 	{
 		$cmd = ($_SERVER['_'] ?? 'php') . ' ' . BASE_PATH . '/fly';
 
 		if ($args)
 		{
-			$cmd .= ' ' . implode(' ', $args);
+			$cmd .= ' ' . $args;
 		}
 
 		$cmd .= ' > /dev/null 2>&1' . ($queue ? ' &' : '');
@@ -103,9 +103,9 @@ class Console
 		return shell_exec($cmd);
 	}
 
-	public function executeQueue(...$args)
+	public function executeQueue(string $args = null)
 	{
-		return $this->execute(true, ...$args);
+		return $this->execute(true, $args);
 	}
 
 	public function composer(string $command, string $pathToJson)

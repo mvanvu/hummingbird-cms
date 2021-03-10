@@ -23,7 +23,9 @@ class FlyApplication extends CliApplication
 
 					if (class_exists($ns) && ($fly = new $ns) instanceof Fly)
 					{
+						$this->out('Flying on ' . $ns . ':' . $param);
 						$fly->execute($this, $param);
+						$this->out('Landed on ' . $ns . ':' . $param. PHP_EOL);
 						break;
 					}
 				}

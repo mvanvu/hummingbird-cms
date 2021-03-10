@@ -40,7 +40,7 @@ class CliApplication extends AbstractApplication
 
 	public function error(string $message, $context = null)
 	{
-		$this->console->error($message . PHP_EOL);
+		$this->console->error($message);
 		$this->log($message, true, $context);
 	}
 
@@ -61,7 +61,7 @@ class CliApplication extends AbstractApplication
 
 	public function out(string $message, $context = null)
 	{
-		$this->console->out($message . PHP_EOL);
+		$this->console->out($message);
 		$this->log($message, false, $context);
 	}
 }

@@ -22,5 +22,9 @@ class QueueJob implements Fly
 			 */
 			Queue::executeJob($queueJob);
 		}
+		else
+		{
+			$app->getConsole()->error('No queues found.');
+		}
 	}
 }

@@ -3,6 +3,8 @@
 namespace App\Plugin;
 
 use App\Helper\Assets;
+use App\Helper\Console;
+use App\Helper\Queue;
 use App\Helper\Service;
 use App\Helper\Uri;
 use App\Mvc\View\ViewBase;
@@ -59,6 +61,18 @@ class Plugin
 	public function getRenderer(): ViewBase
 	{
 		return Service::view();
+	}
+
+	final public static function addQueue(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	{
+		if ($job = Queue::make($handler, $payload, $priority))
+		{
+			list($group, $name) = explode('\\', str_replace('App\\Plugin\\', '', get_called_class()));
+
+			return Console::getInstance()->executeQueue('plugin:' . $group . '/' . $name . ' --queueJobId=' . $job->queueJobId);
+		}
+
+		return false;
 	}
 
 	final public function addAssets($assets): Plugin

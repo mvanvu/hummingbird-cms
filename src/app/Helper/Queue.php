@@ -91,28 +91,14 @@ class Queue
 		{
 			static::executeJob($job);
 		}
-
-		static::cliMessage('Failed. ' . $handler . ' return FALSE');
+		else
+		{
+			static::cliMessage('Failed. ' . $handler . ' return FALSE');
+		}
 	}
 
 	public static function executeJob(QueueJob $job)
 	{
-		$payload = $job->payload ? unserialize($job->payload) : [];
-
-		if (!empty($payload['fromPlugin'])
-			&& is_string($payload['fromPlugin'])
-			&& false !== strpos($payload['fromPlugin'], '/')
-		)
-		{
-			list ($group, $name) = explode('/', $payload['fromPlugin'], 2);
-
-			if ($plugin = Event::getPlugin($group, $name))
-			{
-				// Run autoload from plugin
-				Event::getHandler($plugin);
-			}
-		}
-
 		if (class_exists($job->handler))
 		{
 			try
