@@ -14,21 +14,20 @@ class Console
 
 	protected function __construct()
 	{
-		$this->arguments = new Registry;
+		$this->arguments = Registry::create();
 
 		foreach (($_SERVER['argv'] ?? []) as $arg)
 		{
-			if (strpos($arg, '--') === 0)
+			$arg = trim($arg, '-"\'');
+
+			if (false === strpos($arg, '='))
 			{
-				if (false === strpos($arg, '='))
-				{
-					$this->arguments->set(ltrim($arg, '-'), '');
-				}
-				else
-				{
-					list($k, $v) = explode('=', $arg, 2);
-					$this->arguments->set(ltrim($k, '-'), trim($v, '"\''));
-				}
+				$this->arguments->set($arg, null);
+			}
+			else
+			{
+				list($name, $value) = explode('=', $arg, 2);
+				$this->arguments->set(trim($name), trim($value));
 			}
 		}
 	}
@@ -50,14 +49,29 @@ class Console
 		return $this->arguments;
 	}
 
-	public function getArgument($name, $default = null, $filter = null)
+	public function getArgument(string $name, string $default = null, $filter = null)
 	{
 		return $this->arguments->get($name, $default, $filter);
 	}
 
-	public function hasArgument($name): bool
+	public function hasArgument(string $name): bool
 	{
 		return $this->arguments->has($name);
+	}
+
+	public function match(string $name)
+	{
+		foreach ($this->arguments->toArray() as $k => $v)
+		{
+			$pattern = str_replace(['\*', '\^', '\$'], ['.*', '^', '$'], preg_quote($name, '#'));
+
+			if ($name === $k || preg_match('#' . $pattern . '\z#u', $k) === 1)
+			{
+				return [$k, $v];
+			}
+		}
+
+		return false;
 	}
 
 	public function error(string $message)

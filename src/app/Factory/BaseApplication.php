@@ -29,7 +29,14 @@ class BaseApplication
 
 			if (IS_CLI)
 			{
-				$app = Console::getInstance()->hasArgument('socket') ? new SocketApplication($di) : new CliApplication($di);
+				if (Console::getInstance()->hasArgument('socket'))
+				{
+					$app = new SocketApplication($di);
+				}
+				else
+				{
+					$app = IS_FLY ? new FlyApplication($di) : new CliApplication($di);
+				}
 			}
 			elseif (IS_API)
 			{

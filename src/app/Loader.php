@@ -31,6 +31,11 @@ class Loader
 				define('ROOT_URI', $rootUri);
 			}
 
+			if (!defined('IS_FLY'))
+			{
+				define('IS_FLY', false);
+			}
+
 			// Composer autoload
 			require_once BASE_PATH . '/vendor/autoload.php';
 

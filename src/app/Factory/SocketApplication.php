@@ -44,13 +44,13 @@ class SocketApplication extends CliApplication
 	{
 		try
 		{
-			$this->connections = new Table($this->console->getArgument('table-size', 1024));
+			$this->connections = new Table($this->console->getArgument('table-size', '1024', 'uint'));
 			$this->connections->column('plugin', Table::TYPE_STRING, 60);
 			$this->connections->column('auth', Table::TYPE_STRING, 191);
 			$this->connections->create();
 			$this->socket = new Server(
 				$this->console->getArgument('host', '0.0.0.0'),
-				$this->console->getArgument('port', 2053, 'uint')
+				$this->console->getArgument('port', '2053', 'uint')
 			);
 
 			Event::trigger('onBootSocket', [$this], ['Socket']);
