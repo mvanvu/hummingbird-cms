@@ -532,4 +532,5 @@ return [
 	'pattern'                           => 'Pattern',
 	'pattern-desc'                      => 'For eg:_BR_post/* => current URI start with post/{with or without anything}_BR_post/~[1-9][0-9]*~ => current URI start with post/{with or without integer}...',
 	'display-layout'                    => 'Display layout',
+	'gzip-page-compression'             => 'Gzip Page Compression',
 ];

@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Helper\Config;
+use App\Helper\Constant;
 use App\Helper\Event as EventHelper;
 use App\Helper\State;
 use App\Helper\Template;
@@ -67,10 +68,17 @@ class WebApplication extends Application
 
 			if ($willHandle)
 			{
+				// Fire event before handle request
 				EventHelper::trigger('onBeforeHandle', [$this], ['Cms']);
-				$response = $this->handle($requestUri);
-				EventHelper::trigger('onBeforeSend', [$this, $response], ['Cms']);
-				$response->send();
+
+				// Handle request
+				$this->handle($requestUri);
+
+				// Fire event before send response
+				EventHelper::trigger('onBeforeSend', [$this], ['Cms']);
+
+				// Send response
+				$this->send();
 			}
 		}
 		catch (Throwable $e)
@@ -113,7 +121,7 @@ class WebApplication extends Application
 	{
 		try
 		{
-			$this->dispatcher->setNamespaceName('App\\Mvc\\Controller');
+			$this->dispatcher->setNamespaceName(Constant::NAMESPACE_CONTROLLER);
 			$this->dispatcher->setControllerName($controller);
 			$this->dispatcher->setActionName($action);
 			$this->dispatcher->setParams($params);
@@ -128,12 +136,48 @@ class WebApplication extends Application
 			// View
 			$this->view->finish();
 			$this->response->setContent($this->view->getContent());
-			$this->response->send();
+			$this->send();
 		}
 		catch (Throwable $e)
 		{
 			echo $e->getMessage();
 			http_response_code($e->getCode());
+		}
+	}
+
+	public function send()
+	{
+		if (!$this->response->isSent())
+		{
+			if (Config::is('gzip')
+				&& !ini_get('zlib.output_compression')
+				&& ini_get('output_handler') != 'ob_gzhandler'
+				&& extension_loaded('zlib')
+			)
+			{
+				$supported = ['x-gzip' => 'gz', 'gzip' => 'gz', 'deflate' => 'deflate'];
+				$encodings = array_intersect(array_map('trim', (array) explode(',', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? [])), array_keys($supported));
+
+				if (!empty($encodings))
+				{
+					foreach ($encodings as $encoding)
+					{
+						$gzData = gzencode($this->response->getContent(), 4, ($supported[$encoding] == 'gz') ? FORCE_GZIP : FORCE_DEFLATE);
+
+						// If there was a problem encoding the data just try the next encoding scheme.
+						if (false !== $gzData)
+						{
+							$this->response->setHeader('Content-Encoding', $encoding);
+							$this->response->setHeader('Vary', 'Accept-Encoding');
+							$this->response->setHeader('X-Content-Encoded-By', 'HummingbirdCms');
+							$this->response->setContent($gzData);
+							break;
+						}
+					}
+				}
+			}
+
+			$this->response->send();
 		}
 	}
 }

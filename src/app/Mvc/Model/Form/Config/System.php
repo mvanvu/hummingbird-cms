@@ -10,6 +10,13 @@ return [
 		'filters' => ['yesNo'],
 	],
 	[
+		'name'    => 'gzip',
+		'type'    => 'Switcher',
+		'label'   => 'gzip-page-compression',
+		'value'   => 'Y',
+		'filters' => ['yesNo'],
+	],
+	[
 		'name'     => 'adminPrefix',
 		'type'     => 'Text',
 		'label'    => 'admin-prefix-path',
