@@ -16,18 +16,24 @@ class Console
 	{
 		$this->arguments = Registry::create();
 
-		foreach (($_SERVER['argv'] ?? []) as $arg)
+		if ($args = ($_SERVER['argv'] ?? []))
 		{
-			$arg = trim($arg, '-"\'');
+			// Strip the application name
+			array_shift($args);
 
-			if (false === strpos($arg, '='))
+			foreach ($args as $arg)
 			{
-				$this->arguments->set($arg, null);
-			}
-			else
-			{
-				list($name, $value) = explode('=', $arg, 2);
-				$this->arguments->set(trim($name), trim($value));
+				$arg = trim($arg, '-"\'');
+
+				if (false === strpos($arg, '='))
+				{
+					$this->arguments->set($arg, null);
+				}
+				else
+				{
+					list($name, $value) = explode('=', $arg, 2);
+					$this->arguments->set(trim($name), trim($value));
+				}
 			}
 		}
 	}
