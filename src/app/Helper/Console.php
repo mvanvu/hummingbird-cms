@@ -82,7 +82,12 @@ class Console
 
 	public function error(string $message)
 	{
-		fwrite(STDERR, PHP_EOL . $message);
+		fwrite(STDERR, $message);
+	}
+
+	public function outLn(string $message)
+	{
+		$this->out($message . PHP_EOL);
 	}
 
 	public function out(string $message)
@@ -95,13 +100,13 @@ class Console
 		return $this->execute(false, $args);
 	}
 
-	public function execute($queue, string $args = null)
+	public function execute($queue, string $command = null)
 	{
 		$cmd = ($_SERVER['_'] ?? 'php') . ' ' . BASE_PATH . '/fly';
 
-		if ($args)
+		if ($command)
 		{
-			$cmd .= ' ' . $args;
+			$cmd .= ' ' . $command;
 		}
 
 		$cmd .= ' > /dev/null 2>&1' . ($queue ? ' &' : '');
@@ -114,12 +119,12 @@ class Console
 		return $this->execute(true, $args);
 	}
 
-	public function composer(string $command, string $pathToJson)
+	public function composer($commands, string $pathToJson)
 	{
 		Queue::add(
 			Composer::class,
 			[
-				'command'    => $command,
+				'commands'   => $commands,
 				'pathToJson' => $pathToJson,
 			]
 		);

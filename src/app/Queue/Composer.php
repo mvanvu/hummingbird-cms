@@ -22,9 +22,12 @@ class Composer extends QueueAbstract
 		if ($exec)
 		{
 			$cmd = 'COMPOSER_VENDOR_DIR=' . $this->data['pathToJson'] . '/vendor'
-				. ' COMPOSER=' . $this->data['pathToJson'] . '/composer.json php ' . $phar
-				. ' ' . $this->data['command'];
-			exec($cmd);
+				. ' COMPOSER=' . $this->data['pathToJson'] . '/composer.json php ' . $phar;
+
+			foreach ((array) $this->data['commands'] as $command)
+			{
+				exec($cmd . ' ' . $command);
+			}
 
 			return true;
 		}

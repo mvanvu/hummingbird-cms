@@ -85,16 +85,18 @@ class Queue
 		return false;
 	}
 
-	public static function execute(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	public static function execute(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL): bool
 	{
 		if ($job = static::make($handler, $payload, $priority))
 		{
 			static::executeJob($job);
+
+			return true;
 		}
-		else
-		{
-			static::cliMessage('Failed. ' . $handler . ' return FALSE');
-		}
+
+		static::cliMessage('Failed. ' . $handler . ' return FALSE');
+
+		return false;
 	}
 
 	public static function executeJob(QueueJob $job)

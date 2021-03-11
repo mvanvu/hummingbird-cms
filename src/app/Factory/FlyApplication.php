@@ -50,7 +50,7 @@ class FlyApplication extends CliApplication
 					$this->fly->flap($this, $param);
 
 					// Fly one time only
-					$this->console->out('Landed on [' . $ns . '] command: ' . implode(' ', ($_SERVER['argv'] ?? [])) . PHP_EOL);
+					$this->console->outLn('Landed on [' . $ns . '] command: ' . implode(' ', ($_SERVER['argv'] ?? [])));
 					break;
 				}
 			}
