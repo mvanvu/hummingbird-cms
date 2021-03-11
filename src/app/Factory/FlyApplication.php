@@ -6,7 +6,6 @@ namespace App\Factory;
 
 use App\Console\Fly;
 use App\Helper\Constant;
-use App\Helper\FileSystem;
 use Throwable;
 
 class FlyApplication extends CliApplication
@@ -25,13 +24,6 @@ class FlyApplication extends CliApplication
 	{
 		try
 		{
-			$nss = array_map(
-				function ($file) {
-					return Constant::getNamespaceFly(basename($file, '.php'));
-				},
-				FileSystem::scanFiles(APP_PATH . '/Console/Fly')
-			);
-
 			foreach ($this->console->getArguments()->toArray() as $k => $v)
 			{
 				if (false === strpos($k, ':'))
@@ -45,7 +37,7 @@ class FlyApplication extends CliApplication
 					$ns = Constant::getNamespaceFly(ucfirst($class));
 				}
 
-				if (in_array($ns, $nss) && ($this->fly = new $ns) instanceof Fly)
+				if (class_exists($ns) && ($this->fly = new $ns) instanceof Fly)
 				{
 					$this->fly->flap($this, $param);
 

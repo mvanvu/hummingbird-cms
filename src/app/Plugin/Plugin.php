@@ -63,13 +63,13 @@ class Plugin
 		return Service::view();
 	}
 
-	final public static function addQueue(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	final public static function addQueue(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL): bool
 	{
 		if ($job = Queue::make($handler, $payload, $priority))
 		{
 			list($group, $name) = explode('\\', str_replace('App\\Plugin\\', '', get_called_class()));
 
-			return Console::getInstance()->executeQueue('plugin:' . $group . '/' . $name . ' --queueJobId=' . $job->queueJobId);
+			return Console::getInstance()->execute('plugin:' . $group . '/' . $name . ' queueJobId=' . $job->queueJobId);
 		}
 
 		return false;

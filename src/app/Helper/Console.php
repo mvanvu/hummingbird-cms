@@ -97,10 +97,10 @@ class Console
 
 	public function executeNow(string $args = null)
 	{
-		return $this->execute(false, $args);
+		return $this->execute($args, false);
 	}
 
-	public function execute($queue, string $command = null)
+	public function execute(string $command = null, bool $queue = true)
 	{
 		$cmd = ($_SERVER['_'] ?? 'php') . ' ' . BASE_PATH . '/fly';
 
@@ -112,11 +112,6 @@ class Console
 		$cmd .= ' > /dev/null 2>&1' . ($queue ? ' &' : '');
 
 		return shell_exec($cmd);
-	}
-
-	public function executeQueue(string $args = null)
-	{
-		return $this->execute(true, $args);
 	}
 
 	public function composer($commands, string $pathToJson)

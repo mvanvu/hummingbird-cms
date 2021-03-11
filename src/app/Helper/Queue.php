@@ -87,19 +87,19 @@ class Queue
 
 	public static function execute(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL): bool
 	{
-		if ($job = static::make($handler, $payload, $priority))
-		{
-			static::executeJob($job);
+		$job = static::make($handler, $payload, $priority);
 
-			return true;
+		if (!$job || !static::executeJob($job))
+		{
+			static::cliMessage('Failed. ' . $handler . ' return FALSE');
+
+			return false;
 		}
 
-		static::cliMessage('Failed. ' . $handler . ' return FALSE');
-
-		return false;
+		return true;
 	}
 
-	public static function executeJob(QueueJob $job)
+	public static function executeJob(QueueJob $job): bool
 	{
 		if (class_exists($job->handler))
 		{
@@ -126,6 +126,8 @@ class Queue
 						Log::addEntry('queue-failed', ['handler' => $job->queueJobId . ':' . $job->handler]);
 						static::cliMessage('Failed. ' . $job->queueJobId . ':' . $job->handler . ' return FALSE');
 					}
+
+					return true;
 				}
 			}
 			catch (Throwable $e)
@@ -135,6 +137,8 @@ class Queue
 				static::cliMessage('Failed. ' . $e->getMessage());
 			}
 		}
+
+		return false;
 	}
 
 	public static function cliMessage(string $message, bool $error = false)

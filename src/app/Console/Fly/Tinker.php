@@ -22,7 +22,7 @@ class Tinker implements Fly
 
 			if (Queue::execute(Composer::class, ['commands' => 'require psy/psysh', 'pathToJson' => BASE_PATH]))
 			{
-				$app->getConsole()->outLn('Psy\\Shell installed. Please restart the Tinker Fly to continue.' . PHP_EOL);
+				$app->getConsole()->outLn('Psy\\Shell installed. Please restart the Tinker Fly to continue.');
 				exit(0);
 			}
 		}
