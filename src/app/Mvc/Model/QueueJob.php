@@ -3,6 +3,7 @@
 
 namespace App\Mvc\Model;
 
+use App\Helper\Queue;
 use Phalcon\Mvc\Model;
 
 class QueueJob extends Model
@@ -12,6 +13,12 @@ class QueueJob extends Model
 	 */
 
 	public $queueJobId;
+
+	/**
+	 * @var string
+	 */
+
+	public $type = 'Q';
 
 	/**
 	 * @var string
@@ -47,7 +54,7 @@ class QueueJob extends Model
 	 *
 	 * @var integer
 	 */
-	public $priority = 0;
+	public $priority = Queue::PRIORITY_NORMAL;
 
 
 	public function initialize()

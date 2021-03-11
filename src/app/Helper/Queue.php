@@ -20,7 +20,7 @@ class Queue
 	{
 		if ($job = static::make($handler, $payload, $priority))
 		{
-			Console::getInstance()->executeQueue('--queueJob:' . $job->queueJobId);
+			Console::getInstance()->execute('queueJob:' . $job->queueJobId);
 		}
 
 		return $job;
@@ -158,13 +158,7 @@ class Queue
 		}
 
 		$force = Console::getInstance()->hasArgument('force');
-		$jobs  = $force ? QueueJob::find() : QueueJob::find(
-			[
-				'conditions' => 'failedAt IS NULL AND handling = :handling:',
-				'order'      => 'priority ASC, createdAt ASC',
-				'bind'       => ['handling' => 'N'],
-			]
-		);
+		$jobs  = QueueJob::find('type = \'Q\'' . ($force ? ' AND failedAt IS NULL AND handling = \'N\'' : ''));
 
 		if ($jobs->count())
 		{
