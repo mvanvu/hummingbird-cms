@@ -20,12 +20,6 @@ if (!function_exists('dd'))
 	}
 }
 
-try
-{
-	require_once BASE_PATH . '/app/Factory/Factory.php';
-	Factory::getApplication()->execute();
-}
-catch (Throwable $e)
-{
-	dd($e);
-}
+require_once BASE_PATH . '/app/Factory/Factory.php';
+
+return Factory::getApplication();

@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Helper\Config;
-use App\Helper\Console;
 use App\Helper\Router;
 use App\Helper\Uri;
 use App\Mvc\Model\ModelBinder;
@@ -29,14 +28,7 @@ class BaseApplication
 
 			if (IS_CLI)
 			{
-				if (Console::getInstance()->hasArgument('socket'))
-				{
-					$app = new SocketApplication($di);
-				}
-				else
-				{
-					$app = IS_FLY ? new FlyApplication($di) : new CliApplication($di);
-				}
+				$app = IS_FLY ? new FlyApplication($di) : new CliApplication($di);
 			}
 			elseif (IS_API)
 			{
