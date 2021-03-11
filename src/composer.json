@@ -26,7 +26,6 @@
         "ext-zip": "*",
         "ext-curl": "*",
         "ext-gd": "*",
-        "ext-pdo": "*",
-        "psy/psysh": "^0.10.6"
+        "ext-pdo": "*"
     }
 }
