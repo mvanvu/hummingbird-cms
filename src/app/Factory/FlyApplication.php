@@ -37,7 +37,7 @@ class FlyApplication extends CliApplication
 				if (false === strpos($k, ':'))
 				{
 					$ns    = Constant::getNamespaceFly(ucfirst($k));
-					$param = '';
+					$param = null;
 				}
 				else
 				{
@@ -45,9 +45,9 @@ class FlyApplication extends CliApplication
 					$ns = Constant::getNamespaceFly(ucfirst($class));
 				}
 
-				if (in_array($ns, $nss) && ($fly = new $ns) instanceof Fly)
+				if (in_array($ns, $nss) && ($this->fly = new $ns) instanceof Fly)
 				{
-					($this->fly = $fly)->execute($this, $param);
+					$this->fly->flap($this, $param);
 
 					// Fly one time only
 					$this->console->out('Landed on [' . $ns . '] command: ' . implode(' ', ($_SERVER['argv'] ?? [])) . PHP_EOL);

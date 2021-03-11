@@ -8,7 +8,7 @@ use App\Helper\Event;
 
 class Plugin implements Fly
 {
-	public function execute(FlyApplication $app, string $param)
+	public function flap(FlyApplication $app, string $param = null)
 	{
 		if (strpos($param, '/'))
 		{

@@ -39,7 +39,7 @@ class Socket implements Fly
 		return $this->connections;
 	}
 
-	public function execute(FlyApplication $app, string $argument)
+	public function flap(FlyApplication $app, string $param = null)
 	{
 		$console           = $app->getConsole();
 		$this->connections = new Table($console->getArgument('table-size', 1024, 'uint'));

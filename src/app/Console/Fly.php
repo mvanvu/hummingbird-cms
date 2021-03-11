@@ -6,5 +6,5 @@ use App\Factory\FlyApplication;
 
 interface Fly
 {
-	public function execute(FlyApplication $app, string $param);
+	public function flap(FlyApplication $app, string $param = null);
 }
