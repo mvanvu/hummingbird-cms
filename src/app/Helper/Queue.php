@@ -158,7 +158,7 @@ class Queue
 		}
 
 		$force = Console::getInstance()->hasArgument('force');
-		$jobs  = QueueJob::find('type = \'Q\'' . ($force ? ' AND failedAt IS NULL AND handling = \'N\'' : ''));
+		$jobs  = $force ? QueueJob::find() : QueueJob::find('failedAt IS NULL AND handling = \'N\'');
 
 		if ($jobs->count())
 		{

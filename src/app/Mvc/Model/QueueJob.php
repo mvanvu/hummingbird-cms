@@ -18,12 +18,6 @@ class QueueJob extends Model
 	 * @var string
 	 */
 
-	public $type = 'Q';
-
-	/**
-	 * @var string
-	 */
-
 	public $handler;
 
 	/**

@@ -22,7 +22,7 @@ class Plugin implements Fly
 				}
 				else
 				{
-					$handler->callback('onSky', [$app]);
+					$handler->callback('onSky', [$app, $this]);
 				}
 			}
 		}
