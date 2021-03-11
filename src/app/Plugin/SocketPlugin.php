@@ -2,6 +2,7 @@
 
 namespace App\Plugin;
 
+use App\Console\Fly\Socket;
 use App\Factory\FlyApplication;
 use App\Helper\User;
 use MaiVu\Php\Registry;
@@ -13,6 +14,12 @@ class SocketPlugin extends Plugin
 	 */
 
 	protected $app;
+
+	/**
+	 * @var Socket
+	 */
+
+	protected $fly;
 
 	/**
 	 * @var Registry
@@ -75,8 +82,9 @@ class SocketPlugin extends Plugin
 		return $this;
 	}
 
-	final public function onBootSocket(FlyApplication $app)
+	final public function onBootSocket(FlyApplication $app, Socket $fly)
 	{
 		$this->app = $app;
+		$this->fly = $fly;
 	}
 }

@@ -51,7 +51,7 @@ class Socket implements Fly
 			$console->getArgument('port', 2053, 'uint')
 		);
 
-		Event::trigger('onBootSocket', [$app], ['Socket']);
+		Event::trigger('onBootSocket', [$app, $this], ['Socket']);
 		$this->socket->on('open', function (Server $server, Request $request) {
 			preg_match('#^/hb/io/ws/([a-zA-Z0-9_]+)#', $request->server['request_uri'], $matches);
 
