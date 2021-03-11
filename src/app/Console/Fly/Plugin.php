@@ -18,7 +18,7 @@ class Plugin implements Fly
 			{
 				if ($queueJobId = $app->getConsole()->getArgument('queueJobId'))
 				{
-					(new QueueJob)->execute($app, $queueJobId);
+					(new QueueJob)->flap($app, $queueJobId);
 				}
 				else
 				{
