@@ -11,6 +11,22 @@ use App\Helper\Uri;
 use App\Loader;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Registry;
+use Phalcon\Debug\Dump;
+
+if (!function_exists('dd'))
+{
+	function dd()
+	{
+		@ob_clean();
+		array_map(function ($x) {
+			$string = (new Dump([], true))->variable($x);
+			echo php_sapi_name() === 'cli' ? strip_tags($string) . PHP_EOL : $string;
+
+		}, func_get_args());
+
+		exit(0);
+	}
+}
 
 class Factory
 {
