@@ -71,7 +71,7 @@ class Event
 			{
 				static::loadPluginLanguage($entity->group, $entity->name);
 				static::$plugins[$entity->group][$entity->name] = $entity;
-				Widget::setExtraPath(PLUGIN_PATH . '/' . $entity->group . '/' . $entity->name . '/Widget');
+				Widget::setExtraPath(PLUGIN_PATH . '/' . $entity->group . '/' . $entity->name . '/app/Widget');
 			}
 		}
 

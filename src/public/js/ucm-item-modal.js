@@ -7,15 +7,15 @@ cmsCore.initUcmElementModal = function (elementId) {
         multiple = input.prop('multiple'),
         appendItem = function (id, title) {
             $(container.find('[type="template/ucm-item"]').text())
-                .appendTo(list).attr('data-sort-id', id).find('.title').text(title);
+                .appendTo(list).attr('data-id', id).find('.title').text(title);
         };
 
     var updateValue = function () {
         var opt;
         input.empty();
-        list.find('[data-sort-id]').each(function () {
+        list.find('[data-id]').each(function () {
             opt = document.createElement('option');
-            opt.value = $(this).attr('data-sort-id');
+            opt.value = $(this).attr('data-id');
             opt.selected = true;
             input.append(opt);
         });
@@ -27,23 +27,23 @@ cmsCore.initUcmElementModal = function (elementId) {
     frame.on('load', function () {
         var mQ = this.contentWindow._$,
             contents = mQ(this.contentDocument);
-        contents.on('click', '[data-sort-id] a', function (e) {
+        contents.on('click', '[data-id] a', function (e) {
             e.preventDefault();
             var a = mQ(this),
-                p = a.parent('[data-sort-id]'),
+                p = a.parent('[data-id]'),
                 title = mQ.trim(p.attr('data-title'));
 
             if (multiple) {
-                if (!list.find('[data-sort-id="' + p.attr('data-sort-id') + '"]').length) {
+                if (!list.find('[data-id="' + p.attr('data-id') + '"]').length) {
                     UIkit.notification(cmsCore.language._('item-added-success', {title: title}), {status: 'success'});
-                    appendItem(p.attr('data-sort-id'), title);
+                    appendItem(p.attr('data-id'), title);
                 }
 
                 updateValue();
 
             } else {
                 list.empty();
-                appendItem(p.attr('data-sort-id'), title);
+                appendItem(p.attr('data-id'), title);
                 updateValue();
                 UIkit.modal('#' + elementId + '-modal').hide();
             }
