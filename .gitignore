@@ -5,13 +5,5 @@ src/storages/*
 src/vendor/*
 src/cache/*
 src/tmp/*
-src/app/Tmpl/Site/*
-!src/app/Plugin/Cms/System
-!src/app/Plugin/Cms/System/*
-src/app/Plugin/Cms/*
-src/app/Plugin/Api/*
-src/app/Plugin/Cli/*
-src/app/Plugin/Socket/*
-src/public/upload/*
 src/config.php
 src/composer.phar

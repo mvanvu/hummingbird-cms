@@ -131,7 +131,7 @@ class AdminPluginController extends AdminControllerBase
 
 	public function refreshManifestAction(PluginModel $plugin)
 	{
-		$configPath = PLUGIN_PATH . '/' . $plugin->group . '/' . $plugin->name . '/Config.php';
+		$configPath = PLUGIN_PATH . '/' . $plugin->group . '/' . $plugin->name . '/config.php';
 
 		if (is_file($configPath))
 		{
@@ -265,7 +265,7 @@ class AdminPluginController extends AdminControllerBase
 				$zip->close();
 				FileSystem::remove($file);
 
-				if ($configFile = FileSystem::findInPath('Config.php', $path, true))
+				if ($configFile = FileSystem::findInPath('config.php', $path, true))
 				{
 					$manifest = Registry::create($configFile);
 					$regex    = '/^[a-z][a-z0-9]+$/i';
