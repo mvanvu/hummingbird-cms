@@ -1,15 +1,15 @@
 <ul class="uk-grid-small" uk-grid>
     {% for code, language in languages %}
-        {% if active.get('locale.code') == code %}
+        {% if active.get('attributes.code') == code %}
             <li class="uk-active">
-                <span uk-tooltip="{{ active.get('locale.title') | escape_attr }}">
-                    {{ helper('Utility::getCountryFlagEmoji', language.get('locale.code2')) }}
+                <span uk-tooltip="{{ active.get('attributes.name') | escape_attr }}">
+                    {{ active.get('attributes.emoji') }}
                 </span>
             </li>
         {% else %}
             <li>
-                <a href="{{ routes[code] }}" uk-tooltip="{{ language.get('locale.title') | escape_attr }}">
-                    {{ helper('Utility::getCountryFlagEmoji', language.get('locale.code2')) }}
+                <a href="{{ routes[code] }}" uk-tooltip="{{ language.get('attributes.name') | escape_attr }}">
+                    {{ language.get('attributes.emoji') }}
                 </a>
             </li>
         {% endif %}

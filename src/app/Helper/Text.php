@@ -15,7 +15,7 @@ class Text
 			$placeholders['count'] = $count;
 		}
 
-		if (Language::getActiveLanguage()->has('content.' . $string . '-' . $count))
+		if (Language::getActiveLanguage()->has('strings.' . $string . '-' . $count))
 		{
 			return static::_($string . '-' . $count, $placeholders);
 		}
@@ -23,7 +23,7 @@ class Text
 		return static::_($string, $placeholders);
 	}
 
-	public static function _($string, array $placeholders = null)
+	public static function _(string $string, array $placeholders = null)
 	{
 		return str_replace(
 			['_EOL_', '_BR_', '_Q_', '_QQ_'],

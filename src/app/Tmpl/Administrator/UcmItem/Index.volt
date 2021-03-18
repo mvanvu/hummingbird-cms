@@ -13,7 +13,6 @@
                     <th class="uk-table-shrink uk-visible@s">
                         <input class="uk-checkbox check-all" type="checkbox"/>
                     </th>
-
                     <th class="uk-table-shrink uk-text-nowrap">
                         {{ partial('Grid/Sort', ['text': _('state'), 'column': 'state', 'activeOrder' : activeOrder]) }}
                     </th>

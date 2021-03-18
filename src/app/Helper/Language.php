@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use App\Mvc\Model\Language as LangModel;
 use MaiVu\Php\Registry;
 
 class Language
@@ -19,11 +20,17 @@ class Language
 			static::getExistsLanguages();
 			$initialised    = true;
 			$activeLanguage = static::getActiveCode();
-			$contentFile    = APP_PATH . '/Language/' . $activeLanguage . '/' . $activeLanguage . '.php';
 
-			if (is_file($contentFile) && ($content = include $contentFile))
+			if (!static::has($activeLanguage))
 			{
-				static::load($content, $activeLanguage);
+				$activeLanguage = 'en-GB';
+			}
+
+			$stringsFile = APP_PATH . '/Language/' . $activeLanguage . '/' . $activeLanguage . '.php';
+
+			if (is_file($stringsFile) && ($content = include $stringsFile))
+			{
+				static::load($stringsFile, $activeLanguage);
 			}
 		}
 	}
@@ -34,22 +41,27 @@ class Language
 		{
 			static::$languages = [];
 
-			foreach (FileSystem::scanDirs(APP_PATH . '/Language') as $langPath)
+			foreach (LangModel::find('state = \'P\'') as $language)
 			{
-				$localeFile = $langPath . '/Locale.php';
-
-				if (is_file($localeFile))
-				{
-					$langCode = basename($langPath);
-					$content  = include $localeFile;
-					$language = new Registry;
-					$language->set('locale', $content);
-					static::$languagesSef[$content['sef']] = $langCode;
-					static::$languages[$langCode]          = $language;
-				}
-
-				ksort(static::$languages);
+				static::$languagesSef[$language->sef] = $language->code;
+				static::$languages[$language->code]   = Registry::create(
+					[
+						'strings'    => [],
+						'attributes' => [
+							'id'        => $language->id,
+							'name'      => $language->name,
+							'code'      => $language->code,
+							'iso'       => $language->iso,
+							'sef'       => $language->sef,
+							'direction' => $language->direction,
+							'params'    => Registry::create($language->params)->toArray(),
+							'emoji'     => Utility::getCountryFlagEmoji(array_flip(Utility::getIsoCodes())[$language->iso] ?? $language->iso)
+						],
+					]
+				);
 			}
+
+			ksort(static::$languages);
 		}
 
 		return static::$languages;
@@ -57,7 +69,7 @@ class Language
 
 	public static function getActiveCode()
 	{
-		return static::getActiveLanguage()->get('locale.code');
+		return static::getActiveLanguage()->get('attributes.code');
 	}
 
 	/**
@@ -87,11 +99,11 @@ class Language
 
 				if (isset($vars['language'])
 					&& static::hasSef($vars['language'])
-					&& $vars['language'] !== static::get($activeLangCode)->get('locale.sef')
+					&& $vars['language'] !== static::get($activeLangCode)->get('attributes.sef')
 				)
 				{
 					// Update cookie language
-					$activeLangCode = static::getBySef($vars['language'])->get('locale.code');
+					$activeLangCode = static::getBySef($vars['language'])->get('attributes.code');
 					Cookie::set($key, $activeLangCode);
 				}
 				elseif (!isset($vars['language']) && $activeLangCode !== $defLangCode)
@@ -132,7 +144,7 @@ class Language
 	 * @var string|null $langCode
 	 */
 
-	public static function load($data, $langCode = null)
+	public static function load($data, string $langCode = null)
 	{
 		if (null === $langCode)
 		{
@@ -141,24 +153,21 @@ class Language
 
 		if (isset(static::$languages[$langCode]))
 		{
-			$content = array_merge(static::$languages[$langCode]->get('content', []), Registry::parseData($data));
-			static::$languages[$langCode]->set('content', $content);
+			$strings = array_merge(static::$languages[$langCode]->get('strings', []), Registry::parseData($data));
+			static::$languages[$langCode]->set('strings', $strings);
 		}
 	}
 
-	public static function _($string, $placeholders = null)
+	public static function _(string $string, array $placeholders = null): string
 	{
-		if (strpos($string, 'locale.') === 0)
+		$active = static::getActiveLanguage();
+
+		if (strpos($string, '@') === 0)
 		{
-			$key    = $string;
-			$string = str_replace('locale.', '', $string);
-		}
-		else
-		{
-			$key = 'content.' . $string;
+			return $active->get('attributes.' . substr($string, 1), $string);
 		}
 
-		$translatedText = static::getActiveLanguage()->get($key, $string);
+		$translatedText = $active->get('strings.' . $string, $string);
 
 		if (is_array($placeholders) && $translatedText !== $string)
 		{
@@ -181,8 +190,8 @@ class Language
 
 			if (Uri::isClient('site') && static::isMultilingual())
 			{
-				$defaultLanguage = static::getDefault('site')->get('locale.code');
-				$currentLanguage = static::getActiveLanguage()->get('locale.code');
+				$defaultLanguage = static::getDefault('site')->get('attributes.code');
+				$currentLanguage = static::getActiveLanguage()->get('attributes.code');
 
 				if ($defaultLanguage !== $currentLanguage)
 				{
@@ -224,6 +233,6 @@ class Language
 			$langCode = static::getActiveCode();
 		}
 
-		return isset(static::$languages[$langCode]) ? static::$languages[$langCode]->get('content', []) : [];
+		return isset(static::$languages[$langCode]) ? static::$languages[$langCode]->get('strings', []) : [];
 	}
 }

@@ -5,12 +5,14 @@ namespace App\Mvc\Controller;
 use App\Helper\AdminMenu;
 use App\Helper\Assets;
 use App\Helper\Config;
+use App\Helper\Currency;
 use App\Helper\Event;
 use App\Helper\Language;
 use App\Helper\Template;
 use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User;
+use MaiVu\Php\Registry;
 use Phalcon\Mvc\Controller;
 
 class ControllerBase extends Controller
@@ -36,11 +38,20 @@ class ControllerBase extends Controller
 			$this->tag->setTitle($siteName);
 		}
 
+		$currency = Currency::getActive();
+		$registry = Registry::create($currency->params ?? []);
+
 		$this->view->setVars(
 			[
-				'siteName'  => $siteName,
-				'cmsConfig' => Config::get(),
-				'user'      => User::getActive(),
+				'siteName'          => $siteName,
+				'cmsConfig'         => Config::get(),
+				'user'              => User::getActive(),
+				'currencyCode'      => $currency->code ?? 'USD',
+				'currencySymbol'    => $registry->get('symbol', '$'),
+				'currencyDecimals'  => $registry->get('decimals', '2'),
+				'currencySeparator' => $registry->get('separator', ','),
+				'currencyPoint'     => $registry->get('point', '.'),
+				'currencyFormat'    => $registry->get('format', '{symbol}{value}'),
 			]
 		);
 	}

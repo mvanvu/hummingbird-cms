@@ -1,5 +1,6 @@
-{% extends 'Index.base.volt' %}
-{% block adminContent %}
+{% extends 'Template/HtmlBase.volt' %}
+{% block body %}
+<div id="admin-app">
     <div class="uk-grid-collapse" uk-grid>
         <aside class="uk-card uk-background-muted uk-box-shadow-small uk-height-viewport" id="admin-aside">
             <div class="site-name uk-light uk-padding-small">
@@ -35,7 +36,7 @@
                     <div class="uk-width-auto uk-flex uk-flex-middle uk-flex-right">
                         <div class="uk-inline uk-margin-small-right">
                             <a class="uk-link-reset">
-                                {{ _('locale.title') }}
+                                {{ _('@name') }}
                                 <span uk-icon="icon: triangle-down"></span>
                             </a>
                             <div uk-dropdown="mode: click">
@@ -43,8 +44,8 @@
                                     {% for code, language in helper('Language::getExistsLanguages') %}
                                         <li>
                                             <a class="uk-link-reset uk-active"
-                                               href="{{ helper('Uri::getInstance', ['language': language.get('locale.sef')]) }}">
-                                                {{ language.get('locale.title') }}
+                                               href="{{ helper('Uri::getInstance', ['language': language.get('attributes.sef')]) }}">
+                                                {{ language.get('attributes.name') }}
                                             </a>
                                         </li>
                                     {% endfor %}
@@ -95,4 +96,5 @@
             </div>
         </main>
     </div>
+</div>
 {% endblock %}

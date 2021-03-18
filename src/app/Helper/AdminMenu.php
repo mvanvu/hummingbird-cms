@@ -56,6 +56,14 @@ class AdminMenu
 							'title' => IconSvg::render('theatre') . ' ' . Text::_('templates'),
 							'url'   => Uri::route('template/index'),
 						],
+						[
+							'title' => IconSvg::render('currency') . ' ' . Text::_('currencies'),
+							'url'   => Uri::route('currency/index'),
+						],
+						[
+							'title' => IconSvg::render('language') . ' ' . Text::_('languages'),
+							'url'   => Uri::route('language/index'),
+						],
 					],
 				];
 			}

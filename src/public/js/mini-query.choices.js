@@ -4,20 +4,22 @@ _$.fn.choices = function (options) {
     }, options || {});
     this.parent('form').attr('autocomplete', 'off');
     this.elements.forEach(function (el) {
+        var $el = _$(el);
         if (el.nodeName !== 'SELECT'
-            || _$(el).addClass('mini-choices').find('option').length < options.applyCount
-            || el.classList.contains('no-choices')
+            || el.hasAttribute('readonly')
+            || $el.prop('disabled')
+            || $el.addClass('mini-choices').find('option').length < options.applyCount
+            || $el.hasClass('no-choices')
         ) {
             return;
         }
 
-        var $el = _$(el),
-            box = _$('<div class="uk-card uk-card-small uk-card-default uk-position-absolute uk-position-z-index uk-hidden">' +
-                '   <div class="uk-card-header">' +
-                '       <input class="uk-input uk-border-pill choices-search" type="text" value="" autocomplete="off"/>' +
-                '   </div>' +
-                '   <div class="uk-card-body"><div><ul class="uk-nav uk-nav-default"></ul></div></div>' +
-                '</div>'),
+        var box = _$('<div class="uk-card uk-card-small uk-card-default uk-position-absolute uk-position-z-index uk-hidden">' +
+            '   <div class="uk-card-header">' +
+            '       <input class="uk-input uk-border-pill choices-search" type="text" value="" autocomplete="off"/>' +
+            '   </div>' +
+            '   <div class="uk-card-body"><div><ul class="uk-nav uk-nav-default"></ul></div></div>' +
+            '</div>'),
             nav = box.find('ul.uk-nav'),
             appendOption = function (opt, group) {
                 nav.append('<li data-text="' + opt.innerText + '"  data-value="' + (opt.value || '') + '" data-group="' + group + '"><a class="uk-link-muted" href="#">' + opt.innerText + '</a></li>');

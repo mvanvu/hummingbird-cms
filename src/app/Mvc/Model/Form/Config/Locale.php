@@ -18,11 +18,12 @@ return [
 		'class' => 'uk-select uk-width-medium',
 	],
 	[
-		'name'    => 'multilingual',
-		'type'    => 'Switcher',
-		'label'   => 'multilingual-mode',
-		'value'   => 'Y',
-		'filters' => ['yesNo'],
+		'name'  => 'mainCurrency',
+		'type'  => 'CmsCurrencyList',
+		'label' => 'main-currency',
+		'value' => 'USD',
+		'rules' => ['Options'],
+		'class' => 'uk-select uk-width-medium',
 	],
 	[
 		'name'  => 'timezone',
@@ -30,5 +31,12 @@ return [
 		'label' => 'timezone',
 		'rules' => ['Options'],
 		'class' => 'uk-select uk-width-medium',
+	],
+	[
+		'name'    => 'multilingual',
+		'type'    => 'Switcher',
+		'label'   => 'multilingual-mode',
+		'value'   => 'Y',
+		'filters' => ['yesNo'],
 	],
 ];

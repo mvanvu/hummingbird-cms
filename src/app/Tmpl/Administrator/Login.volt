@@ -1,5 +1,5 @@
-{% extends 'Index.base.volt' %}
-{% block adminContent %}
+{% extends 'Template/HtmlBase.volt' %}
+{% block body %}
     {% set defaultLangCode = helper('Config::get', 'administratorLanguage') %}
     <div class="uk-background-cover uk-flex uk-flex-center uk-flex-middle uk-light uk-height-viewport uk-background-center-center"
          style="background-image: url({{ public('images/bg-login.jpg') }})">
@@ -29,7 +29,7 @@
                             <select class="uk-select uk-border-pill not-chosen" name="language">
                                 {% for code, language in helper('Language::getExistsLanguages') %}
                                     <option value="{{ code }}"{{ defaultLangCode === code ? ' selected' : '' }}>
-                                        {{ language.get('locale.title') | escape }}
+                                        {{ language.get('attributes.name') | escape }}
                                     </option>
                                 {% endfor %}
                             </select>

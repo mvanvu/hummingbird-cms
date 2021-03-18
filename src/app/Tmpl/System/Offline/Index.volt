@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ _('locale.code') }}" dir="{{ _('locale.direction') }}">
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ constant('ROOT_URI') ~ '/images/favicon.ico' }}"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css"/>
-
-</head>
-<body>
-
+{% extends 'Template/HtmlBase.volt' %}
+{% bloc body %}
 <div class="uk-background-cover uk-flex uk-flex-center uk-flex-middle uk-light uk-height-viewport uk-background-center-center"
      style="background-image: url({{ public('images/bg-login.jpg') }})">
     <div class="uk-position-cover uk-overlay-primary"></div>
@@ -46,6 +36,4 @@
         {% endif %}
     </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

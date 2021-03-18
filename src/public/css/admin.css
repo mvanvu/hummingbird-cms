@@ -213,6 +213,12 @@ a.upload-file:hover button {
     color: #fff;
 }
 
+#admin-main-container .readonly,
+#admin-main-container [readonly]{
+    background-color: #f8f8f8;
+    pointer-events: none;
+}
+
 #widget-container .toggle-parent,
 #widget-container .widget-card {
     border: 1px solid #eee;

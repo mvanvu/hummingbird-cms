@@ -80,6 +80,9 @@ class Volt
 			case 'addAssets':
 				return $helperPrefix . 'Assets::add(' . $resolvedArgs . ')';
 
+			case 'currency':
+				return $helperPrefix . 'Currency::format(' . $resolvedArgs . ')';
+
 			case 'widget':
 				return $helperPrefix . 'Widget::renderPosition(' . $resolvedArgs . ')';
 
@@ -148,6 +151,9 @@ class Volt
 
 			case 'metadata':
 				return $helperPrefix . 'MetaData::getInstance()->render()';
+
+			case 'language':
+				return $helperPrefix . 'Language::getActiveLanguage()';
 
 			case 'helper':
 				$helperMethod = str_replace('\'', '', static::$compiler->expression($exprArgs[0]['expr']));

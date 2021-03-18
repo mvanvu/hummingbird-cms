@@ -37,12 +37,12 @@ class Date extends DateTime
 	{
 		if (!($date instanceof Date))
 		{
-			$date = static::getInstance($date, new DateTimeZone('UTC'));
+			$date = static::fromDB($date);
 		}
 
 		if (!($time instanceof Date))
 		{
-			$time = static::getInstance('now', new DateTimeZone('UTC'));
+			$time = static::now('UTC');
 		}
 
 		$diff = $time->toUnix() - $date->toUnix();
@@ -93,9 +93,19 @@ class Date extends DateTime
 		return $date->toDisplay();
 	}
 
+	public static function fromDB($time = 'now')
+	{
+		return static::getInstance($time, 'UTC');
+	}
+
 	public static function getInstance($time = 'now', $tz = null)
 	{
 		return new Date($time, $tz);
+	}
+
+	public static function now($tz = null)
+	{
+		return static::getInstance('now', $tz);
 	}
 
 	public function toUnix()
@@ -103,7 +113,7 @@ class Date extends DateTime
 		return (int) parent::format('U');
 	}
 
-	public function toDisplay($format = null, $translate = true)
+	public function toDisplay(string $format = null, bool $translate = true)
 	{
 		$formattedDate = $this->toFormat($format);
 
@@ -117,7 +127,7 @@ class Date extends DateTime
 
 				foreach ($matches[0] as $string)
 				{
-					$index = 'locale.' . strtolower($string . (strcasecmp('may', $string) === 0 ? '-short' : ''));
+					$index = 'locale-' . strtolower($string . (strcasecmp('may', $string) === 0 ? '-short' : ''));
 
 					if ($language->has($index))
 					{
@@ -136,7 +146,7 @@ class Date extends DateTime
 	{
 		if (null === $format)
 		{
-			$format = Text::_('locale.date-time-format');
+			$format = Text::_('@params.dateTimeFormat');
 		}
 
 		$tz   = IS_CLI ? static::$stz : User::getActive()->getTimezone();
@@ -161,16 +171,6 @@ class Date extends DateTime
 	public static function yesterday($tz = null)
 	{
 		return static::now($tz)->sub(new DateInterval('P1D'));
-	}
-
-	public static function now($tz = null)
-	{
-		return static::getInstance('now', $tz);
-	}
-
-	public static function fromDB($time = 'now')
-	{
-		return static::getInstance($time, new DateTimeZone('UTC'));
 	}
 
 	public static function tomorrow($tz = null)

@@ -15,7 +15,7 @@ class CmsLanguage extends Select
 		{
 			$options[] = [
 				'value' => $langCode,
-				'text'  => $language->get('locale.title'),
+				'text'  => $language->get('attributes.name'),
 			];
 		}
 

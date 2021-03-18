@@ -8,20 +8,19 @@ cmsCore.initUcmElementModal = function (elementId) {
         appendItem = function (id, title) {
             $(container.find('[type="template/ucm-item"]').text())
                 .appendTo(list).attr('data-id', id).find('.title').text(title);
+        },
+        updateValue = function () {
+            var opt;
+            input.empty();
+            list.find('[data-id]').each(function () {
+                opt = document.createElement('option');
+                opt.value = $(this).attr('data-id');
+                opt.selected = true;
+                input.append(opt);
+            });
+
+            input.trigger('change');
         };
-
-    var updateValue = function () {
-        var opt;
-        input.empty();
-        list.find('[data-id]').each(function () {
-            opt = document.createElement('option');
-            opt.value = $(this).attr('data-id');
-            opt.selected = true;
-            input.append(opt);
-        });
-
-        input.trigger('change');
-    };
 
     frame.attr('src', frame.attr('data-src'));
     frame.on('load', function () {

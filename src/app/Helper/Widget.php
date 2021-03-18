@@ -133,7 +133,7 @@ class Widget
 	{
 		$widgetName  = basename($widgetPath);
 		$widgetClass = Constant::getNamespaceWidget($widgetName);
-		$configFile  = $widgetPath . '/config.php';
+		$configFile  = $widgetPath . '/manifest.php';
 
 		if (class_exists($widgetClass) && is_file($configFile))
 		{

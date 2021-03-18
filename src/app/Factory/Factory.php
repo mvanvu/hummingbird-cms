@@ -8,6 +8,7 @@ use App\Helper\Event;
 use App\Helper\Language;
 use App\Helper\Text;
 use App\Helper\Uri;
+use App\Helper\Utility;
 use App\Loader;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Registry;
@@ -102,19 +103,20 @@ class Factory
 			{
 				$siteLangCode = Config::get('siteLanguage', 'en-GB');
 				$siteLanguage = Language::get($siteLangCode);
+				$iso          = array_flip(Utility::getIsoCodes());
 
 				foreach (Language::getExistsLanguages() as $language)
 				{
-					if ($language->get('locale.code') !== $siteLangCode)
+					if ($language->get('attributes.code') !== $siteLangCode)
 					{
-						$formOptions['languages'][$language->get('locale.code2')] = $language->get('locale.code');
+						$formOptions['languages'][$iso[$language->get('attributes.iso')]] = $language->get('attributes.code');
 					}
 				}
 
 				ksort($formOptions['languages']);
 				$formOptions['languages'] = array_merge(
 					[
-						$siteLanguage->get('locale.code2') => $siteLanguage->get('locale.code'),
+						$iso[$siteLanguage->get('attributes.iso')] => $siteLanguage->get('attributes.code'),
 					],
 					$formOptions['languages']
 				);
