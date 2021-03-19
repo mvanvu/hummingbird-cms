@@ -5,6 +5,15 @@
             toolbars = $('.toolbars-container');
 
         if (listForm.length) {
+
+            if (!listForm.find('[name="postAction"]').length) {
+                listForm.append('<input name="postAction" type="hidden"/>');
+            }
+
+            if (!listForm.find('[name="entityId"]').length) {
+                listForm.append('<input name="entityId" type="hidden"/>');
+            }
+
             var filterFields = listForm.find('[name^="filters["]').not('[name="filters[search]"]'),
                 limitBox = listForm.find('select[name="filters[limit]"]'),
                 cid = listForm.find('input[type="checkbox"][name="cid[]"]');

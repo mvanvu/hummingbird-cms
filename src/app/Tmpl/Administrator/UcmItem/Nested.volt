@@ -12,8 +12,6 @@
                 {{ _('no-items-found') }}
             </div>
         {% endif %}
-        <input type="hidden" name="postAction"/>
-        <input type="hidden" name="entityId"/>
         {{ csrfInput() }}
     </div>
 </form>

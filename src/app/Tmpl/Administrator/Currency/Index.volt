@@ -63,7 +63,5 @@
         </tbody>
     </table>
     {{ partial('Pagination/Pagination') }}
-    <input type="hidden" name="postAction"/>
-    <input type="hidden" name="entityId"/>
     {{ csrfInput() }}
 </form>
