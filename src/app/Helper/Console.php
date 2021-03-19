@@ -109,9 +109,14 @@ class Console
 			$cmd .= ' ' . $command;
 		}
 
-		$cmd .= ' > /dev/null 2>&1' . ($queue ? ' &' : '');
+		$cmd .= ' >> /dev/null 2>&1';
 
-		return shell_exec($cmd);
+		if ($queue)
+		{
+			$cmd .= ' &';
+		}
+
+		return exec($cmd);
 	}
 
 	public function composer($commands, string $pathToJson)
