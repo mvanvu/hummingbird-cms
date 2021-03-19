@@ -764,14 +764,14 @@ class AdminControllerBase extends ControllerBase
 	{
 		$cid        = $this->request->getPost('cid', null, []);
 		$postAction = $this->request->getPost('postAction', ['trim'], '');
-		$entityId   = (int) $this->request->getPost('entityId', ['int'], 0);
+		$entityId   = $this->request->getPost('entityId', null, 0);
 
 		if (!$this->request->isPost() || !in_array($postAction, ['P', 'U', 'T']))
 		{
 			return $this->redirectBack();
 		}
 
-		if ($entityId > 0)
+		if (!empty($entityId))
 		{
 			$cid[] = $entityId;
 		}
@@ -780,10 +780,7 @@ class AdminControllerBase extends ControllerBase
 
 		foreach (array_unique($cid) as $id)
 		{
-			$id = (int) $id;
-
-			if ($id > 0
-				&& ($entity = $this->model->findFirst('id = ' . $id))
+			if (($entity = $this->model->findFirst(['id = :id:', 'bind' => ['id' => $id]]))
 				&& property_exists($entity, $this->stateField)
 				&& $entity->assign([$this->stateField => $postAction])->save()
 			)
