@@ -24,6 +24,18 @@ class QueueJob extends Model
 	 * @var string
 	 */
 
+	public $state;
+
+	/**
+	 * @var integer
+	 */
+
+	public $attempts;
+
+	/**
+	 * @var string
+	 */
+
 	public $payload;
 
 	/**

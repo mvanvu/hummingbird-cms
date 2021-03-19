@@ -16,6 +16,16 @@ class Queue
 	const PRIORITY_NORMAL = 2;
 	const PRIORITY_LOW = 3;
 
+	/**
+	 * Direct execute the queue job by Fly application using PHP shell_exec
+	 *
+	 * @param string $handler
+	 * @param null   $payload
+	 * @param int    $priority
+	 *
+	 * @return QueueJob|false
+	 */
+
 	public static function add(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
 	{
 		if ($job = static::make($handler, $payload, $priority))
@@ -30,11 +40,12 @@ class Queue
 	 * @param string $handler
 	 * @param null   $payload
 	 * @param int    $priority
+	 * @param string $state
 	 *
 	 * @return QueueJob|false
 	 */
 
-	public static function make(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	public static function make(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL, string $state = 'HANDLING')
 	{
 		if (class_exists($handler))
 		{
@@ -60,13 +71,14 @@ class Queue
 					$queueJob = new QueueJob;
 					$queueJob->assign(
 						[
-							'queueJobId' => md5($handler . ':' . $payload . ':' . $priority . ':' . time()),
+							'queueJobId' => md5($handler . ':' . $payload . ':' . (QueueJob::count() + 1)),
 							'handler'    => $handler,
 							'payload'    => $payload,
 							'priority'   => $priority,
 							'createdAt'  => Date::now('UTC')->toSql(),
-							'createdBy'  => User::getActive()->id ?? 0,
-							'handling'   => 'Y',
+							'createdBy'  => User::id(),
+							'state'      => in_array($state, ['HANDLING', 'SCHEDULED', 'FAILED']) ? $state : 'HANDLING',
+							'attempts'   => 0,
 							'failedAt'   => null,
 						]
 					);
@@ -83,6 +95,21 @@ class Queue
 		}
 
 		return false;
+	}
+
+	/**
+	 * Schedule the queue job under the cron tab
+	 *
+	 * @param string $handler
+	 * @param null   $payload
+	 * @param int    $priority
+	 *
+	 * @return QueueJob|false
+	 */
+
+	public static function schedule(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
+	{
+		return static::make($handler, $payload, $priority, 'SCHEDULED');
 	}
 
 	public static function execute(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL): bool
@@ -110,21 +137,24 @@ class Queue
 				if ($class->isSubclassOf(QueueAbstract::class))
 				{
 					/** @var QueueAbstract $handler */
-					$job->assign(['handling' => 'Y'])->save();
 					$handler = new $job->handler;
 					$handler->initJob($job);
 
 					if ($handler->handle())
 					{
+						static::cliMessage('Queue job completed: ' . $job->handler);
 						$job->delete();
-						Log::addEntry('queue-completed', ['handler' => $job->queueJobId . ':' . $job->handler]);
-						static::cliMessage('Completed. ' . $job->queueJobId . ':' . $job->handler);
 					}
 					else
 					{
-						$job->assign(['failedAt' => Date::now('UTC')->toSql(), 'handling' => 'N'])->save();
-						Log::addEntry('queue-failed', ['handler' => $job->queueJobId . ':' . $job->handler]);
-						static::cliMessage('Failed. ' . $job->queueJobId . ':' . $job->handler . ' return FALSE');
+						static::cliMessage('Queue job failed: ' . $job->handler . ' return FALSE');
+						$job->assign(
+							[
+								'failedAt' => Date::now('UTC')->toSql(),
+								'attempts' => (int) $job->attempts + 1,
+								'state'    => 'FAILED',
+							]
+						)->save();
 					}
 
 					return true;
@@ -132,9 +162,14 @@ class Queue
 			}
 			catch (Throwable $e)
 			{
-				$job->assign(['failedAt' => Date::now('UTC')->toSql(), 'handling' => 'N'])->save();
-				Log::addEntry('queue-failed', ['handler' => get_class($e)]);
 				static::cliMessage('Failed. ' . $e->getMessage());
+				$job->assign(
+					[
+						'failedAt' => Date::now('UTC')->toSql(),
+						'attempts' => (int) $job->attempts + 1,
+						'state'    => 'FAILED',
+					]
+				)->save();
 			}
 		}
 
@@ -158,7 +193,7 @@ class Queue
 		}
 
 		$force = Console::getInstance()->hasArgument('force');
-		$jobs  = $force ? QueueJob::find() : QueueJob::find('failedAt IS NULL AND handling = \'N\'');
+		$jobs  = $force ? QueueJob::find() : QueueJob::find('state <> \'HANDLING\'');
 
 		if ($jobs->count())
 		{
