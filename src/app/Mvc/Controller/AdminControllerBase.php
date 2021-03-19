@@ -697,15 +697,13 @@ class AdminControllerBase extends ControllerBase
 			return $this->redirectBack();
 		}
 
-		$cid   = $this->request->getPost('cid', ['int'], []);
+		$cid   = $this->request->getPost('cid', null, []);
 		$count = 0;
 
 		foreach ($cid as $id)
 		{
-			$id = (int) $id;
-
-			if ($id > 0
-				&& ($entity = $this->model->findFirst('id = ' . $id))
+			if (!empty($id)
+				&& ($entity = $this->model->findFirst(['id = :id:', 'bind' => ['id' => $id]]))
 				&& (!property_exists($entity, 'state') || $entity->state === 'T')
 				&& $entity->delete()
 			)

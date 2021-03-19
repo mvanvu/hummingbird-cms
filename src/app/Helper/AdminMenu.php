@@ -64,6 +64,10 @@ class AdminMenu
 							'title' => IconSvg::render('language') . ' ' . Text::_('languages'),
 							'url'   => Uri::route('language/index'),
 						],
+						[
+							'title' => IconSvg::render('history') . ' ' . Text::_('system-logs'),
+							'url'   => Uri::route('log/index'),
+						],
 					],
 				];
 			}

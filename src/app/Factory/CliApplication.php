@@ -38,30 +38,20 @@ class CliApplication extends AbstractApplication
 		}
 	}
 
-	public function error(string $message, $context = null)
+	public function error(string $message, string $context = null, bool $log = false)
 	{
 		$this->console->error($message);
-		$this->log($message, true, $context);
+		$log && $this->log($message, $context);
 	}
 
-	public function log(string $message, $error = false, $context = null)
+	public function log(string $message, string $context = null)
 	{
-		$type       = $error ? 'error' : 'out';
-		$stringData = ['message' => $message];
-		$stringKey  = 'console-' . $type . '-msg';
-
-		if ($context)
-		{
-			$stringData['context'] = $context;
-			$stringKey             = 'console-context-' . $type . '-msg';
-		}
-
-		Log::addEntry($stringKey, $stringData, $this instanceof SocketApplication ? 'socket' : 'console');
+		Log::addEntry($message, $context ?? ($this instanceof FlyApplication ? 'fly' : 'console'));
 	}
 
-	public function out(string $message, $context = null)
+	public function out(string $message, string $context = null, bool $log = false)
 	{
 		$this->console->out($message);
-		$this->log($message, false, $context);
+		$log && $this->log($message, $context);
 	}
 }

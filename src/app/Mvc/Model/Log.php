@@ -4,15 +4,13 @@ namespace App\Mvc\Model;
 
 use App\Helper\Date;
 use App\Helper\Service;
-use App\Helper\Text;
 use App\Helper\User as Auth;
-use Phalcon\Mvc\Model;
 
-class Log extends Model
+class Log extends ModelBase
 {
 	/**
 	 *
-	 * @var integer
+	 * @var string
 	 */
 	public $id;
 
@@ -32,13 +30,8 @@ class Log extends Model
 	 *
 	 * @var string
 	 */
-	public $stringKey;
+	public $message;
 
-	/**
-	 *
-	 * @var string | array
-	 */
-	public $payload = [];
 
 	/**
 	 *
@@ -58,7 +51,7 @@ class Log extends Model
 	 */
 	public $userAgent;
 
-	public static function addEntry($stringKey, array $stringData = [], $context = 'system')
+	public static function addEntry(string $message, string $context = 'system')
 	{
 		if (IS_CLI)
 		{
@@ -71,17 +64,16 @@ class Log extends Model
 			$request   = Service::request();
 			$ip        = $request->getClientAddress() ?? 'N/A';
 			$userAgent = $request->getUserAgent() ?? '';
-			$userId    = Auth::getInstance()->id ?? 0;
+			$userId    = Auth::id() ?? 0;
 		}
 
 		$createdAt = Date::now('UTC')->toSql();
-		$payload   = array_merge(['date' => $createdAt], $stringData);
 		$entry     = new Log;
 		$created   = $entry->assign(
 			[
+				'id'        => md5($context . ':' . $createdAt . ':' . (Log::count() ?? 0 + 1)),
 				'context'   => $context,
-				'stringKey' => $stringKey,
-				'payload'   => json_encode($payload),
+				'message'   => $message,
 				'userId'    => $userId,
 				'ip'        => $ip,
 				'userAgent' => $userAgent,
@@ -120,45 +112,27 @@ class Log extends Model
 		$this->belongsTo('userId', User::class, 'id', ['reusable' => true, 'alias' => 'user']);
 	}
 
-	public function getSummary()
+	public function getSearchFields()
 	{
-		return static::parseSummary($this->stringKey, $this->payload);
+		return [
+			'context',
+			'message',
+			'ip',
+		];
 	}
 
-	/**
-	 * @param $stringKey
-	 * @param $payload
-	 *
-	 * @return string
-	 */
-
-	public static function parseSummary($stringKey, $payload)
+	public function getOrderFields()
 	{
-		if (is_string($payload))
-		{
-			$payload = @json_decode($payload, true) ?: [];
-		}
-
-		if (empty($payload) && !is_array($payload))
-		{
-			$payload = [];
-		}
-
-		if (isset($payload['date']))
-		{
-			$payload['date'] = Date::relative($payload['date']);
-		}
-
-		return call_user_func_array(Text::class . '::_', [$stringKey, $payload]);
-	}
-
-	public function getTitle()
-	{
-		return Text::_($this->context . '-logs-title');
+		return [
+			'createdAt',
+			'message',
+			'ip',
+			'userId',
+		];
 	}
 
 	public function __toString()
 	{
-		return static::parseSummary($this->stringKey, $this->payload);
+		return $this->message;
 	}
 }

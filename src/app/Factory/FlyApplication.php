@@ -6,6 +6,7 @@ namespace App\Factory;
 
 use App\Console\Fly;
 use App\Helper\Constant;
+use App\Helper\Date;
 use Throwable;
 
 class FlyApplication extends CliApplication
@@ -14,6 +15,16 @@ class FlyApplication extends CliApplication
 	 * @var Fly
 	 */
 	protected $fly;
+
+	/**
+	 * @var string
+	 */
+	protected $message;
+
+	public function getMessage(): string
+	{
+		return $this->message;
+	}
 
 	public function getFly(): Fly
 	{
@@ -39,10 +50,11 @@ class FlyApplication extends CliApplication
 
 				if (class_exists($ns) && ($this->fly = new $ns) instanceof Fly)
 				{
+					$this->message = Date::now('UTC')->format('Y-m-d H:i:s') . '-UTC Landed on [' . $ns . '] command: ' . implode(' ', ($_SERVER['argv'] ?? []));
 					$this->fly->flap($this, $param);
 
 					// Fly one time only
-					$this->console->outLn('Landed on [' . $ns . '] command: ' . implode(' ', ($_SERVER['argv'] ?? [])));
+					$this->console->outLn($this->message);
 					break;
 				}
 			}

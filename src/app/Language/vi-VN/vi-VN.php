@@ -172,6 +172,7 @@ return [
 	'admin-currency-index-title'        => 'Quản lý tiền tệ',
 	'admin-currency-edit-title'         => 'Chỉnh sửa tiền tệ: %name%',
 	'admin-currency-add-title'          => 'Thêm tiền tệ',
+	'admin-log-index-title'             => 'Nhật ký hệ thống',
 	'menu-admin-index-title'            => 'Quản lý menu',
 	'menu-admin-add-title'              => 'Thêm menu',
 	'menu-admin-edit-title'             => 'Chỉnh sửa menu: %title%',
@@ -549,4 +550,7 @@ return [
 	'currency-point'                    => 'Dấu thập phân',
 	'currency-format'                   => 'Định dạng hiển thị',
 	'main-currency'                     => 'Tiền tệ chính',
+	'system-logs'                       => 'Nhật ký hệ thống',
+	'ip-address'                        => 'Địa chỉ IP',
+	'log-type-select'                   => 'Chọn loại',
 ];

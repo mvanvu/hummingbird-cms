@@ -175,6 +175,7 @@ return [
 	'admin-currency-index-title'        => 'Manage currencies',
 	'admin-currency-edit-title'         => 'Edit currency: %name%',
 	'admin-currency-add-title'          => 'Add new currency',
+	'admin-log-index-title'             => 'Manage system logs',
 	'menu-admin-index-title'            => 'Manage menu items',
 	'menu-admin-add-title'              => 'Add new menu item',
 	'menu-admin-edit-title'             => 'Edit the menu: %title%',
@@ -557,4 +558,7 @@ return [
 	'currency-point'                    => 'Point',
 	'currency-format'                   => 'Format',
 	'main-currency'                     => 'Main currency',
+	'system-logs'                       => 'System logs',
+	'ip-address'                        => 'IP address',
+	'log-type-select'                   => 'Select a type',
 ];

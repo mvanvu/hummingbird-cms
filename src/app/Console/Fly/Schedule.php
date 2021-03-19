@@ -11,7 +11,7 @@ use App\Plugin\Plugin as AppPlugin;
 
 class Schedule implements Fly
 {
-	protected $startTime;
+	protected $time;
 
 	protected $runTime;
 
@@ -21,17 +21,17 @@ class Schedule implements Fly
 
 	protected $callable;
 
+	protected $tz;
+
 	public function __construct()
 	{
 		set_time_limit(0);
 		ini_set('memory_limit', -1);
-		$console         = Console::getInstance();
-		$this->startTime = Date::now('UTC');
-		$this->sleep     = $console->getArgument('sleep', 1, 'uint');
-		$this->usleep    = $console->getArgument('usleep', 100, 'uint');
-		$this->usleep    = $console->getArgument('usleep', 100, 'uint');
+		$console    = Console::getInstance();
+		$this->tz   = $console->getArgument('timezone', 'UTC');
+		$this->time = Date::getInstance($console->getArgument('time', 'now'), $this->tz);
 
-		if ($callable = $console->getArgument('callable'))
+		if ($callable = $console->getArgument('callback'))
 		{
 			if (is_callable($callable))
 			{
@@ -55,10 +55,10 @@ class Schedule implements Fly
 		 * **************************************************************************
 		 * ********************* PARAM FORMAT EXAMPLE (UTC) *************************
 		 * **************************************************************************
-		 * Run the task every 5 seconds                             = 5s            *
-		 * Run the task every 1 minute                              = 1i            *
-		 * Run the task every 1 hour                                = 1h            *
-		 * Run the task every daily at time                         = t17:00        *
+		 * Run the task every 5 seconds                             = s:5           *
+		 * Run the task every 1 minute                              = i:1           *
+		 * Run the task every 1 hour                                = h:1           *
+		 * Run the task every daily at time                         = t:17:00       *
 		 * **************************************************************************
 		 * Using Plugin Fly for a custom advance schedule                           *
 		 * **************************************************************************
@@ -66,17 +66,16 @@ class Schedule implements Fly
 
 		while (true)
 		{
-			usleep($this->usleep);
-			$this->runTime = Date::now('UTC');
+			$this->runTime = Date::now($this->tz);
 
 			if ($this->callable)
 			{
-				if (preg_match('/^([0-9]+)([sih])$/', $param, $matches))
+				if (preg_match('/^([sih]):([0-9]+)$/', $param, $matches))
 				{
-					$time = $this->runTime->toUnix() - $this->startTime->toUnix();
-					$num  = (int) $matches[1];
+					$time = $this->runTime->toUnix() - $this->time->toUnix();
+					$num  = (int) $matches[2];
 
-					switch ($matches[2])
+					switch ($matches[1])
 					{
 						case 'i':
 							$num *= 60;
@@ -89,50 +88,46 @@ class Schedule implements Fly
 
 					if ($time > 0 && $time % $num === 0)
 					{
-						if ($this->callable instanceof AppPlugin)
-						{
-							$this->callable->callback('onSchedule', [$app, $this]);
-						}
-						else
-						{
-							call_user_func($this->callable);
-						}
-
-						break;
+						$this->callback($app);
 					}
 				}
-				elseif (preg_match('/^t([0-9]{2}:[0-9]{2})$/', $param, $matches))
+				elseif (preg_match('/^t:([0-9]{2}:[0-9]{2})$/', $param, $matches))
 				{
 					if ($this->runTime->format('H:i:s') === $matches[1] . ':00')
 					{
-						if ($this->callable instanceof AppPlugin)
-						{
-							$this->callable->callback('onSchedule', [$app, $this]);
-						}
-						else
-						{
-							call_user_func($this->callable);
-						}
-
-						break;
+						$this->callback($app);
 					}
 				}
-				elseif ($this->callable instanceof AppPlugin)
+				else
 				{
-					$this->callable->callback('onSchedule', [$app, $this]);
+					$this->callback($app);
 				}
 			}
+
+			sleep(1); // Restart after 1 second
+		}
+	}
+
+	protected function callback(FlyApplication $app)
+	{
+		if ($this->callable instanceof AppPlugin)
+		{
+			$this->callable->callback('onSchedule', [$app, $this]);
+		}
+		else
+		{
+			call_user_func($this->callable);
 		}
 
-		sleep($this->sleep);
-
-		// Restart loop
-		$this->flap($app, $param);
+		if ($app->getConsole()->hasArgument('log'))
+		{
+			$app->log($app->getMessage(), 'fly.schedule');
+		}
 	}
 
 	public function getStartTime(): Date
 	{
-		return $this->startTime;
+		return $this->time;
 	}
 
 	public function getRunTime(): Date
