@@ -35,7 +35,7 @@ The CMS based on Phalcon v4 and UIKit v3
     + Plugin `php fly plugin:Cms/Backup`: Run a backup under console <a href="https://github.com/mvanvu/hummingbird-cms-backup">Official Backup plugin</a>
     + QueueJob `php fly queueJob:all`: execute all the queue jobs
     + Schedule `php fly s:5`: run the task every 5 seconds 
-    + Socket `php fly socket socket host=0.0.0.0 port=2053`: Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>, <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
+    + Socket `php fly socket host=0.0.0.0 port=2053`: Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>, <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
     + Tinker `php fly tinker`: A runtime developer console, interactive debugger and REPL for PHP.
 
 ## Install packages channel
@@ -72,11 +72,18 @@ cd src
 composer install
 ```
 
-## Build with Docker
+## Build with the docker
 ```sh
 cd ../
 docker-compose build
 docker-compose up -d
+```
+
+## Run the fly from the docker
+```
+docker-compose exec ubuntu18.4 bash
+cd /var/www/hummingbird.local
+php fly tinker
 ```
 
 ## Start to install
