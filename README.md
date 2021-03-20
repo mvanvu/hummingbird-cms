@@ -8,7 +8,7 @@ The CMS based on Phalcon v4 and UIKit v3
 - Phalcon >= 4.1.0
 - PHP ZIP extension
 - <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx" rel="nofollow">Composer</a>
-- <a href="https://github.com/swoole/swoole-src">Swoole</a> (optional for Socket application)
+- <a href="https://github.com/swoole/swoole-src">Swoole</a> (optional for the web socket)
 
 ## Included
 - <a href="https://github.com/mvanvu/php-registry">Php-registry</a>
