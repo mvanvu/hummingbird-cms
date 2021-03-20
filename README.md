@@ -81,7 +81,7 @@ docker-compose up -d
 
 ## Run the fly from the docker
 ```
-docker-compose exec ubuntu18.4 bash
+docker-compose exec ubuntu-18.4 bash
 cd /var/www/hummingbird.local
 php fly tinker
 ```
