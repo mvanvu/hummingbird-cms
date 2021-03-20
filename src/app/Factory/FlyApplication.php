@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Console\Fly;
+use App\Helper\Console;
 use App\Helper\Constant;
 use App\Helper\Date;
+use App\Mvc\Model\Log;
+use Phalcon\Application\AbstractApplication;
+use Phalcon\Di\DiInterface;
 use Throwable;
 
-class FlyApplication extends CliApplication
+class FlyApplication extends AbstractApplication
 {
 	/**
 	 * @var Fly
@@ -21,6 +25,17 @@ class FlyApplication extends CliApplication
 	 */
 	protected $message;
 
+	/**
+	 * @var Console
+	 */
+	protected $console;
+
+	public function __construct(DiInterface $container = null)
+	{
+		parent::__construct($container);
+		$this->console = Console::getInstance();
+	}
+
 	public function getMessage(): string
 	{
 		return $this->message;
@@ -29,6 +44,11 @@ class FlyApplication extends CliApplication
 	public function getFly(): Fly
 	{
 		return $this->fly;
+	}
+
+	public function getConsole()
+	{
+		return $this->console;
 	}
 
 	public function execute()
@@ -63,5 +83,22 @@ class FlyApplication extends CliApplication
 		{
 			$this->error($e->getMessage());
 		}
+	}
+
+	public function error(string $message, string $context = null, bool $log = false)
+	{
+		$this->console->error($message);
+		$log && $this->log($message, $context);
+	}
+
+	public function log(string $message, string $context = null)
+	{
+		Log::addEntry($message, $context ?? 'fly.system');
+	}
+
+	public function out(string $message, string $context = null, bool $log = false)
+	{
+		$this->console->out($message);
+		$log && $this->log($message, $context);
 	}
 }

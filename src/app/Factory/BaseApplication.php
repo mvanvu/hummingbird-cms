@@ -28,7 +28,7 @@ class BaseApplication
 
 			if (IS_CLI)
 			{
-				$app = IS_FLY ? new FlyApplication($di) : new CliApplication($di);
+				$app = new FlyApplication($di);
 			}
 			elseif (IS_API)
 			{

@@ -25,8 +25,8 @@ class Schedule implements Fly
 
 	public function __construct()
 	{
-		set_time_limit(0);
 		ini_set('memory_limit', -1);
+		set_time_limit(0);
 		ignore_user_abort(true);
 		$console    = Console::getInstance();
 		$this->tz   = $console->getArgument('timezone', 'UTC');

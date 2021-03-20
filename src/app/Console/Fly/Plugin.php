@@ -16,9 +16,9 @@ class Plugin implements Fly
 
 			if ($handler = Event::getHandlerByGroupName($group, $name))
 			{
-				if ($queueJobId = $app->getConsole()->getArgument('queueJobId'))
+				if ($queueJob = $app->getConsole()->getArgument('queueJob'))
 				{
-					(new QueueJob)->flap($app, $queueJobId);
+					(new QueueJob)->flap($app, $queueJob);
 				}
 				else
 				{

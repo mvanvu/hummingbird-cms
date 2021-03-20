@@ -69,7 +69,7 @@ class Plugin
 		{
 			list($group, $name) = explode('\\', str_replace('App\\Plugin\\', '', get_called_class()));
 
-			return Console::getInstance()->execute('plugin:' . $group . '/' . $name . ' queueJobId=' . $job->queueJobId);
+			return Console::getInstance()->execute('plugin:' . $group . '/' . $name . ' queueJob=' . $job->queueJobId);
 		}
 
 		return false;

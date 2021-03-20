@@ -31,10 +31,14 @@ if (!function_exists('dd'))
 
 class Factory
 {
-	/** @var Registry $config */
+	/**
+	 * @var Registry
+	 */
 	protected static $config;
 
-	/** @var WebApplication | ApiApplication $application */
+	/**
+	 * @var WebApplication | ApiApplication | FlyApplication
+	 */
 	protected static $application;
 
 	public static function getConfig()

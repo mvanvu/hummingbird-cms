@@ -2,6 +2,4 @@
 
 <?php
 
-define('IS_FLY', true);
-
 (require_once __DIR__ . '/app.php')->execute();

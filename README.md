@@ -31,10 +31,11 @@ The CMS based on Phalcon v4 and UIKit v3
 ## Core applications
 - Web application
 - Api application
-- Cli application
-- Socket application 
-  + Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>
-  + <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
+- Fly application (console)
+  
+## Web socket (run on Fly Application)
+- Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>
+- <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
 
 ## Install packages channel
 - Support live install plugin from the packages channel
@@ -43,7 +44,7 @@ The CMS based on Phalcon v4 and UIKit v3
 
 ## Core assets
 - Mini query js (official)
-- UIkit v3.6.17
+- UIkit v3.6.18
 
 # Installation for Development
 ## Clone this repo
