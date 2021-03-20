@@ -31,11 +31,12 @@ The CMS based on Phalcon v4 and UIKit v3
 ## Core applications
 - Web application
 - Api application
-- Fly application (console)
-  
-## Web socket (run on Fly Application)
-- Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>
-- <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
+- Fly application (all fly localed at src/app/Console/Fly)
+    + Plugin `php fly plugin:Cms/Backup`: Run a backup under console <a href="https://github.com/mvanvu/hummingbird-cms-backup">Official Backup plugin</a>
+    + QueueJob `php fly queueJob:all`: execute all the queue jobs
+    + Schedule `php fly s:5`: run the task every 5 seconds 
+    + Socket `php fly socket socket host=0.0.0.0 port=2053`: Thanks <a href="https://github.com/swoole/swoole-src">Swoole</a>, <a href="https://github.com/mvanvu/hummingbird-cms-chatsample">Official Chat Sample plugin</a>
+    + Tinker `php fly tinker`: A runtime developer console, interactive debugger and REPL for PHP.
 
 ## Install packages channel
 - Support live install plugin from the packages channel
