@@ -34,17 +34,25 @@ class Schedule implements Fly
 
 		if ($callable = $console->getArgument('callback'))
 		{
-			if (is_callable($callable))
-			{
-				$this->callable = $callable;
-			}
-			elseif (false !== strpos($callable, '/'))
+			if (false !== strpos($callable, '/'))
 			{
 				list($group, $name) = explode('/', $callable, 2);
 
 				if ($handler = Event::getHandlerByGroupName($group, $name))
 				{
 					$this->callable = $handler;
+				}
+			}
+			else
+			{
+				$this->callable = [];
+
+				foreach (explode(',', $callable) as $func)
+				{
+					if (is_callable($func))
+					{
+						$this->callable[] = $func;
+					}
 				}
 			}
 		}
@@ -117,7 +125,10 @@ class Schedule implements Fly
 		}
 		else
 		{
-			call_user_func($this->callable);
+			foreach ($this->callable as $callable)
+			{
+				call_user_func($callable);
+			}
 		}
 
 		if ($app->getConsole()->hasArgument('log'))

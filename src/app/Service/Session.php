@@ -54,6 +54,19 @@ class Session extends AbstractAdapter
 		return $instance;
 	}
 
+	public static function sessionGc()
+	{
+		if (!headers_sent())
+		{
+			if (session_status() !== PHP_SESSION_ACTIVE)
+			{
+				session_start();
+			}
+
+			session_gc();
+		}
+	}
+
 	/**
 	 * @param mixed $savePath
 	 * @param mixed $sessionName

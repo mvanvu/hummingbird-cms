@@ -119,7 +119,7 @@ class UserController extends ControllerBase
 			$redirect = Uri::back(Uri::route('user/account'), false);
 		}
 
-		if (!User::getActive()->is('guest'))
+		if (!User::is('guest'))
 		{
 			return Uri::redirect($redirect);
 		}
