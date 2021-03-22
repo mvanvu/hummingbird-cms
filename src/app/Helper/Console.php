@@ -60,7 +60,7 @@ class Console
 		return $this->arguments->has($name);
 	}
 
-	public function run(string $callbacks = null)
+	public function runCallbacks(string $callbacks = null)
 	{
 		$callbacks = explode(',', $callbacks ?? $this->getArgument('callback'));
 

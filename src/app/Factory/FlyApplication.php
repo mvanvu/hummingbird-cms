@@ -55,6 +55,8 @@ class FlyApplication extends AbstractApplication
 	{
 		try
 		{
+			$landed = false;
+
 			foreach ($this->console->getArguments()->toArray() as $k => $v)
 			{
 				if (false === strpos($k, ':'))
@@ -70,6 +72,7 @@ class FlyApplication extends AbstractApplication
 
 				if (class_exists($ns) && ($this->fly = new $ns) instanceof Fly)
 				{
+					$landed        = true;
 					$this->message = Date::now('UTC')->format('Y-m-d H:i:s') . '-UTC Landed on [' . $ns . '] command: ' . implode(' ', ($_SERVER['argv'] ?? []));
 					$this->fly->flap($this, $param);
 
@@ -77,6 +80,11 @@ class FlyApplication extends AbstractApplication
 					$this->console->outLn($this->message);
 					break;
 				}
+			}
+
+			if (!$landed)
+			{
+				$this->console->runCallbacks();
 			}
 		}
 		catch (Throwable $e)

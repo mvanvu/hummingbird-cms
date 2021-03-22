@@ -119,7 +119,7 @@ class Schedule implements Fly
 		}
 		else
 		{
-			$console->run($this->callable);
+			$console->runCallbacks($this->callable);
 		}
 
 		if ($console->hasArgument('log'))

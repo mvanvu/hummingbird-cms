@@ -32,30 +32,40 @@ class Event
 			$groups = [$groups];
 		}
 
+		$callback = function ($handler, $group, $name) use ($eventName, $arguments) {
+			if ($handler instanceof Plugin)
+			{
+				if ($handler->isDetached())
+				{
+					unset(static::$plugins[$group][$name]);
+				}
+				else
+				{
+					$results[] = $handler->callback($eventName, $arguments);
+				}
+			}
+		};
+
 		foreach ($groups as $group)
 		{
-			if (isset($plugins[$group]))
+			if (strpos($group, '/'))
+			{
+				list($group, $name) = explode('/', $group, 2);
+				$handler = static::getHandlerByGroupName($group, $name);
+				$callback($handler, $group, $name);
+			}
+			elseif (isset($plugins[$group]))
 			{
 				/**
 				 * @var  string      $class
 				 * @var  PluginModel $config
 				 * @var  Plugin      $handler
 				 */
+
 				foreach ($plugins[$group] as $name => $plugin)
 				{
 					$handler = static::getHandler($plugin);
-
-					if ($handler instanceof Plugin)
-					{
-						if ($handler->isDetached())
-						{
-							unset(static::$plugins[$group][$name]);
-						}
-						else
-						{
-							$results[] = $handler->callback($eventName, $arguments);
-						}
-					}
+					$callback($handler, $group, $name);
 				}
 			}
 		}
@@ -89,6 +99,11 @@ class Event
 		}
 	}
 
+	public static function getHandlerByGroupName(string $group, string $name): ?Plugin
+	{
+		return static::$handlers[Constant::getNamespacePlugin($group, $name)] ?? null;
+	}
+
 	public static function getHandler(PluginModel $plugin): ?Plugin
 	{
 		$class = Constant::getNamespacePlugin($plugin->group, $plugin->name);
@@ -116,11 +131,6 @@ class Event
 				'params'   => Registry::parseData($plugin->params),
 			]
 		);
-	}
-
-	public static function getHandlerByGroupName(string $group, string $name): ?Plugin
-	{
-		return static::$handlers[Constant::getNamespacePlugin($group, $name)] ?? null;
 	}
 
 	public static function getHandlerByClass(string $class): ?Plugin
