@@ -2,7 +2,6 @@
 
 namespace App\Mvc\Controller;
 
-use App\Helper\Comment;
 use App\Helper\Date;
 use App\Helper\Text;
 use App\Helper\User;
@@ -16,47 +15,40 @@ class CommentController extends ControllerBase
 		$referenceContext = $this->dispatcher->getParam('referenceContext', ['string', 'trim']);
 		$referenceId      = (int) $this->request->getPost('referenceId', ['absint'], 0);
 		$parentId         = (int) $this->request->getPost('parentId', ['absint'], 0);
-		$type             = $this->request->getPost('type', ['string', 'trim'], '');
-		$user             = User::getActive();
 
 		if (!$this->request->isPost()
 			|| !$this->request->isAjax()
 			|| !($ucmItem = UcmItem::findFirst('id = ' . $referenceId . ' AND state = \'P\''))
+			|| ($parentId > 0 && !UcmComment::findFirst('id = ' . $parentId . ' AND state = \'P\''))
 			|| $ucmItem->params->get('allowUserComment', 'N') !== 'Y'
-			|| ($ucmItem->params->get('commentAsGuest', 'N') !== 'Y' && $user->is('guest'))
-			|| !in_array($type, ['comment', 'reply'], true)
-			|| $referenceId < 1
-			|| ('reply' === $type && ($parentId < 1 || !UcmComment::findFirst('id = ' . $parentId . ' AND state = \'P\'')))
+			|| ($ucmItem->params->get('commentAsGuest', 'N') !== 'Y' && User::is('guest'))
 		)
 		{
-			$this->dispatcher->forward(
+			return $this->response->setJsonContent(
 				[
-					'controller' => 'error',
-					'action'     => 'show',
+					'success' => false,
+					'message' => Text::_('403-message'),
 				]
 			);
-
-			return false;
 		}
 
 		$commentAsGuest = $ucmItem->params->get('commentAsGuest', 'N') === 'Y';
 		$autoPublish    = $ucmItem->params->get('autoPublishComment', 'N') === 'Y';
 		$userComment    = $this->request->getPost('userComment', ['string', 'trim'], '');
 		$response       = [
-			'status'  => 'danger',
+			'success' => false,
 			'message' => [],
-			'data'    => null,
 		];
 
-		if ($user->is('guest'))
+		if (User::is('guest'))
 		{
 			$userName  = $this->request->getPost('userName', ['string', 'trim'], '');
 			$userEmail = filter_var($this->request->getPost('userEmail', ['email'], ''), FILTER_VALIDATE_EMAIL);
 		}
 		else
 		{
-			$userName  = $user->__get('name');
-			$userEmail = $user->__get('email');
+			$userName  = User::name();
+			$userEmail = User::email();
 		}
 
 		if ($commentAsGuest)
@@ -79,51 +71,30 @@ class CommentController extends ControllerBase
 
 		if (empty($response['message']))
 		{
-			/** @var UcmComment $commentModel */
 			$commentModel                   = new UcmComment;
 			$commentModel->userName         = $userName;
 			$commentModel->userEmail        = $userEmail;
 			$commentModel->userComment      = $userComment;
 			$commentModel->referenceContext = $referenceContext;
 			$commentModel->referenceId      = $referenceId;
-			$commentModel->parentId         = 'reply' === $type ? $parentId : 0;
+			$commentModel->parentId         = $parentId;
 			$commentModel->state            = $autoPublish ? 'P' : 'U';
 			$commentModel->createdAt        = Date::now('UTC')->toSql();
-			$commentModel->createdBy        = $user->getEntity()->id;
+			$commentModel->createdBy        = User::id();
 
 			if ($commentModel->save())
 			{
 				if ($autoPublish)
 				{
-					$response['status']  = 'success';
+					$response['success'] = true;
 					$response['message'] = [Text::_('comment-success-msg')];
 				}
 				else
 				{
-					$response['status']  = 'warning';
 					$response['message'] = [Text::_('comment-warning-msg')];
 				}
 
-				$commentInstance                   = new Comment;
-				$commentInstance->referenceContext = $referenceContext;
-				$commentInstance->referenceId      = $referenceId;
-				$commentInstance->totalItems       = 1;
-
-				if ('reply' === $type)
-				{
-					$commentInstance->items = [$commentModel->getRelated('parent')];
-				}
-				else
-				{
-					$commentInstance->items = [$commentModel];
-				}
-
-				$response['data'] = $this->view->getPartial('Comment/Comment',
-					[
-						'commentInstance' => $commentInstance,
-						'ucmItem'         => $ucmItem,
-					]
-				);
+				$response['data'] = $this->view->getPartial('Comment/Comment', ['ucmItem' => $ucmItem]);
 			}
 			else
 			{
@@ -142,7 +113,7 @@ class CommentController extends ControllerBase
 	public function viewMoreAction()
 	{
 		$referenceContext = $this->dispatcher->getParam('referenceContext');
-		$referenceId      = (int) $this->request->getPost('referenceId', ['absint'], 0);
+		$referenceId      = (int) $this->dispatcher->getParam('referenceId', ['absint'], 0);
 		$offset           = (int) $this->dispatcher->getParam('offset', ['absint'], 0);
 		$ucmItem          = UcmItem::findFirst(
 			[
@@ -158,10 +129,11 @@ class CommentController extends ControllerBase
 		if ($ucmItem)
 		{
 			$response = [
-				'data' => $this->view->getPartial('Comment/Comment',
+				'success' => true,
+				'data'    => $this->view->getPartial('Comment/Comment',
 					[
-						'commentInstance' => Comment::getInstance($referenceContext, $referenceId, $offset),
-						'ucmItem'         => $ucmItem,
+						'ucmItem' => $ucmItem,
+						'offset'  => $offset,
 					]
 				),
 			];
@@ -169,7 +141,7 @@ class CommentController extends ControllerBase
 		else
 		{
 			$response = [
-				'data' => '',
+				'success' => false,
 			];
 		}
 

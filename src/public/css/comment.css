@@ -11,12 +11,12 @@
 .comments-container .c-avatar {
     width: 32px;
     height: 32px;
-    background: #9e9e9e;
+    background: #f8f8f8;
     display: flex;
     text-transform: capitalize;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    border-radius: 50%;
-    color: #fff;
+    color: #888;
+    border: 1px solid #9e9e9e;
 }

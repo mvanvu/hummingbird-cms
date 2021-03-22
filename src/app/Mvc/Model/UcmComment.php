@@ -2,11 +2,9 @@
 
 namespace App\Mvc\Model;
 
-use App\Factory\Factory;
 use App\Helper\Service;
 use App\Helper\Uri;
 use App\Helper\User as Auth;
-use Phalcon\Http\Request;
 
 class UcmComment extends ModelBase
 {
@@ -181,11 +179,10 @@ class UcmComment extends ModelBase
 	{
 		if (Uri::isClient('site'))
 		{
-			$this->userId = Auth::getActive()->id;
+			$this->userId = Auth::id();
 		}
 
-		/** @var Request $request */
-		$request         = Factory::getService('request');
+		$request         = Service::request();
 		$this->userIp    = $request->getClientAddress();
 		$this->userAgent = $request->getUserAgent();
 	}
@@ -215,7 +212,6 @@ class UcmComment extends ModelBase
 
 	public function afterDelete()
 	{
-		$prefix = $this->getModelsManager()->getModelPrefix();
-		Service::db()->execute('DELETE FROM ' . $prefix . 'ucm_comments WHERE parentId = ' . (int) $this->id);
+		$this->getRelated('replies')->delete();
 	}
 }

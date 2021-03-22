@@ -334,12 +334,13 @@ class Router
 			]
 		);
 
-		$router->addPost($uriPrefix . '/([a-z0-9_\-]+)/comment/:int',
+		$router->addGet($uriPrefix . '/([a-z0-9_\-]+)/comment/:int/:int',
 			[
 				'controller'       => 'comment',
 				'action'           => 'viewMore',
 				'referenceContext' => 1,
-				'offset'           => 2,
+				'referenceId'      => 2,
+				'offset'           => 3,
 			]
 		);
 	}

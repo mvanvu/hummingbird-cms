@@ -2,7 +2,6 @@
 
 namespace App\Mvc\Controller;
 
-use Exception;
 use App\Helper\Assets;
 use App\Helper\Config;
 use App\Helper\Event;
@@ -13,6 +12,7 @@ use App\Helper\User;
 use App\Mvc\Model\User as UserModel;
 use App\Queue\SendMail;
 use App\Traits\User as UserTrait;
+use Exception;
 
 class UserController extends ControllerBase
 {
@@ -116,7 +116,7 @@ class UserController extends ControllerBase
 		}
 		else
 		{
-			$redirect = Uri::route('user/account');
+			$redirect = Uri::back(Uri::route('user/account'), false);
 		}
 
 		if (!User::getActive()->is('guest'))

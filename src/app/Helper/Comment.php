@@ -19,6 +19,11 @@ class Comment
 	/**
 	 * @var integer
 	 */
+	public $totalLines = 0;
+
+	/**
+	 * @var integer
+	 */
 	public $totalItems = 0;
 
 	/**
@@ -45,7 +50,8 @@ class Comment
 			$instance                   = new Comment;
 			$instance->referenceContext = $referenceContext;
 			$instance->referenceId      = $referenceId;
-			$instance->totalItems       = static::getTotalItems($referenceContext, $referenceId);
+			$instance->totalLines       = static::getTotalLines($referenceContext, (int) $referenceId);
+			$instance->totalItems       = static::getTotalItems($referenceContext, (int) $referenceId);
 			$instance->items            = $queryBuilder->getQuery()->execute();
 			$instances[$keyHash]        = $instance;
 		}
@@ -53,16 +59,29 @@ class Comment
 		return $instances[$keyHash];
 	}
 
-	public static function getTotalItems($referenceContext, $referenceId)
+	public static function getTotalLines(string $referenceContext, int $referenceId)
 	{
-		return (int) Service::db()
-			->fetchColumn('SELECT COUNT(id) FROM ' . Database::table('ucm_comments') . ' WHERE referenceContext = :context AND referenceId = :id AND state = :publish',
-				[
+		return (int) UcmComment::count(
+			[
+				'conditions' => 'referenceContext = :context: AND referenceId = :id: AND state = \'P\' AND parentId < 1',
+				'bind'       => [
 					'context' => $referenceContext,
 					'id'      => $referenceId,
-					'publish' => 'P',
 				]
-			);
+			]
+		);
 	}
 
+	public static function getTotalItems(string $referenceContext, int $referenceId)
+	{
+		return (int) UcmComment::count(
+			[
+				'conditions' => 'referenceContext = :context: AND referenceId = :id: AND state = \'P\'',
+				'bind'       => [
+					'context' => $referenceContext,
+					'id'      => $referenceId,
+				]
+			]
+		);
+	}
 }

@@ -1,5 +1,9 @@
 <?php
 
+use App\Helper\Assets;
+
+Assets::add('js/emoji.js');
+
 return [
 	[
 		'name' => 'id',
@@ -45,7 +49,7 @@ return [
 		'rows'     => 15,
 		'required' => true,
 		'filters'  => ['string', 'trim'],
-		'class'    => 'uk-textarea',
+		'class'    => 'uk-textarea input-emoji',
 	],
 	[
 		'name'    => 'state',
