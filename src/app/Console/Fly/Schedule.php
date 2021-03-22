@@ -45,15 +45,7 @@ class Schedule implements Fly
 			}
 			else
 			{
-				$this->callable = [];
-
-				foreach (explode(',', $callable) as $func)
-				{
-					if (is_callable($func))
-					{
-						$this->callable[] = $func;
-					}
-				}
+				$this->callable = $callable;
 			}
 		}
 	}
@@ -119,19 +111,18 @@ class Schedule implements Fly
 
 	protected function callback(FlyApplication $app)
 	{
+		$console = $app->getConsole();
+
 		if ($this->callable instanceof AppPlugin)
 		{
 			$this->callable->callback('onSchedule', [$app, $this]);
 		}
 		else
 		{
-			foreach ($this->callable as $callable)
-			{
-				call_user_func($callable);
-			}
+			$console->run($this->callable);
 		}
 
-		if ($app->getConsole()->hasArgument('log'))
+		if ($console->hasArgument('log'))
 		{
 			$app->log($app->getMessage(), 'fly.schedule');
 		}

@@ -55,14 +55,33 @@ class Console
 		return $this->arguments;
 	}
 
-	public function getArgument(string $name, string $default = null, $filter = null)
-	{
-		return $this->arguments->get($name, $default, $filter);
-	}
-
 	public function hasArgument(string $name): bool
 	{
 		return $this->arguments->has($name);
+	}
+
+	public function run(string $callbacks = null)
+	{
+		$callbacks = explode(',', $callbacks ?? $this->getArgument('callback'));
+
+		foreach ($callbacks as $callback)
+		{
+			if (is_callable($callback))
+			{
+				$arguments = explode(',', $this->getArgument('args[' . $callback . ']', ''));
+				call_user_func_array($callback, $arguments);
+			}
+		}
+
+		if ($eval = $this->getArgument('eval'))
+		{
+			eval($eval);
+		}
+	}
+
+	public function getArgument(string $name, string $default = null, $filter = null)
+	{
+		return $this->arguments->get($name, $default, $filter);
 	}
 
 	public function match(string $name)

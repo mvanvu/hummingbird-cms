@@ -1,3 +1,7 @@
 <?php
 
-(require_once __DIR__ . '/app.php')->execute();
+use App\Helper\Console;
+
+$app     = require_once __DIR__ . '/app.php';
+$console = Console::getInstance();
+$console->hasArgument('no-execute') ? $console->run() : $app->execute();
