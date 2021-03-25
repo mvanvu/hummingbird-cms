@@ -119,7 +119,7 @@ class Console
 		return $this->execute($args, false);
 	}
 
-	public function execute(string $command = null, bool $queue = true)
+	public function execute(string $command = null, bool $background = true)
 	{
 		$cmd = ($_SERVER['_'] ?? 'php') . ' ' . BASE_PATH . '/fly';
 
@@ -128,14 +128,14 @@ class Console
 			$cmd .= ' ' . $command;
 		}
 
-		$cmd .= ' >> /dev/null 2>&1';
+		$cmd .= ' > /dev/null 2>&1';
 
-		if ($queue)
+		if ($background)
 		{
 			$cmd .= ' &';
 		}
 
-		return exec($cmd);
+		return shell_exec($cmd);
 	}
 
 	public function composer($commands, string $pathToJson)

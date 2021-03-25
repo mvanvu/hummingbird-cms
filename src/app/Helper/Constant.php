@@ -10,8 +10,6 @@ class Constant
 
 	const NAMESPACE_QUEUE = 'App\\Queue';
 
-	const NAMESPACE_MVC = 'App\\Mvc';
-
 	const NAMESPACE_MODEL = 'App\\Mvc\\Model';
 
 	const NAMESPACE_CONTROLLER = 'App\\Mvc\\Controller';

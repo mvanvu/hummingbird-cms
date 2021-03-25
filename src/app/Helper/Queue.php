@@ -2,7 +2,6 @@
 
 namespace App\Helper;
 
-use App\Mvc\Model\Log;
 use App\Mvc\Model\QueueJob;
 use App\Queue\QueueAbstract;
 use ReflectionClass;
@@ -28,7 +27,10 @@ class Queue
 
 	public static function add(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
 	{
-		if ($job = static::make($handler, $payload, $priority))
+		$state = function_exists('shell_exec') ? 'HANDLING' : 'SCHEDULED';
+		$job   = static::make($handler, $payload, $priority, $state);
+
+		if ($job && 'HANDLING' === $state)
 		{
 			Console::getInstance()->execute('queueJob:' . $job->queueJobId);
 		}
