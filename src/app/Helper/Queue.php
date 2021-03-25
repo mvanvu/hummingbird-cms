@@ -14,6 +14,9 @@ class Queue
 	const PRIORITY_MEDIUM = 1;
 	const PRIORITY_NORMAL = 2;
 	const PRIORITY_LOW = 3;
+	const STATE_HANDLING = 'HANDLING';
+	const STATE_SCHEDULED = 'SCHEDULED';
+	const STATE_FAILED = 'FAILED';
 
 	/**
 	 * Direct execute the queue job by Fly application using PHP shell_exec
@@ -27,10 +30,10 @@ class Queue
 
 	public static function add(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
 	{
-		$state = function_exists('shell_exec') ? 'HANDLING' : 'SCHEDULED';
+		$state = function_exists('shell_exec') ? Queue::STATE_HANDLING : Queue::STATE_SCHEDULED;
 		$job   = static::make($handler, $payload, $priority, $state);
 
-		if ($job && 'HANDLING' === $state)
+		if ($job && Queue::STATE_HANDLING === $state)
 		{
 			Console::getInstance()->execute('queueJob:' . $job->queueJobId);
 		}
@@ -47,7 +50,7 @@ class Queue
 	 * @return QueueJob|false
 	 */
 
-	public static function make(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL, string $state = 'HANDLING')
+	public static function make(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL, string $state = Queue::STATE_HANDLING)
 	{
 		if (class_exists($handler))
 		{
@@ -79,7 +82,7 @@ class Queue
 							'priority'   => $priority,
 							'createdAt'  => Date::now('UTC')->toSql(),
 							'createdBy'  => User::id(),
-							'state'      => in_array($state, ['HANDLING', 'SCHEDULED', 'FAILED']) ? $state : 'HANDLING',
+							'state'      => in_array($state, [Queue::STATE_HANDLING, Queue::STATE_SCHEDULED, Queue::STATE_FAILED]) ? $state : Queue::STATE_SCHEDULED,
 							'attempts'   => 0,
 							'failedAt'   => null,
 						]
@@ -111,7 +114,7 @@ class Queue
 
 	public static function schedule(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL)
 	{
-		return static::make($handler, $payload, $priority, 'SCHEDULED');
+		return static::make($handler, $payload, $priority, Queue::STATE_SCHEDULED);
 	}
 
 	public static function execute(string $handler, $payload = null, int $priority = Queue::PRIORITY_NORMAL): bool
@@ -154,7 +157,7 @@ class Queue
 							[
 								'failedAt' => Date::now('UTC')->toSql(),
 								'attempts' => (int) $job->attempts + 1,
-								'state'    => 'FAILED',
+								'state'    => Queue::STATE_FAILED,
 							]
 						)->save();
 					}
@@ -169,7 +172,7 @@ class Queue
 					[
 						'failedAt' => Date::now('UTC')->toSql(),
 						'attempts' => (int) $job->attempts + 1,
-						'state'    => 'FAILED',
+						'state'    => Queue::STATE_FAILED,
 					]
 				)->save();
 			}
@@ -195,7 +198,7 @@ class Queue
 		}
 
 		$force = Console::getInstance()->hasArgument('force');
-		$jobs  = $force ? QueueJob::find() : QueueJob::find('state <> \'HANDLING\'');
+		$jobs  = $force ? QueueJob::find() : QueueJob::find('state <> \'' . Queue::STATE_HANDLING . '\'');
 
 		if ($jobs->count())
 		{
