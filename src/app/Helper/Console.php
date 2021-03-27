@@ -68,7 +68,15 @@ class Console
 		{
 			if (is_callable($callback))
 			{
-				$arguments = explode(',', $this->getArgument('args[' . $callback . ']', ''));
+				if ($arguments = $this->getArgument('args[' . $callback . ']', ''))
+				{
+					$arguments = explode(',', $arguments);
+				}
+				else
+				{
+					$arguments = [];
+				}
+
 				call_user_func_array($callback, $arguments);
 			}
 		}

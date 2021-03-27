@@ -28,7 +28,7 @@ class Session extends AbstractAdapter
 		$this->db    = $db;
 		$this->table = Database::table('sessions');
 
-		if (!headers_sent())
+		if (session_status() !== PHP_SESSION_ACTIVE)
 		{
 			session_name('HB_SESSION_ID');
 			session_set_save_handler(
@@ -52,19 +52,6 @@ class Session extends AbstractAdapter
 		}
 
 		return $instance;
-	}
-
-	public static function sessionGc()
-	{
-		if (!headers_sent())
-		{
-			if (session_status() !== PHP_SESSION_ACTIVE)
-			{
-				session_start();
-			}
-
-			session_gc();
-		}
 	}
 
 	/**

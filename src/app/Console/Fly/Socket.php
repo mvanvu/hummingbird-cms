@@ -80,9 +80,7 @@ class Socket implements Fly
 
 				if ($auth = $this->connections[$frame->fd]['auth'])
 				{
-					if (0 === strpos($auth, 'HB_SESSION_ID:')
-						&& $session = State::getById(substr($auth, 14))
-					)
+					if (0 === strpos($auth, 'HB_SESSION_ID:') && $session = State::getById(substr($auth, 14)))
 					{
 						$userId = $session->get('site.user.id', 0);
 						$handler->setSession($session);

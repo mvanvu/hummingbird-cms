@@ -18,6 +18,42 @@ class State
 		return Service::session()->get($key, $default, $remove);
 	}
 
+	public static function getById($sessionId): Registry
+	{
+		$returnData = Registry::create();
+		$db         = Service::db();
+
+		// Purge if it's expired
+		$db->delete(
+			Database::table('sessions'),
+			'id = ? AND time < ?',
+			[$sessionId, time() - (int) ini_get('session.gc_maxlifetime')]
+		);
+
+		if ($sessionData = Service::session()->getAdapter()->read($sessionId))
+		{
+			$offset = 0;
+
+			while ($offset < strlen($sessionData))
+			{
+				if (!strstr(substr($sessionData, $offset), '|'))
+				{
+					return $returnData;
+				}
+
+				$pos    = strpos($sessionData, '|', $offset);
+				$num    = $pos - $offset;
+				$key    = substr($sessionData, $offset, $num);
+				$offset += $num + 1;
+				$data   = unserialize(substr($sessionData, $offset));
+				$returnData->set($key, $data);
+				$offset += strlen(serialize($data));
+			}
+		}
+
+		return $returnData;
+	}
+
 	public static function set($key, $value = null, $shared = false)
 	{
 		if (!$shared)
@@ -51,34 +87,15 @@ class State
 		}
 	}
 
-	public static function getById($sessionId): Registry
+	public static function gc()
 	{
-		$returnData  = Registry::create();
-		$sessionData = Service::session()->getAdapter()->read($sessionId);
+		$session = Service::session();
 
-		if (empty($sessionData))
+		if (!$session->exists())
 		{
-			return $returnData;
+			$session->start();
 		}
 
-		$offset = 0;
-
-		while ($offset < strlen($sessionData))
-		{
-			if (!strstr(substr($sessionData, $offset), '|'))
-			{
-				return $returnData;
-			}
-
-			$pos    = strpos($sessionData, '|', $offset);
-			$num    = $pos - $offset;
-			$key    = substr($sessionData, $offset, $num);
-			$offset += $num + 1;
-			$data   = unserialize(substr($sessionData, $offset));
-			$returnData->set($key, $data);
-			$offset += strlen(serialize($data));
-		}
-
-		return $returnData;
+		session_gc();
 	}
 }
