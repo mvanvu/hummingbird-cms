@@ -73,11 +73,13 @@ class AdminWidgetController extends AdminControllerBase
 
 	public function indexAction()
 	{
+		Text::script('confirm-delete-widget');
+		Text::script('widget-removed-msg');
+		Text::script('ordering-updated-msg');
 		$this->tag->setTitle(Text::_('sys-widgets'));
-		$widgets = WidgetHelper::getWidgets();
 		$this->view->setVars(
 			[
-				'widgets'     => $widgets,
+				'widgets'     => WidgetHelper::getWidgets(),
 				'widgetItems' => WidgetHelper::getWidgetItems(),
 			]
 		);

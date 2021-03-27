@@ -4,6 +4,8 @@ namespace App\Helper;
 
 class Text
 {
+	protected static $strings = [];
+
 	public static function plural($string, $count, array $placeholders = null)
 	{
 		if (null === $placeholders)
@@ -32,14 +34,20 @@ class Text
 		);
 	}
 
-	public static function fetchJsData()
+	public static function script(string $string)
 	{
-		static $fetched = false;
-
-		if (!$fetched)
+		if (!isset(static::$strings[$string]))
 		{
-			$fetched = true;
-			Assets::inlineJs('cmsCore.language.fetch();');
+			static::$strings[$string] = static::_($string);
+		}
+	}
+
+	public static function scripts()
+	{
+		if (static::$strings)
+		{
+			Assets::inlineJs('cmsCore.language.load(' . json_encode(static::$strings) . ');');
+			static::$strings = [];
 		}
 	}
 }

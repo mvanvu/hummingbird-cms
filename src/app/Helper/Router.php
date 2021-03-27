@@ -240,17 +240,6 @@ class Router
 			)
 			->setName('ucm-field-edit');
 
-		// Ajax route
-		$router->add($uriPrefix . '/request/(get|post)/([a-zA-Z-]+)/:params',
-			[
-				'controller' => 'request',
-				'action'     => 1,
-				'callback'   => 2,
-				'id'         => 3,
-				'params'     => 4,
-			]
-		);
-
 		// Widget route
 		$router->add($uriPrefix . '/widget/{position}/{name}/:int',
 			[
@@ -269,7 +258,7 @@ class Router
 			[
 				'controller' => 'display',
 				'action'     => 'show',
-				'path'       => 1,
+				'route'      => 1,
 				'params'     => 2,
 			]
 		)->setName('show-content');
@@ -282,16 +271,6 @@ class Router
 				'params'     => 1,
 			]
 		)->setName('search');
-
-		// Ajax route
-		$router->add($uriPrefix . '/request/(get|post)/([a-zA-Z-]+)/:params',
-			[
-				'controller' => 'request',
-				'action'     => 1,
-				'callback'   => 2,
-				'params'     => 3,
-			]
-		)->setName('ajax');
 
 		// User route
 		$router->add($uriPrefix . '/user/(login|logout|account|register|profile)/:params',

@@ -3,6 +3,7 @@
 namespace App\Form\Field;
 
 use App\Helper\Assets;
+use App\Helper\Text as T;
 use MaiVu\Php\Form\Field\Text;
 
 class CmsColor extends Text
@@ -11,6 +12,9 @@ class CmsColor extends Text
 
 	public function toString()
 	{
+		T::script('save');
+		T::script('clear');
+		T::script('cancel');
 		Assets::add(
 			[
 				'css/monolith.min.css',

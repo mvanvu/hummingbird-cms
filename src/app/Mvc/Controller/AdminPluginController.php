@@ -209,8 +209,12 @@ class AdminPluginController extends AdminControllerBase
 
 	public function indexAction()
 	{
-		parent::indexAction();
+		Text::script('activate-plugin-confirm');
+		Text::script('deactivate-plugin-confirm');
+		Text::script('uninstall-plugin-confirm');
+		Text::script('please-wait-msg');
 		Assets::add('js/plugins.js');
+		parent::indexAction();
 		$this->view->setVar(
 			'switcher',
 			Switcher::create(

@@ -19,6 +19,7 @@ class CmsModalUcmItem extends Select
 
 	public function toString()
 	{
+		Text::script('item-added-success');
 		$value    = $this->getParsedValue();
 		$id       = $this->getId();
 		$multiple = $this->multiple ? 'true' : 'false';

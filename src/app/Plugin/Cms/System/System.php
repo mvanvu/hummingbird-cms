@@ -154,11 +154,6 @@ class System extends Plugin
 		];
 	}
 
-	public function onRequestGetLoadStrings($requestData, &$responseData)
-	{
-		$responseData['data'] = Language::getTranslations();
-	}
-
 	protected function forwardError($code = 404)
 	{
 		$dispatcher = Service::dispatcher();

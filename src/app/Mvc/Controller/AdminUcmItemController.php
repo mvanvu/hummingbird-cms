@@ -199,6 +199,10 @@ class AdminUcmItemController extends AdminControllerBase
 	{
 		if ($this->model instanceof Nested)
 		{
+			Text::script('please-wait-msg');
+			Text::script('data-rebuilt-msg');
+			Text::script('modify-node-confirm');
+			Text::script('confirm-rebuild-nested-msg');
 			Assets::jQueryCore();
 			Assets::add(
 				[

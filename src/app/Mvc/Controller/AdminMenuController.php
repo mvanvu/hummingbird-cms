@@ -69,6 +69,11 @@ class AdminMenuController extends AdminControllerBase
 			$this->persistent->set('admin.menu.type', $menuType);
 		}
 
+		Text::script('toggle-menu-type-confirm');
+		Text::script('menu-type-name');
+		Text::script('empty-menu-name-msg');
+		Text::script('remove-menu-item-confirm');
+		Text::script('remove-menu-type-confirm');
 		Assets::jQueryCore();
 		Assets::add(
 			[

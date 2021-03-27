@@ -19,8 +19,16 @@ class AdminMediaController extends AdminControllerBase
 	/** @var string $uploadPath */
 	protected $uploadPath = BASE_PATH . '/public/upload';
 
+	public function onConstruct()
+	{
+		Text::script('confirm-remove-folder');
+		Text::script('confirm-remove-image');
+		parent::onConstruct();
+	}
+
 	public function indexAction()
 	{
+
 		Assets::add('js/media.js');
 		$this->tag->setTitle(Text::_('manage-media'));
 

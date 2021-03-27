@@ -155,16 +155,16 @@ class Language extends ModelBase
 
 	public function afterSave()
 	{
-		$langFile = APP_PATH . '/Language/' . $this->code . '/' . $this->code . '.php';
+		$langFile = APP_PATH . '/Language/' . $this->code . '.php';
 
 		if (!is_file($langFile))
 		{
-			FileSystem::copy(APP_PATH . '/Language/en-GB/en-GB.php', $langFile, true);
+			FileSystem::copy(APP_PATH . '/Language/en-GB.php', $langFile, true);
 		}
 	}
 
 	public function afterDelete()
 	{
-		FileSystem::remove(APP_PATH . '/Language/' . $this->code);
+		FileSystem::remove(APP_PATH . '/Language/' . $this->code . '.php');
 	}
 }

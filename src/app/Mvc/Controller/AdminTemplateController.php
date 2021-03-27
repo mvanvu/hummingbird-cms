@@ -262,6 +262,10 @@ class AdminTemplateController extends AdminControllerBase
 			)
 		);
 		$action = $this->uri->routeTo('toggle');
+		Text::script('name');
+		Text::script('please-wait-msg');
+		Text::script('remove-folder-confirm-msg');
+		Text::script('remove-file-confirm-msg');
 		Assets::inlineJs(<<<JS
 _$.ready(function ($) {
    	 $('.tpl-toggle-default').on('change', function () {

@@ -78,7 +78,6 @@ class ControllerBase extends Controller
 
 	protected function adminBase()
 	{
-		Text::fetchJsData();
 		Assets::add(
 			[
 				'css/admin.css',

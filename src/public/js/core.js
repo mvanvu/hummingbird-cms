@@ -10,11 +10,6 @@ var html = document.documentElement,
         },
         language: {
             strings: {},
-            fetch: function () {
-                _$.http.get(cmsCore.uri.base + '/request/get/load-strings', function (response) {
-                    cmsCore.language.load(response.data);
-                });
-            },
             load: function (objData) {
                 cmsCore.language.strings = Object.assign(cmsCore.language.strings, objData);
             },

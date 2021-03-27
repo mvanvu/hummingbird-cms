@@ -56,6 +56,7 @@ class Volt
 
 	public static function js()
 	{
+		Text::scripts();
 		$assets = Service::assets();
 
 		ob_start();

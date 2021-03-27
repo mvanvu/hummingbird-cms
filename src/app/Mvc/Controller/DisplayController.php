@@ -2,7 +2,6 @@
 
 namespace App\Mvc\Controller;
 
-use App\Helper\Assets;
 use App\Helper\Constant;
 use App\Helper\Event;
 use App\Helper\Image;
@@ -38,7 +37,7 @@ class DisplayController extends ControllerBase
 			->where('state = :state:')
 			->andWhere('route = :route:');
 		$bindParams   = [
-			'route' => $this->dispatcher->getParam('path'),
+			'route' => $this->dispatcher->getParam('route'),
 			'state' => 'P',
 		];
 
@@ -175,7 +174,7 @@ class DisplayController extends ControllerBase
 		$targetItem->hits();
 		Event::trigger('onBeforeDisplayUcmItem', [$this, $targetItem], ['Cms']);
 		State::setMark('displayUcmItem', $targetItem);
-		$this->view->setVars($vars);
-		$this->view->pick($context . '/Show');
+		$this->view->setVars($vars)
+			->pick($context . '/Show');
 	}
 }

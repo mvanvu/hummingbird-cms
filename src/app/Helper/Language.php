@@ -26,7 +26,7 @@ class Language
 				$activeLanguage = 'en-GB';
 			}
 
-			$stringsFile = APP_PATH . '/Language/' . $activeLanguage . '/' . $activeLanguage . '.php';
+			$stringsFile = APP_PATH . '/Language/' . $activeLanguage . '.php';
 
 			if (is_file($stringsFile) && ($content = include $stringsFile))
 			{

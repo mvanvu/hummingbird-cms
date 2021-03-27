@@ -150,6 +150,8 @@ class AdminControllerBase extends ControllerBase
 		);
 
 		parent::onConstruct();
+		Text::script('confirm-delete-items');
+		Text::script('select-items-first');
 	}
 
 	public function indexAction()
