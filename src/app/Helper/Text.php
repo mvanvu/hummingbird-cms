@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use MaiVu\Php\Registry;
+
 class Text
 {
 	protected static $strings = [];
@@ -27,11 +29,7 @@ class Text
 
 	public static function _(string $string, array $placeholders = null)
 	{
-		return str_replace(
-			['_EOL_', '_BR_', '_Q_', '_QQ_'],
-			[PHP_EOL, '<br>', '\'', '"'],
-			Language::_($string, $placeholders)
-		);
+		return str_replace(['_EOL_', '_BR_', '_HR_'], [PHP_EOL, '<br>', '<hr>'], Language::_($string, $placeholders));
 	}
 
 	public static function script(string $string)

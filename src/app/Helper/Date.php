@@ -127,7 +127,7 @@ class Date extends DateTime
 
 				foreach ($matches[0] as $string)
 				{
-					$index = 'locale-' . strtolower($string . (strcasecmp('may', $string) === 0 ? '-short' : ''));
+					$index = 'strings.' . strtolower($string . (strcasecmp('may', $string) === 0 ? '-short' : ''));
 
 					if ($language->has($index))
 					{
