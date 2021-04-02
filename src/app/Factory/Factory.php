@@ -10,6 +10,7 @@ use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\Utility;
 use App\Loader;
+use MaiVu\Php\Filter;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Registry;
 use Phalcon\Debug\Dump;
@@ -130,7 +131,6 @@ class Factory
 			Form::setFieldTranslator(function (string $text, array $placeHolders = []) {
 				return Text::_($text, $placeHolders);
 			});
-
 			Event::trigger('onBootApplication', [static::$application]);
 		}
 

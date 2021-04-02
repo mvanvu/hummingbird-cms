@@ -17,7 +17,7 @@
     {% if uploadFiles %}
         <div class="uk-flex uk-flex-middle uk-flex-wrap"{{ isRaw ? '' : ' uk-lightbox' }}>
             {% for file in uploadFiles %}
-                {% set image = helper('Image::loadImage', uploadPath ~ '/' ~ file.file) %}
+                {% set image = helper('Image::loadImage', publicPath ~ '/' ~ file.file) %}
                 {% if image %}
                     {% set name = basename(file.file) %}
                     <a class="upload-file image" href="{{ image.getUri(true) }}"

@@ -82,7 +82,7 @@ class ModelBase extends ModelPermission
 
 				foreach ($identity as $name => $value)
 				{
-					$cond[]      = $name . ' = :' . $name . ':';
+					$cond[]      = '[' . $name . ']' . ' = :' . $name . ':';
 					$bind[$name] = $value;
 				}
 
@@ -375,21 +375,6 @@ class ModelBase extends ModelPermission
 		}
 
 		return $translations[$asArray ? $tranKey . ':array' : $tranKey . ':value'];
-	}
-
-	public function controllerBeforeBindData(&$rawData)
-	{
-		// Todo something
-	}
-
-	public function controllerDoBeforeSave(&$validData, $isNew)
-	{
-		// Todo something
-	}
-
-	public function controllerDoAfterSave($validData, $isNew)
-	{
-		// Todo something
 	}
 
 	public function getI18nData($afterLangCode = ''): array

@@ -13,14 +13,14 @@ class Image
 
 	public function __construct($imageFile)
 	{
-		if (strpos($imageFile, BASE_PATH . '/public/upload/') !== 0)
+		if (strpos($imageFile, PUBLIC_PATH . '/') !== 0)
 		{
-			$imageFile = BASE_PATH . '/public/upload/' . $imageFile;
+			$imageFile = PUBLIC_PATH . '/' . $imageFile;
 		}
 
 		$this->imageFile     = $imageFile;
-		$this->imageUri      = preg_replace('/^' . preg_quote(BASE_PATH . '/public', '/') . '/', Uri::getHost(), $this->imageFile);
-		$this->imageThumbUri = dirname($this->imageUri) . '/thumbs';
+		$this->imageUri      = preg_replace('/^' . preg_quote(PUBLIC_PATH, '/') . '/', Uri::getHost(), $this->imageFile);
+		$this->imageThumbUri = dirname($this->imageUri) . '/_thumbs';
 	}
 
 	public static function loadImage($imageString, $returnFirst = true)
@@ -75,7 +75,7 @@ class Image
 		preg_match('#^.*(\.[^.]*)$#', $this->imageFile, $matches);
 		$extension = $matches[1];
 		$thumbName = basename($this->imageFile, $extension) . '_' . ($width ?: 0) . 'x' . ($height ?: 0) . $extension;
-		$thumbPath = dirname($this->imageFile) . '/thumbs';
+		$thumbPath = dirname($this->imageFile) . '/_thumbs';
 
 		if (!is_file($thumbPath . '/' . $thumbName))
 		{

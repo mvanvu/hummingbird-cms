@@ -27,12 +27,6 @@ class SocketPlugin extends Plugin
 
 	protected $data;
 
-	/**
-	 * @var Registry
-	 */
-
-	protected $session;
-
 
 	/**
 	 * @var User | null
@@ -52,32 +46,9 @@ class SocketPlugin extends Plugin
 
 	protected $storeContext = '';
 
-	final public function reset(): SocketPlugin
-	{
-		$this->auth    = null;
-		$this->data    = null;
-		$this->session = null;
-
-		return $this;
-	}
-
 	final public function setData(Registry $data): SocketPlugin
 	{
 		$this->data = $data;
-
-		return $this;
-	}
-
-	final public function setSession(Registry $session): SocketPlugin
-	{
-		$this->session = $session;
-
-		return $this;
-	}
-
-	final public function setAuth(User $user): SocketPlugin
-	{
-		$this->auth = $user;
 
 		return $this;
 	}

@@ -329,7 +329,6 @@ class UcmItem extends ModelBase
 	public function controllerDoAfterSave($validData, $isNew)
 	{
 		$db = Service::db();
-
 		$db->execute('DELETE FROM ' . Database::table('ucm_item_map') . ' WHERE itemId1 = :itemId1 AND context = :context',
 			[
 				'itemId1' => $this->id,

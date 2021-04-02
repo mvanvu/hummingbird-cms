@@ -5,11 +5,7 @@ namespace App\Console\Fly;
 use App\Console\Fly;
 use App\Factory\FlyApplication;
 use App\Helper\Constant;
-use App\Helper\Database;
 use App\Helper\Event;
-use App\Helper\Service;
-use App\Helper\State;
-use App\Helper\User;
 use App\Plugin\SocketPlugin;
 use MaiVu\Php\Registry;
 use Swoole\Http\Request;
@@ -44,7 +40,6 @@ class Socket implements Fly
 		$console           = $app->getConsole();
 		$this->connections = new Table($console->getArgument('table-size', 1024, 'uint'));
 		$this->connections->column('plugin', Table::TYPE_STRING, 60);
-		$this->connections->column('auth', Table::TYPE_STRING, 191);
 		$this->connections->create();
 		$this->socket = new Server(
 			$console->getArgument('host', '0.0.0.0'),
@@ -62,7 +57,7 @@ class Socket implements Fly
 
 				if ($handler instanceof SocketPlugin)
 				{
-					$this->connections[$request->fd] = ['plugin' => $plugin, 'auth' => 'HB_SESSION_ID:' . $request->cookie['HB_SESSION_ID'] ?? ''];
+					$this->connections[$request->fd] = ['plugin' => $plugin];
 					$handler->callback('onOpen', [$server, $request]);
 				}
 			}
@@ -75,40 +70,28 @@ class Socket implements Fly
 				&& $handler instanceof SocketPlugin
 			)
 			{
-				$handler->reset()->setData(Registry::create($frame->data));
-				$userId = 0;
+				$continue = $handler->setData(Registry::create($frame->data))
+					->callback('onBeforeMessage', [$server, $frame]);
 
-				if ($auth = $this->connections[$frame->fd]['auth'])
+				// Skip if onBeforeMessage return false
+				if (false !== $continue)
 				{
-					if (0 === strpos($auth, 'HB_SESSION_ID:') && $session = State::getById(substr($auth, 14)))
+					foreach ($this->connections as $fd => $connection)
 					{
-						$userId = $session->get('site.user.id', 0);
-						$handler->setSession($session);
+						$handler->callback('onMessage', [$server, $fd]);
+
+						if ($fd == $frame->fd)
+						{
+							$handler->callback('onSelf', [$server, $fd]);
+						}
+						else
+						{
+							$handler->callback('onBroadcast', [$server, $fd]);
+						}
 					}
-					elseif (0 === strpos($auth, 'token:'))
-					{
-						$userId = Service::db()->fetchColumn('SELECT id FROM ' . Database::table('users') . ' WHERE active = \'Y\' AND MD5(secret) = ?', [substr($auth, 6)])['id'] ?? 0;
-					}
+
+					$handler->callback('onAfterMessage', [$server, $frame]);
 				}
-
-				$handler->setAuth(User::getInstance((int) $userId));
-				$handler->callback('onBeforeMessage', [$server, $frame]);
-
-				foreach ($this->connections as $fd => $connection)
-				{
-					$handler->callback('onMessage', [$server, $fd]);
-
-					if ($fd == $frame->fd)
-					{
-						$handler->callback('onSelf', [$server, $fd]);
-					}
-					else
-					{
-						$handler->callback('onBroadcast', [$server, $fd]);
-					}
-				}
-
-				$handler->callback('onAfterMessage', [$server, $frame]);
 			}
 		});
 

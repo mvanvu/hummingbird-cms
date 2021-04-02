@@ -535,7 +535,7 @@ class AdminControllerBase extends ControllerBase
 		$isNew   = (int) $this->model->id < 1;
 		$rawData = $this->request->getPost();
 		$this->persistent->set($this->dataKey . '.editData', $rawData);
-		$this->model->controllerBeforeBindData($rawData);
+		$this->model->callback('controllerBeforeBindData', [&$rawData]);
 
 		if (!$formsManager->isValid($rawData))
 		{

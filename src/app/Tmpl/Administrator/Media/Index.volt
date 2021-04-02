@@ -1,4 +1,4 @@
-<div id="media-container" data-token="{{ helper('Form::getToken') | escape_attr }}"
+<div id="media-container" data-token="{{ csrf() }}"
      data-sub-dirs="{{ ltrim(subDirs, '/') | escape_attr }}">
     <div class="actions-container uk-margin">
         <ul class="uk-subnav uk-subnav-divider">

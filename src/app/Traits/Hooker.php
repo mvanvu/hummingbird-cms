@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Throwable;
+
 trait Hooker
 {
 	protected static $callBackData = [];
@@ -20,7 +22,16 @@ trait Hooker
 			$callable = [$this, $callable];
 		}
 
-		static::$callBackData[$class][] = is_callable($callable) ? call_user_func_array($callable, $arguments) : null;
+		try
+		{
+			$result = is_callable($callable) ? call_user_func_array($callable, $arguments) : null;
+		}
+		catch (Throwable $e)
+		{
+			$result = $e;
+		}
+
+		static::$callBackData[$class][] = $result;
 
 		return static::$callBackData[$class][count(static::$callBackData[$class]) - 1];
 	}
