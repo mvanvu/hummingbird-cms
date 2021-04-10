@@ -575,7 +575,7 @@ return [
 	'lang-sef'                          => 'Tiền tố URL',
 	'lang-direction'                    => 'Hướng đọc',
 	'lang-ltr'                          => 'Trái sang phải',
-	'lang-rtl'                          => 'Phải sang trái to left',
+	'lang-rtl'                          => 'Phải sang trái',
 	'lang-iso-select'                   => 'Chọn mã ISO',
 	'lang-def-restrict-msg'             => 'Không thể ẩn hoặc xóa ngôn ngữ mặc định',
 	'currencies'                        => 'Tiền tệ',
