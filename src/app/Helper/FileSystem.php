@@ -194,8 +194,9 @@ class FileSystem
 	}
 
 	/**
-	 * @param string $folder
-	 * @param int    $chunk
+	 * @param string      $folder
+	 * @param string|null $filename
+	 * @param int         $chunk
 	 *
 	 * @throws Exception
 	 */

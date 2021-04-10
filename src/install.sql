@@ -47,8 +47,7 @@ CREATE TABLE IF NOT EXISTS `#__currencies` (
 -- Dumping data for table `#__currencies`
 --
 
-INSERT INTO `#__currencies` (`id`,`name`,`state`,`code`,`rate`,`createdAt`,`createdBy`,`modifiedAt`,`modifiedBy`,`checkedAt`,`checkedBy`,`params`) VALUES ('1','US dollar','P','USD','1.000000','2021-03-18 04:06:06','1','2021-03-18 04:30:16','1','','0','{\"symbol\":\"$\",\"decimals\":2,\"separator\":\",\",\"point\":\".\",\"format\":\"{symbol}{value}\"}'),('2','Vietnam Dong','P','VND','0.000044','2021-03-18 04:09:06','1','2021-03-18 04:27:11','1','','0','{\"symbol\":\"\\u20ab\",\"decimals\":0,\"separator\":\".\",\"point\":\",\",\"format\":\"{value}{symbol}\"}'),('3','Euro','P','EUR','0.900000','2021-03-18 04:29:23','1','2021-03-18 04:29:24','1','','0','{\"symbol\":\"\\u20ac\",\"decimals\":2,\"separator\":\",\",\"point\":\".\",\"format\":\"{symbol}{value}\"}');
-
+INSERT INTO `#__currencies` (`id`,`name`,`state`,`code`,`rate`,`createdAt`,`createdBy`,`modifiedAt`,`modifiedBy`,`checkedAt`,`checkedBy`,`params`) VALUES ('1','US dollar','P','USD','1.000000','2021-03-18 04:06:06','1','2021-03-18 04:30:16','1',NULL,'0','{\"symbol\":\"$\",\"decimals\":2,\"separator\":\",\",\"point\":\".\",\"format\":\"{symbol}{value}\"}'),('2','Vietnam Dong','P','VND','0.000044','2021-03-18 04:09:06','1','2021-03-18 04:27:11','1',NULL,'0','{\"symbol\":\"\\u20ab\",\"decimals\":0,\"separator\":\".\",\"point\":\",\",\"format\":\"{value}{symbol}\"}'),('3','Euro','P','EUR','0.900000','2021-03-18 04:29:23','1','2021-03-18 04:29:24','1',NULL,'0','{\"symbol\":\"\\u20ac\",\"decimals\":2,\"separator\":\",\",\"point\":\".\",\"format\":\"{symbol}{value}\"}');
 --
 -- Table structure for table `#__languages`
 --
@@ -79,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
 -- Dumping data for table `#__languages`
 --
 
-INSERT INTO `#__languages` (`id`,`name`,`state`,`code`,`sef`,`iso`,`protected`,`direction`,`createdAt`,`createdBy`,`modifiedAt`,`modifiedBy`,`checkedAt`,`checkedBy`,`params`) VALUES ('1','English (en-GB)','P','en-GB','en','GBR','Y','LTR','2021-03-17 16:09:21','1','2021-03-18 03:33:49','1','','0','{\"dateFormat\":\"l, d F Y\",\"dateTimeFormat\":\"l, d F Y H:i\"}'),('2','Tiếng việt','P','vi-VN','vi','VNM','Y','LTR','2021-03-17 16:09:27','1','2021-03-18 03:33:16','1','','0','{\"dateFormat\":\"l, d\\/m\\/Y\",\"dateTimeFormat\":\"l, d\\/m\\/Y H:i\"}');
+INSERT INTO `#__languages` (`id`,`name`,`state`,`code`,`sef`,`iso`,`protected`,`direction`,`createdAt`,`createdBy`,`modifiedAt`,`modifiedBy`,`checkedAt`,`checkedBy`,`params`) VALUES ('1','English (en-GB)','P','en-GB','en','GBR','Y','LTR','2021-03-17 16:09:21','1','2021-03-18 03:33:49','1',NULL,'0','{\"dateFormat\":\"l, d F Y\",\"dateTimeFormat\":\"l, d F Y H:i\"}'),('2','Tiếng việt','P','vi-VN','vi','VNM','Y','LTR','2021-03-17 16:09:27','1','2021-03-18 03:33:16','1',NULL,'0','{\"dateFormat\":\"l, d\\/m\\/Y\",\"dateTimeFormat\":\"l, d\\/m\\/Y H:i\"}');
 
 --
 -- Table structure for table `#__logs`
@@ -94,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `#__logs` (
   `ip` varchar(255) NOT NULL,
   `userAgent` varchar(1000) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `idx_context` (`context`(191))
+  KEY `idx_context` (`context`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -140,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `#__plugins` (
 -- Dumping data for table `#__plugins`
 --
 
-INSERT INTO `#__plugins` (`id`,`name`,`group`,`version`,`active`,`protected`,`createdAt`,`createdBy`,`checkedAt`,`checkedBy`,`modifiedAt`,`modifiedBy`,`params`,`manifest`,`ordering`) VALUES ('1','System','Cms','1.0','Y','Y','2021-02-03 20:40:07','3','','0','2021-03-16 07:57:29','1','{}','{\"name\": \"System\", \"group\": \"Cms\", \"title\": \"cms-plugin-title\", \"author\": \"Mai Vu\", \"version\": \"1.0\", \"authorUrl\": \"https://github.com/mvanvu\", \"updateUrl\": null, \"authorEmail\": \"mvanvu@gmail.com\", \"description\": \"cms-plugin-desc\"}','1');
+INSERT INTO `#__plugins` (`id`,`name`,`group`,`version`,`active`,`protected`,`createdAt`,`createdBy`,`checkedAt`,`checkedBy`,`modifiedAt`,`modifiedBy`,`params`,`manifest`,`ordering`) VALUES ('1','System','Cms','1.0','Y','Y','2021-02-03 20:40:07','3',NULL,'0','2021-03-16 07:57:29','1','{}','{\"name\": \"System\", \"group\": \"Cms\", \"title\": \"cms-plugin-title\", \"author\": \"Mai Vu\", \"version\": \"1.0\", \"authorUrl\": \"https://github.com/mvanvu\", \"updateUrl\": null, \"authorEmail\": \"mvanvu@gmail.com\", \"description\": \"cms-plugin-desc\"}','1');
 
 --
 -- Table structure for table `#__queue_jobs`
@@ -184,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `#__roles` (
 -- Dumping data for table `#__roles`
 --
 
-INSERT INTO `#__roles` (`id`,`name`,`type`,`description`,`permissions`,`protected`,`createdAt`,`createdBy`,`modifiedAt`,`modifiedBy`,`checkedAt`,`checkedBy`) VALUES ('1','Super user','S','Master super user','{}','Y','2021-02-07 11:19:52','1','2021-02-22 02:18:49','1','','0'),('2','Manager','M','Can manage the site but can&#39;t config','{\"tag\": {\"edit\": \"Y\", \"admin\": \"N\", \"create\": \"Y\", \"delete\": \"N\", \"manage\": \"Y\", \"editState\": \"N\", \"manageOwn\": \"Y\"}, \"post\": {\"edit\": \"Y\", \"admin\": \"N\", \"create\": \"N\", \"delete\": \"Y\", \"manage\": \"Y\", \"editState\": \"N\", \"manageOwn\": \"N\", \"manageField\": \"Y\", \"manageComment\": \"Y\", \"manageCategory\": \"Y\"}, \"user\": {\"edit\": \"Y\", \"admin\": \"N\", \"create\": \"Y\", \"delete\": \"N\", \"manage\": \"Y\", \"activate\": \"N\", \"manageOwn\": \"Y\"}, \"media\": {\"admin\": \"N\", \"delete\": \"N\", \"manage\": \"Y\", \"upload\": \"Y\", \"manageOwn\": \"Y\"}, \"cms-post\": {\"edit\": \"N\", \"admin\": \"N\", \"create\": \"N\", \"delete\": \"N\", \"manage\": \"N\", \"editState\": \"N\", \"manageOwn\": \"N\", \"manageField\": \"N\", \"manageComment\": \"N\", \"manageCategory\": \"N\"}, \"post-category\": {\"edit\": \"N\", \"admin\": \"N\", \"create\": \"N\", \"delete\": \"N\", \"manage\": \"Y\", \"editState\": \"Y\", \"manageOwn\": \"Y\"}}','Y','2021-02-07 11:19:52','1','2021-02-22 02:18:44','1','','0'),('3','Registered','R','Default user register','{}','Y','2021-02-07 11:19:52','1','2021-03-01 15:38:31','1','','0');
+INSERT INTO `#__roles` (`id`,`name`,`type`,`description`,`permissions`,`protected`,`createdAt`,`createdBy`,`modifiedAt`,`modifiedBy`,`checkedAt`,`checkedBy`) VALUES ('1','Super user','S','Master super user','{}','Y','2021-02-07 11:19:52','1','2021-02-22 02:18:49','1',NULL,'0'),('2','Manager','M','Can manage the site but can&#39;t config','{\"tag\": {\"edit\": \"Y\", \"admin\": \"N\", \"create\": \"Y\", \"delete\": \"N\", \"manage\": \"Y\", \"editState\": \"N\", \"manageOwn\": \"Y\"}, \"post\": {\"edit\": \"Y\", \"admin\": \"N\", \"create\": \"N\", \"delete\": \"Y\", \"manage\": \"Y\", \"editState\": \"N\", \"manageOwn\": \"N\", \"manageField\": \"Y\", \"manageComment\": \"Y\", \"manageCategory\": \"Y\"}, \"user\": {\"edit\": \"Y\", \"admin\": \"N\", \"create\": \"Y\", \"delete\": \"N\", \"manage\": \"Y\", \"activate\": \"N\", \"manageOwn\": \"Y\"}, \"media\": {\"admin\": \"N\", \"delete\": \"N\", \"manage\": \"Y\", \"upload\": \"Y\", \"manageOwn\": \"Y\"}, \"cms-post\": {\"edit\": \"N\", \"admin\": \"N\", \"create\": \"N\", \"delete\": \"N\", \"manage\": \"N\", \"editState\": \"N\", \"manageOwn\": \"N\", \"manageField\": \"N\", \"manageComment\": \"N\", \"manageCategory\": \"N\"}, \"post-category\": {\"edit\": \"N\", \"admin\": \"N\", \"create\": \"N\", \"delete\": \"N\", \"manage\": \"Y\", \"editState\": \"Y\", \"manageOwn\": \"Y\"}}','Y','2021-02-07 11:19:52','1','2021-02-22 02:18:44','1',NULL,'0'),('3','Registered','R','Default user register','{}','Y','2021-02-07 11:19:52','1','2021-03-01 15:38:31','1',NULL,'0');
 
 --
 -- Table structure for table `#__sessions`
@@ -251,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `#__templates` (
 -- Dumping data for table `#__templates`
 --
 
-INSERT INTO `#__templates` (`id`,`name`,`createdAt`,`createdBy`,`checkedAt`,`checkedBy`,`modifiedAt`,`modifiedBy`,`isDefault`,`params`) VALUES ('1','Sparrow - default template','2021-02-07 11:19:52','1','','0','2021-03-18 03:26:40','1','Y','{\"positions\":\"Aside\\r\\nFooter\"}');
+INSERT INTO `#__templates` (`id`,`name`,`createdAt`,`createdBy`,`checkedAt`,`checkedBy`,`modifiedAt`,`modifiedBy`,`isDefault`,`params`) VALUES ('1','Sparrow - default template','2021-02-07 11:19:52','1',NULL,'0','2021-03-18 03:26:40','1','Y','{\"positions\":\"Aside\\r\\nFooter\"}');
 
 --
 -- Table structure for table `#__translations`

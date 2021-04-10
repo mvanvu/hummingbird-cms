@@ -82,6 +82,7 @@ class Volt
 				return $helperPrefix . 'Assets::add(' . $resolvedArgs . ')';
 
 			case 'currency':
+			case 'price':
 				return $helperPrefix . 'Currency::format(' . $resolvedArgs . ')';
 
 			case 'widget':
@@ -134,9 +135,6 @@ class Volt
 
 			case 'csrf':
 				return $helperPrefix . 'Form::getToken(' . $resolvedArgs . ')';
-
-			case 'price':
-				return $helperPrefix . 'Utility::priceFormat(' . $resolvedArgs . ')';
 
 			case 'public':
 				return $helperPrefix . 'Volt::publicResource(' . $resolvedArgs . ')';

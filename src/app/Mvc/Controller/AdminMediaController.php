@@ -9,7 +9,6 @@ use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User;
 use App\Mvc\Model\Media;
-use MaiVu\Php\Filter;
 use Phalcon\Http\Request\File;
 
 class AdminMediaController extends AdminControllerBase
@@ -36,13 +35,15 @@ class AdminMediaController extends AdminControllerBase
 		)
 		{
 			$pathName = preg_replace('#^.+/index#', '', $this->uri->getActive()->toPath());
-			$resource = PUBLIC_PATH . '/upload/' . trim($pathName, '/.');
-			$resource = preg_replace('#/+#', '/', rtrim($resource, '/'));
+			$pathName = 'media/' . trim($pathName, '/.');
+			$pathName = preg_replace('#/+#', '/', rtrim($pathName, '/'));
 
 			if ($fileBaseName = $this->request->get('file'))
 			{
-				$resource .= '/' . ltrim($fileBaseName, '/.');
+				$pathName .= '/' . trim($fileBaseName, '/.');
 			}
+
+			$resource = PUBLIC_PATH . '/' . $pathName;
 
 			if (is_file($resource) && FileSystem::remove($resource))
 			{
@@ -84,7 +85,7 @@ class AdminMediaController extends AdminControllerBase
 
 				$jsonContent = [
 					'success' => true,
-					'message' => Text::_('the-folder-deleted', ['folder' => $pathName]),
+					'message' => Text::_('the-folder-deleted', ['folder' => basename($resource)]),
 				];
 			}
 			else
@@ -115,13 +116,13 @@ class AdminMediaController extends AdminControllerBase
 
 		if ($baseDir = $this->getCurrentDirs(false))
 		{
-			$params['bind']['like']    = 'upload/' . $baseDir . '/%';
-			$params['bind']['notLike'] = 'upload/' . $baseDir . '/%/%';
+			$params['bind']['like']    = 'media/' . $baseDir . '/%';
+			$params['bind']['notLike'] = 'media/' . $baseDir . '/%/%';
 		}
 		else
 		{
-			$params['bind']['like']    = 'upload/%';
-			$params['bind']['notLike'] = 'upload/%/%';
+			$params['bind']['like']    = 'media/%';
+			$params['bind']['notLike'] = 'media/%/%';
 		}
 
 		$currentDir = $this->getCurrentDirs();
@@ -151,7 +152,7 @@ class AdminMediaController extends AdminControllerBase
 
 		if ($subDirs)
 		{
-			if (is_dir(PUBLIC_PATH . '/upload/' . $subDirs))
+			if (is_dir(PUBLIC_PATH . '/media/' . $subDirs))
 			{
 				$currentDirs = $subDirs;
 			}
@@ -159,7 +160,7 @@ class AdminMediaController extends AdminControllerBase
 
 		if ($fullPath)
 		{
-			return rtrim(PUBLIC_PATH . '/upload/' . $currentDirs, '/');
+			return rtrim(PUBLIC_PATH . '/media/' . $currentDirs, '/');
 		}
 
 		return $currentDirs;
@@ -178,9 +179,15 @@ class AdminMediaController extends AdminControllerBase
 			}
 
 			$file       = new File($currentFile);
-			$fileName   = Filter::toSlug($file->getName());
+			$fileName   = FileSystem::makeSafe($file->getName());
 			$mime       = strtolower($file->getRealType());
 			$uploadName = md5(User::id() . ':' . $mime . ':' . $fileName . ':' . time()) . '_' . $fileName;
+			$currentDir = $this->getCurrentDirs();
+
+			if (!is_dir($currentDir))
+			{
+				mkdir($currentDir, 0755, true);
+			}
 
 			if ($error = $file->getError())
 			{
@@ -190,10 +197,10 @@ class AdminMediaController extends AdminControllerBase
 			{
 				$errorMessage = Text::_('file-not-image-message', ['name' => $fileName]);
 			}
-			elseif ($file->moveTo($this->getCurrentDirs() . '/' . $uploadName))
+			elseif ($file->moveTo($currentDir . '/' . $uploadName))
 			{
 				$data = [
-					'file'      => 'upload/' . ltrim($this->getCurrentDirs(false) . '/' . $uploadName, '/.'),
+					'file'      => 'media/' . ltrim($this->getCurrentDirs(false) . '/' . $uploadName, '/.'),
 					'type'      => 'image',
 					'mime'      => $mime,
 					'createdAt' => Date::now('UTC')->toSql(),

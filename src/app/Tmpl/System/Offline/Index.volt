@@ -1,5 +1,5 @@
 {% extends 'Template/HtmlBase.volt' %}
-{% bloc body %}
+{% block body %}
 <div class="uk-background-cover uk-flex uk-flex-center uk-flex-middle uk-light uk-height-viewport uk-background-center-center"
      style="background-image: url({{ public('images/bg-login.jpg') }})">
     <div class="uk-position-cover uk-overlay-primary"></div>

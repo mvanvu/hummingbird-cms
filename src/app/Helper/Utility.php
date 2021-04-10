@@ -2,6 +2,9 @@
 
 namespace App\Helper;
 
+use MaiVu\Php\Filter;
+use Phalcon\Mvc\Model;
+
 class Utility
 {
 	public static function getCountries()
@@ -30,21 +33,6 @@ class Utility
 		}
 
 		return $strEmojiUnicode;
-	}
-
-	public static function priceFormat($number, $pattern = null)
-	{
-		if ($pattern === null)
-		{
-			$pattern = Text::_('locale.price-format');
-		}
-
-		$regex = '/\{([^\}]+)\}/';
-		preg_match($regex, $pattern, $matches);
-		$parts = explode(':', $matches[1], 3);
-		$value = number_format(floatval($number), $parts[0], $parts[1], $parts[2]);
-
-		return preg_replace($regex, $value, $pattern);
 	}
 
 	public static function isMobileOrTablet($userAgent = null)
