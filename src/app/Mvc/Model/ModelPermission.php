@@ -62,6 +62,6 @@ class ModelPermission extends PhalconModel
 	public function canUnlock()
 	{
 		return property_exists($this, 'checkedBy')
-			&& ($this->checkedBy == Auth::id()) || ($this instanceof User && 1 === Auth::diff($this));
+			&& ($this->checkedBy == Auth::id()) || Auth::is('super') || ($this instanceof User && 1 === Auth::diff($this));
 	}
 }
