@@ -99,12 +99,12 @@ HTML;
 	{
 		if (!$this->dateTimeFormat)
 		{
-			$this->dateTimeFormat = CmsText::_('locale.date-time-format');
+			$this->dateTimeFormat = CmsText::_('@params.dateTimeFormat');
 		}
 
 		if (!$this->dateFormat)
 		{
-			$this->dateFormat = CmsText::_('locale.date-format');
+			$this->dateFormat = CmsText::_('@params.dateFormat');
 		}
 
 		return $this->enableTime ? $this->dateTimeFormat : $this->dateFormat;

@@ -448,7 +448,7 @@ class AdminControllerBase extends ControllerBase
 			[
 				'model'        => $this->model,
 				'formsManager' => $formsManager,
-				'general'      => $this->model->getIgnorePrefixModelName(),
+				'general'      => $this->mainEditFormName,
 			]
 		);
 	}
