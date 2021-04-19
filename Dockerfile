@@ -75,7 +75,7 @@ WORKDIR /cphalcon-4.1.0
 RUN wget https://github.com/zephir-lang/zephir/releases/download/0.12.20/zephir.phar && chmod +x zephir.phar
 RUN php zephir.phar fullclean && php zephir.phar build
 
-RUN echo "extension=phalcon.so" >> /etc/php/7.4/cli/php.ini
+# RUN echo "extension=phalcon.so" >> /etc/php/7.4/cli/php.ini
 RUN echo "extension=phalcon.so" >> /etc/php/7.4/fpm/php.ini
 
 # Install Swoole for WebSocket
@@ -83,7 +83,7 @@ WORKDIR /
 RUN wget https://github.com/swoole/swoole-src/archive/v4.6.3.tar.gz && tar -zxvf v4.6.3.tar.gz
 WORKDIR swoole-src-4.6.3
 RUN phpize && ./configure --enable-openssl --enable-sockets && make && make install
-RUN echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini
+# RUN echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini
 RUN echo "extension=swoole.so" >> /etc/php/7.4/fpm/php.ini
 
 WORKDIR /
