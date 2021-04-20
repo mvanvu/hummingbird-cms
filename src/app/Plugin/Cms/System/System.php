@@ -83,7 +83,7 @@ class System extends Plugin
 		{
 			if ($defaultLanguage->get('locale.sef') === $vars['language'])
 			{
-				$uri->setVar('language', null);
+				$uri->delVar('language');
 				$redirect = true;
 			}
 		}
