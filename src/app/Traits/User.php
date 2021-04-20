@@ -19,7 +19,6 @@ use Throwable;
 
 trait User
 {
-	use Hooker;
 
 	public function handleUserRegister(&$postData = null)
 	{

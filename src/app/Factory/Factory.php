@@ -10,25 +10,8 @@ use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\Utility;
 use App\Loader;
-use MaiVu\Php\Filter;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Registry;
-use Phalcon\Debug\Dump;
-
-if (!function_exists('dd'))
-{
-	function dd()
-	{
-		@ob_clean();
-		array_map(function ($x) {
-			$string = (new Dump([], true))->variable($x);
-			echo php_sapi_name() === 'cli' ? strip_tags($string) . PHP_EOL : $string;
-
-		}, func_get_args());
-
-		exit(0);
-	}
-}
 
 class Factory
 {
@@ -71,10 +54,10 @@ class Factory
 			case 'request':
 			case 'response':
 
-				return $di->getShared($name, $parameters);
+			return $di->has($name) ? $di->getShared($name, $parameters) : null;
 		}
 
-		return $di->get($name, $parameters);
+		return $di->has($name) ? $di->get($name, $parameters) : null;
 	}
 
 	public static function getApplication()

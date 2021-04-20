@@ -38,7 +38,7 @@ class Plugin
 		$pluginPath   = PLUGIN_PATH . '/' . $this->config->get('manifest.group') . '/' . $pluginName;
 		$pluginView   = $pluginPath . '/app/Tmpl/' . (Uri::isClient('administrator') ? 'Administrator' : 'Site') . '/';
 
-		if (!IS_CLI
+		if (IS_CMS
 			&& is_dir($pluginView)
 			&& $view = $this->getRenderer()
 		)

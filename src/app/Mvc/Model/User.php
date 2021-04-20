@@ -266,7 +266,7 @@ class User extends ModelBase
 		switch ($keyword)
 		{
 			case 'register':
-				return in_array($this->role->type, ['R', 'M']);
+				return in_array($this->role->type, ['R', 'M', 'S']);
 
 			case 'manager':
 				return in_array($this->role->type, ['M', 'S']);

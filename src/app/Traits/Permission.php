@@ -102,9 +102,14 @@ trait Permission
 
 	protected function isAuthorized(User $user = null)
 	{
+		if (null === $user)
+		{
+			$user = $this->user();
+		}
+
 		$defaultRole = Uri::isClient('administrator') ? 'manager' : 'register';
 
-		return ($user ?? $this->user())->is($this->role ?? $defaultRole);
+		return $user->is($this->role ?? $defaultRole);
 	}
 
 	/**
@@ -154,6 +159,6 @@ trait Permission
 			throw new Exception(Text::_('403-message'), 403);
 		}
 
-		Event::trigger('onApiAfterGuard', ['Api']);
+		Event::trigger('onApiAfterGuard', [], ['Api']);
 	}
 }

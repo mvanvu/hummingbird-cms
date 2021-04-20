@@ -152,17 +152,7 @@ class Uri
 
 	public static function getClient()
 	{
-		if (IS_CLI)
-		{
-			return Console::getInstance()->hasArgument('socket') ? 'socket' : 'cli';
-		}
-
-		if (IS_API)
-		{
-			return 'api';
-		}
-
-		return static::getActive()->getVar('client');
+		return IS_CLI ? 'cli' : static::getActive()->getVar('client');
 	}
 
 	public function getVar($name, $default = null)
