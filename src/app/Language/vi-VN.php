@@ -165,6 +165,7 @@ return [
 	'none'                              => 'None',
 	'ssl-tls'                           => 'SSL/TLS',
 	'tls'                               => 'STARTTLS',
+	'languages'                         => 'Ngôn ngữ',
 	'language'                          => 'Ngôn ngữ',
 	'created-at'                        => 'Ngày tạo',
 	'no-items-found'                    => 'Không có mục nào trong danh sách.',

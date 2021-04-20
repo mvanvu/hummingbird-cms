@@ -166,6 +166,7 @@ return [
 	'none'                              => 'None',
 	'ssl-tls'                           => 'SSL/TLS',
 	'tls'                               => 'STARTTLS',
+	'languages'                         => 'Languages',
 	'language'                          => 'Language',
 	'created-at'                        => 'Created at',
 	'no-items-found'                    => 'No items found.',
