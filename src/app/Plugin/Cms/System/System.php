@@ -63,16 +63,21 @@ class System extends Plugin
 
 	protected function checkLanguage()
 	{
-		if (!Language::isMultilingual())
-		{
-			return true;
-		}
-
 		$defaultLanguage = Language::getDefault();
 		$activeLanguage  = Language::getActiveLanguage();
 		$uri             = Uri::getActive();
 		$vars            = $uri->getVars();
 		$redirect        = false;
+
+		if (!Language::isMultilingual())
+		{
+			if ($uri->getVar('client') === 'site' && $uri->hasVar('language'))
+			{
+				Uri::redirect($uri->delVar('language')->toString());
+			}
+
+			return true;
+		}
 
 		if (isset($vars['language']))
 		{

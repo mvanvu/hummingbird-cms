@@ -155,7 +155,7 @@ class Uri
 		return IS_CLI ? 'cli' : static::getActive()->getVar('client');
 	}
 
-	public function getVar($name, $default = null)
+	public function getVar(string $name, $default = null)
 	{
 		return isset($this->vars[$name]) ? $this->vars[$name] : $default;
 	}
@@ -473,6 +473,18 @@ HTML;
 		$pattern     = str_replace($search, $replace, preg_quote($stringPath, '#'));
 
 		return $stringPath === $currentPath || preg_match('#' . $pattern . '\z#u', $currentPath) === 1;
+	}
+
+	public function hasVar(string $name): bool
+	{
+		return isset($this->vars[$name]);
+	}
+
+	public function delVar(string $name): Uri
+	{
+		unset($this->vars[$name]);
+
+		return $this;
 	}
 
 	public function setVar($name, $value)
