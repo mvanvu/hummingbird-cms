@@ -43,8 +43,23 @@ class Socket implements Fly
 		$this->connections->create();
 		$this->socket = new Server(
 			$console->getArgument('host', '0.0.0.0'),
-			$console->getArgument('port', 2053, 'uint')
+			$console->getArgument('port', 2053, 'uint'),
+			SWOOLE_PROCESS,
+			SWOOLE_SOCK_TCP || SWOOLE_SSL
 		);
+
+		$cert = $console->getArgument('ssl-cert');
+		$key  = $console->getArgument('ssl-key');
+
+		if ($cert && $key)
+		{
+			$this->socket->set(
+				[
+					'ssl_cert_file' => $cert,
+					'ssl_key_file'  => $key,
+				]
+			);
+		}
 
 		Event::trigger('onBootSocket', [$app, $this], ['Socket']);
 		$this->socket->on('open', function (Server $server, Request $request) {
