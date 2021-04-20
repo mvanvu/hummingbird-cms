@@ -81,15 +81,15 @@ class System extends Plugin
 
 		if (isset($vars['language']))
 		{
-			if ($defaultLanguage->get('locale.sef') === $vars['language'])
+			if ($defaultLanguage->get('attributes.sef') === $vars['language'])
 			{
 				$uri->delVar('language');
 				$redirect = true;
 			}
 		}
-		elseif ($defaultLanguage->get('locale.code') !== $activeLanguage->get('locale.code'))
+		elseif ($defaultLanguage->get('attributes.code') !== $activeLanguage->get('attributes.code'))
 		{
-			$uri->setVar('language', $activeLanguage->get('locale.code'));
+			$uri->setVar('language', $activeLanguage->get('attributes.code'));
 			$redirect = true;
 		}
 
