@@ -485,6 +485,7 @@ class AdminControllerBase extends ControllerBase
 		Toolbar::add('save', $this->uri->routeTo('/save/' . $id), 'cloud-check');
 		Toolbar::add('save2close', $this->uri->routeTo('/save2close/' . $id), 'save');
 		Toolbar::add('close', $this->uri->routeTo('/close/' . $id), 'close');
+		Assets::add('css/toolbars.css');
 	}
 
 	public function save2closeAction()
