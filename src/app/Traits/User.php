@@ -20,7 +20,6 @@ use Throwable;
 
 trait User
 {
-
 	public function handleUserRegister(&$postData = null)
 	{
 		$request = Service::request();

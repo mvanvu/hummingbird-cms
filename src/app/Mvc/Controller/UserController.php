@@ -265,7 +265,7 @@ class UserController extends ControllerBase
 		$token = $this->dispatcher->getParam('token', ['string']);
 		$api   = false;
 
-		if (strpos($token, 'api_') === 0)
+		if (strpos($token, 'api-') === 0)
 		{
 			$token = substr($token, 4);
 			$api   = true;
