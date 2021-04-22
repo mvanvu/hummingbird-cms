@@ -136,7 +136,7 @@ trait User
 			}
 			else
 			{
-				$apiSecret    = Factory::getConfig()->get('secret.apiKey');
+				$apiSecret    = md5(Factory::getConfig()->get('secret.apiKey'));
 				$headerSecret = Service::request()->getHeader('HTTP_API_SECRET_KEY');
 
 				if (empty($apiSecret)
