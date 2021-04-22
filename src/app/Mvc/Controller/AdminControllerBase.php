@@ -2,7 +2,6 @@
 
 namespace App\Mvc\Controller;
 
-use App\Helper\Assets;
 use App\Helper\Config;
 use App\Helper\Constant;
 use App\Helper\Language;
@@ -422,8 +421,6 @@ class AdminControllerBase extends ControllerBase
 		{
 			Toolbar::add('rebuild', $this->uri->routeTo('rebuild'), 'sort-amount-asc');
 		}
-
-		Assets::add('css/toolbars.css');
 	}
 
 	public function editAction()
@@ -485,7 +482,6 @@ class AdminControllerBase extends ControllerBase
 		Toolbar::add('save', $this->uri->routeTo('/save/' . $id), 'cloud-check');
 		Toolbar::add('save2close', $this->uri->routeTo('/save2close/' . $id), 'save');
 		Toolbar::add('close', $this->uri->routeTo('/close/' . $id), 'close');
-		Assets::add('css/toolbars.css');
 	}
 
 	public function save2closeAction()
