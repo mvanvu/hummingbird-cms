@@ -12,6 +12,7 @@ use App\Helper\State;
 use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User as CMSUser;
+use App\Mvc\Model\Role;
 use App\Mvc\Model\User as UserModel;
 use App\Queue\SendMail;
 use Exception;
@@ -166,7 +167,7 @@ trait User
 			$userEntity->email     = $validData['email'];
 			$userEntity->createdAt = Date::getInstance('now', 'UTC')->toSql();
 			$userEntity->password  = Service::security()->hash($validData['password']);
-			$userEntity->role      = 'R';
+			$userEntity->roleId    = Role::getDefault()->id;
 			$userEntity->active    = 'A' === $newUserActivation ? 'Y' : 'N';
 			$userEntity->token     = 'E' === $newUserActivation ? sha1($userEntity->username . ':' . $userEntity->password) : null;
 			$userEntity->params    = [

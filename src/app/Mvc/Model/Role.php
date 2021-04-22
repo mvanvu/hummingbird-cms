@@ -91,6 +91,11 @@ class Role extends ModelBase
 
 	protected $standardMetadata = true;
 
+	public static function getDefault()
+	{
+		return Role::findFirst('type = \'R\'');
+	}
+
 	/**
 	 * Initialize method for model.
 	 */
