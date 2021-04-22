@@ -2,6 +2,7 @@
 
 namespace App\Mvc\Controller;
 
+use App\Helper\Assets;
 use App\Helper\Config;
 use App\Helper\Constant;
 use App\Helper\Language;
@@ -421,6 +422,8 @@ class AdminControllerBase extends ControllerBase
 		{
 			Toolbar::add('rebuild', $this->uri->routeTo('rebuild'), 'sort-amount-asc');
 		}
+
+		Assets::add('css/toolbars.css');
 	}
 
 	public function editAction()
