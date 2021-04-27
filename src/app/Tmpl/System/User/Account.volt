@@ -1,11 +1,11 @@
 {% set allowUserRegistration = cmsConfig.get('allowUserRegistration') === 'Y' %}
 <div id="user-account-container">
     {{ flashSession.output() }}
-    <div class="uk-alert uk-margin">
-        {{ _('user-' ~ (allowUserRegistration ? 'account' : 'login') ~ '-desc') }}
-    </div>
     <div class="uk-grid-divider uk-flex-center uk-child-width-1-2@s uk-margin" uk-grid>
         <div>
+            <div class="uk-alert uk-margin">
+                {{ _('user-' ~ (allowUserRegistration ? 'account' : 'login') ~ '-desc') }}
+            </div>
             <h3 class="uk-heading-bullet uk-h5">
                 {{ _('login') }}
             </h3>
