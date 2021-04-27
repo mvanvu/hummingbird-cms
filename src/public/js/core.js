@@ -1,13 +1,57 @@
 var html = document.documentElement,
     cmsCore = $hb = window.cmsCore || {
-        uri: {
-            isHome: html.getAttribute('data-uri-home') === '1',
-            root: html.getAttribute('data-uri-root') || '',
-            base: html.getAttribute('data-uri-base') || '',
-        },
+        globalData: {},
+        uri: {},
         public: function (asset) {
             return $hb.uri.root + '/' + asset;
         },
+        setData: function (key, val) {
+            if (typeof key === 'object') {
+                for (var k in key) {
+                    this.globalData[k] = key[k];
+                }
+            } else {
+                this.globalData[key] = val;
+            }
+        },
+        getData: function (key, def) {
+            return typeof this.globalData[key] === 'undefined' ? def : this.globalData[key];
+        },
+        storage: {
+            setData: function (name, value) {
+                if (window.localStorage) {
+                    window.localStorage.setItem(name, value);
+                } else {
+                    $hb.setCookie(name, value);
+                }
+            },
+            getData: function (name) {
+                if (window.localStorage) {
+                    return window.localStorage.getItem(name);
+                }
+
+                return $hb.getCookie(name);
+            }
+        },
+        getCookie: function (cname) {
+            var name = cname + '=',
+                ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1);
+                if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
+            }
+
+            return '';
+
+        },
+        setCookie: function (cname, cvalue) {
+            var exdays = 1,
+                d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            document.cookie = cname + '=' + cvalue + '; expires=' + d.toUTCString();
+        },
+
         language: {
             strings: {},
             load: function (objData) {
@@ -88,9 +132,15 @@ var html = document.documentElement,
                         }
                     });
 
+                    if (typeof options.onOpen !== 'function') {
+                        options.onOpen = function () {
+                            console.log(options.plugin + ' Socket connected.');
+                        };
+                    }
+
                     if (typeof options.onClose !== 'function') {
                         options.onClose = function () {
-                            console.log('Socket is closed. Reconnect will be attempted in 3 seconds...');
+                            console.log('Socket closed. Reconnect will be attempted in 3 seconds...');
                             setTimeout(function () {
                                 $hb.socket.create(context, options);
                             }, 3000);
@@ -131,15 +181,15 @@ var html = document.documentElement,
                 return sok;
             },
         },
-
         currency: {
-            code: html.getAttribute('data-currency-code') || 'USD',
-            symbol: html.getAttribute('data-currency-symbol') || '$',
-            decimals: html.getAttribute('data-currency-decimals') || '2',
-            separator: html.getAttribute('data-currency-separator') || ',',
-            point: html.getAttribute('data-currency-point') || '.',
+            code: 'USD',
+            symbol: '$',
+            decimals: '2',
+            separator: ',',
+            point: '.',
+            formatPattern: '{symbol}{value}',
             format: function (number) {
-                var format = html.getAttribute('data-currency-format') || '{symbol}{value}',
+                var format = $hb.currency.formatPattern,
                     value = parseFloat(number);
 
                 if (isNaN(value)) {

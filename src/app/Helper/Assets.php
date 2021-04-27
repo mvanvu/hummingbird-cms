@@ -2,16 +2,53 @@
 
 namespace App\Helper;
 
+use MaiVu\Php\Registry;
+
 class Assets
 {
-	public static function core()
+	public static function core(array $extendsAssets = [])
 	{
-		static $core = false;
+		static $coreData = null;
 
-		if (!$core)
+		if (null === $coreData)
 		{
-			$core = true;
-			static::add('js/core.js');
+			static::add(
+				[
+					'js/mini-query.js',
+					'js/core.js',
+				]
+			);
+			$currency = Currency::getActive();
+			$registry = Registry::create($currency->params ?? []);
+			$coreData = [
+				'uri'      => [
+					'isHome' => Uri::isHome(),
+					'base'   => Uri::getBaseUriPrefix(),
+					'root'   => ROOT_URI,
+				],
+				'currency' => [
+					'code'          => $currency->code ?? 'USD',
+					'symbol'        => $registry->get('symbol', '$'),
+					'decimals'      => $registry->get('decimals', '2'),
+					'separator'     => $registry->get('separator', ','),
+					'point'         => $registry->get('point', '.'),
+					'formatPattern' => $registry->get('format', '{symbol}{value}'),
+				],
+			];
+
+			$inlineJS = 'cmsCore.uri = ' . json_encode($coreData['uri']) . ';';
+
+			foreach ($coreData['currency'] as $k => $v)
+			{
+				$inlineJS .= PHP_EOL . 'cmsCore.currency.' . $k . ' = ' . json_encode($v) . ';';
+			}
+
+			static::inlineJs($inlineJS);
+		}
+
+		if ($extendsAssets)
+		{
+			static::add($extendsAssets);
 		}
 	}
 
@@ -66,14 +103,14 @@ class Assets
 		}
 	}
 
-	public static function inlineCss(string $content)
-	{
-		Service::assets()->addInlineCss($content);
-	}
-
 	public static function inlineJs(string $content)
 	{
 		Service::assets()->addInlineJs($content);
+	}
+
+	public static function inlineCss(string $content)
+	{
+		Service::assets()->addInlineCss($content);
 	}
 
 	public static function jQueryCore()

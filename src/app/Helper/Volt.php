@@ -42,30 +42,6 @@ class Volt
 		return ROOT_URI . '/' . $baseFile;
 	}
 
-	public static function css()
-	{
-		$assets = Service::assets();
-
-		ob_start();
-		$assets->outputCss();
-		$assets->outputInlineCss();
-
-		return ob_get_clean();
-	}
-
-
-	public static function js()
-	{
-		Text::scripts();
-		$assets = Service::assets();
-
-		ob_start();
-		$assets->outputJs();
-		$assets->outputInlineJs();
-
-		return ob_get_clean();
-	}
-
 	public function compileFunction($name, $resolvedArgs, $exprArgs)
 	{
 		$helperPrefix = Constant::NAMESPACE_HELPER . '\\';
@@ -138,12 +114,6 @@ class Volt
 
 			case 'public':
 				return $helperPrefix . 'Volt::publicResource(' . $resolvedArgs . ')';
-
-			case 'css':
-				return $helperPrefix . 'Volt::css()';
-
-			case 'js':
-				return $helperPrefix . 'Volt::js()';
 
 			case 'reCaptcha':
 				return $helperPrefix . 'ReCaptcha::render()';

@@ -5,14 +5,12 @@ namespace App\Mvc\Controller;
 use App\Helper\AdminMenu;
 use App\Helper\Assets;
 use App\Helper\Config;
-use App\Helper\Currency;
 use App\Helper\Event;
 use App\Helper\Language;
 use App\Helper\Template;
 use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User;
-use MaiVu\Php\Registry;
 use Phalcon\Mvc\Controller;
 
 class ControllerBase extends Controller
@@ -38,33 +36,18 @@ class ControllerBase extends Controller
 			$this->tag->setTitle($siteName);
 		}
 
-		$currency = Currency::getActive();
-		$registry = Registry::create($currency->params ?? []);
-
 		$this->view->setVars(
 			[
-				'siteName'          => $siteName,
-				'cmsConfig'         => Config::get(),
-				'user'              => User::getActive(),
-				'currencyCode'      => $currency->code ?? 'USD',
-				'currencySymbol'    => $registry->get('symbol', '$'),
-				'currencyDecimals'  => $registry->get('decimals', '2'),
-				'currencySeparator' => $registry->get('separator', ','),
-				'currencyPoint'     => $registry->get('point', '.'),
-				'currencyFormat'    => $registry->get('format', '{symbol}{value}'),
+				'siteName'  => $siteName,
+				'cmsConfig' => Config::get(),
+				'user'      => User::getActive(),
 			]
 		);
 	}
 
 	protected function siteBase()
 	{
-		Assets::add(
-			[
-				'js/mini-query.js',
-				'js/core.js',
-			]
-		);
-
+		Assets::core();
 		$langCode    = Language::getActiveCode();
 		$tplLangFile = TPL_SITE_PATH . '/Language/' . $langCode . '.php';
 
@@ -78,20 +61,17 @@ class ControllerBase extends Controller
 
 	protected function adminBase()
 	{
-		Assets::add(
+		Assets::core(
 			[
 				'css/admin.css',
 				'css/php-form.css',
-				'js/mini-query.js',
 				'js/mini-query.choices.js',
 				'js/mini-query.validate.js',
-				'js/core.js',
 				'js/admin.js',
 				'js/tab-state.js',
 				'js/php-form.js',
 			]
 		);
-
 		$adminMenu = AdminMenu::getInstance();
 		Event::trigger('onRegisterAdminMenus', [$adminMenu]);
 		$this->view->setVar('adminMenus', $adminMenu->getMenus());

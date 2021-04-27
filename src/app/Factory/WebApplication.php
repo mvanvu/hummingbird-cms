@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Helper\Config;
 use App\Helper\Constant;
 use App\Helper\Event as EventHelper;
+use App\Helper\Service;
 use App\Helper\State;
 use App\Helper\Template;
 use App\Helper\Text;
@@ -159,6 +160,22 @@ class WebApplication extends Application
 	{
 		if (!$this->response->isSent())
 		{
+			$content = $this->response->getContent();
+			$assets  = Service::assets();
+
+			// Build CSS
+			ob_start();
+			$assets->outputCss();
+			$assets->outputInlineCss();
+			$content = str_replace('<!--block:afterHead-->', ob_get_clean(), $content);
+
+			// Build JS
+			Text::scripts();
+			ob_start();
+			$assets->outputJs();
+			$assets->outputInlineJs();
+			$content = str_replace('<!--block:afterBody-->', ob_get_clean(), $content);
+
 			if (Config::is('gzip')
 				&& !ini_get('zlib.output_compression')
 				&& ini_get('output_handler') != 'ob_gzhandler'
@@ -172,7 +189,7 @@ class WebApplication extends Application
 				{
 					foreach ($encodings as $encoding)
 					{
-						$gzData = gzencode($this->response->getContent(), 4, ($supported[$encoding] == 'gz') ? FORCE_GZIP : FORCE_DEFLATE);
+						$gzData = gzencode($content, 4, ($supported[$encoding] == 'gz') ? FORCE_GZIP : FORCE_DEFLATE);
 
 						// If there was a problem encoding the data just try the next encoding scheme.
 						if (false !== $gzData)
@@ -180,14 +197,14 @@ class WebApplication extends Application
 							$this->response->setHeader('Content-Encoding', $encoding);
 							$this->response->setHeader('Vary', 'Accept-Encoding');
 							$this->response->setHeader('X-Content-Encoded-By', 'HummingbirdCms');
-							$this->response->setContent($gzData);
+							$content = $gzData;
 							break;
 						}
 					}
 				}
 			}
 
-			$this->response->send();
+			$this->response->setContent($content)->send();
 		}
 	}
 }
