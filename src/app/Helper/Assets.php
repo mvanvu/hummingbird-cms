@@ -6,6 +6,14 @@ use MaiVu\Php\Registry;
 
 class Assets
 {
+	const POSITION_AFTER_HEAD = 1;
+
+	const POSITION_BEFORE_BODY = 2;
+
+	const POSITION_AFTER_BODY = 3;
+
+	protected static $assets = [];
+
 	public static function core(array $extendsAssets = [])
 	{
 		static $coreData = null;
@@ -52,7 +60,7 @@ class Assets
 		}
 	}
 
-	public static function add($asset)
+	public static function add($asset, string $position = null)
 	{
 		static $files = [];
 
@@ -65,52 +73,72 @@ class Assets
 		}
 		elseif (!in_array($asset, $files))
 		{
-			$files[] = $asset;
-			$type    = FileSystem::splitExt($asset);
+			$asset    = trim($asset, '/\\\\.');
+			$files[]  = $asset;
+			$type     = FileSystem::getExt($asset);
+			$isSite   = Uri::isClient('site');
+			$base     = ROOT_URI;
+			$filePath = PUBLIC_PATH . '/' . $asset;
 
 			if (in_array($type, ['css', 'js']))
 			{
-				$callback = 'add' . ucfirst($type);
-				$local    = preg_match('/^https?:|^\//', $asset) ? false : true;
-
-				if (!DEVELOPMENT_MODE && is_file(PUBLIC_PATH . '/' . $asset . '.min.' . $type))
+				if (!preg_match('/^https?:|^\//', $asset))
 				{
-					$file = $asset . '.min.' . $type;
-				}
-				else
-				{
-					$file = $asset . '.' . $type;
-				}
-
-				if (Uri::isClient('site'))
-				{
-					$publicResource = TPL_SITE_PATH . '/public/' . $file;
-
-					if (is_file($publicResource))
+					if ($isSite)
 					{
-						$file  = ROOT_URI . '/hb/io/public/' . Template::getTemplate()->id . '/' . $file;
-						$local = false;
+						$publicResource = TPL_SITE_PATH . '/public/' . $asset;
+
+						if (is_file($publicResource))
+						{
+							$filePath = $publicResource;
+							$base     = ROOT_URI . '/hb/io/public/' . Template::getTemplate()->id;
+						}
+					}
+
+					if (!DEVELOPMENT_MODE && false === strpos($asset, '.min.'))
+					{
+						$dir   = dirname($filePath);
+						$fName = basename($filePath, '.' . $type);
+
+						if (is_file($dir . '/' . $fName . '.min.' . $type))
+						{
+							$asset = dirname($asset) . '/' . $fName . '.min.' . $type;
+						}
 					}
 				}
 
+				$url = $base . '/' . $asset;
+
 				if (DEVELOPMENT_MODE)
 				{
-					$file .= '?' . time();
+					$url .= '?' . time();
 				}
 
-				Service::assets()->{$callback}($file, $local);
+				if ('js' === $type)
+				{
+					static::$assets[$position ?? Assets::POSITION_AFTER_BODY][] = '<script src="' . $url . '"></script>';
+				}
+				else
+				{
+					static::$assets[Assets::POSITION_AFTER_HEAD][] = '<link href="' . $url . '" rel="stylesheet" type="text/css"/>';
+				}
 			}
 		}
 	}
 
-	public static function inlineJs(string $content)
+	public static function inlineJs(string $content, string $position = Assets::POSITION_AFTER_BODY)
 	{
-		Service::assets()->addInlineJs($content);
+		static::$assets[$position][] = '<script>' . $content . '</script>';
 	}
 
 	public static function inlineCss(string $content)
 	{
-		Service::assets()->addInlineCss($content);
+		static::$assets[Assets::POSITION_AFTER_HEAD][] = '<style>' . $content . '</style>';
+	}
+
+	public static function code(string $code, string $position = Assets::POSITION_AFTER_BODY)
+	{
+		static::$assets[$position][] = $code;
 	}
 
 	public static function jQueryCore()
@@ -135,33 +163,69 @@ class Assets
 		}
 	}
 
-	public static function addFromPlugin($assets, string $group, string $name)
+	public static function addFromPlugin($assets, string $group, string $name, string $position = null)
 	{
 		settype($assets, 'array');
-		$prefix = ROOT_URI . '/hb/io/public/' . $group . '/' . $name;
+		$isSite = Uri::isClient('site');
 
-		foreach ($assets as &$asset)
+		foreach ($assets as $asset)
 		{
-			$asset = trim($asset, '/\\\\.');
+			$asset    = trim($asset, '/\\\\.');
+			$filePath = PLUGIN_PATH . '/' . $group . '/' . $name . '/' . $asset;
+			$base     = ROOT_URI . '/hb/io/public/' . $group . '/' . $name;
 
-			if (!DEVELOPMENT_MODE && false === strpos($asset, '.min.'))
+			if ($isSite)
 			{
-				$ext   = FileSystem::getExt($asset);
-				$dir   = dirname($asset);
-				$fName = basename($asset, '.' . $ext);
+				$publicResource = TPL_SITE_PATH . '/public/' . $group . '/' . $name . '/' . $asset;
 
-				if (is_file(PLUGIN_PATH . '/' . $group . '/' . $name . '/public/' . $dir . '/' . $fName . '.min.' . $ext))
+				if (is_file($publicResource))
 				{
-					$asset = $dir . '/' . $fName . '.min.' . $ext;
+					$filePath = $publicResource;
+					$base     = ROOT_URI . '/hb/io/public/' . Template::getTemplate()->id . '/' . $group . '/' . $name;
 				}
 			}
 
-			if (strpos($asset, $prefix) !== 0)
+			if (!DEVELOPMENT_MODE && false === strpos($asset, '.min.'))
 			{
-				$asset = $prefix . '/' . $asset;
+				$ext   = FileSystem::getExt($filePath);
+				$dir   = dirname($filePath);
+				$fName = basename($filePath, '.' . $ext);
+
+				if (is_file($dir . '/' . $fName . '.min.' . $ext))
+				{
+					static::add($base . '/' . dirname($asset) . '/' . $fName . '.min.' . $ext, $position);
+					continue;
+				}
+			}
+
+			static::add($base . '/' . $asset, $position);
+		}
+	}
+
+	public static function applyContent(string $content): string
+	{
+		Text::scripts();
+
+		foreach (static::$assets as $position => $assets)
+		{
+			$code = implode(PHP_EOL, $assets);
+
+			switch ($position)
+			{
+				case Assets::POSITION_AFTER_HEAD:
+					$content = str_replace('<!--block:afterHead-->', $code, $content);
+					break;
+
+				case Assets::POSITION_BEFORE_BODY:
+					$content = str_replace('<!--block:beforeBody-->', $code, $content);
+					break;
+
+				case Assets::POSITION_AFTER_BODY:
+					$content = str_replace('<!--block:afterBody-->', $code, $content);
+					break;
 			}
 		}
 
-		static::add($assets);
+		return $content;
 	}
 }

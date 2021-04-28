@@ -2,10 +2,10 @@
 
 namespace App\Factory;
 
+use App\Helper\Assets;
 use App\Helper\Config;
 use App\Helper\Constant;
 use App\Helper\Event as EventHelper;
-use App\Helper\Service;
 use App\Helper\State;
 use App\Helper\Template;
 use App\Helper\Text;
@@ -160,21 +160,7 @@ class WebApplication extends Application
 	{
 		if (!$this->response->isSent())
 		{
-			$content = $this->response->getContent();
-			$assets  = Service::assets();
-
-			// Build CSS
-			ob_start();
-			$assets->outputCss();
-			$assets->outputInlineCss();
-			$content = str_replace('<!--block:afterHead-->', ob_get_clean(), $content);
-
-			// Build JS
-			Text::scripts();
-			ob_start();
-			$assets->outputJs();
-			$assets->outputInlineJs();
-			$content = str_replace('<!--block:afterBody-->', ob_get_clean(), $content);
+			$content = Assets::applyContent($this->response->getContent());
 
 			if (Config::is('gzip')
 				&& !ini_get('zlib.output_compression')

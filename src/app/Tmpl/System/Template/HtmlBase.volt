@@ -14,6 +14,7 @@
     <!--block:afterHead-->
 </head>
 <body>
+<!--block:beforeBody-->
 {% block body %}{% endblock %}
 <!--block:afterBody-->
 </body>
