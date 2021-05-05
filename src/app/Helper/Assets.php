@@ -73,8 +73,8 @@ class Assets
 		}
 		elseif (!in_array($asset, $files))
 		{
-			$asset    = trim($asset, '/\\\\.');
-			$files[]  = $asset;
+			$trimmed  = trim($asset, '/\\\\.');
+			$files[]  = $trimmed;
 			$type     = FileSystem::getExt($asset);
 			$isSite   = Uri::isClient('site');
 			$base     = ROOT_URI;
@@ -82,8 +82,14 @@ class Assets
 
 			if (in_array($type, ['css', 'js']))
 			{
-				if (!preg_match('/^https?:|^\//', $asset))
+				if (preg_match('/^https?:|^\//', $asset))
 				{
+					$url = $asset;
+				}
+				else
+				{
+					$asset = $trimmed;
+
 					if ($isSite)
 					{
 						$publicResource = TPL_SITE_PATH . '/public/' . $asset;
@@ -105,9 +111,9 @@ class Assets
 							$asset = dirname($asset) . '/' . $fName . '.min.' . $type;
 						}
 					}
-				}
 
-				$url = $base . '/' . $asset;
+					$url = $base . '/' . $asset;
+				}
 
 				if (DEVELOPMENT_MODE)
 				{
