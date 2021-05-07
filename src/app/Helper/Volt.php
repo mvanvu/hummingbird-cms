@@ -124,6 +124,9 @@ class Volt
 			case 'language':
 				return $helperPrefix . 'Language::getActiveLanguage()';
 
+			case 'isUri':
+				return $helperPrefix . 'Uri::is(' . $resolvedArgs . ')';
+
 			case 'helper':
 				$helperMethod = str_replace('\'', '', static::$compiler->expression($exprArgs[0]['expr']));
 				$resolvedArgs = [];
