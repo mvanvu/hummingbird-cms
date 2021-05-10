@@ -147,7 +147,7 @@ class User extends ModelBase
 			}
 		}
 
-		if (($this->isRoot() || Auth::is('self')) && $this->no('active'))
+		if (($this->isRoot() || (!Auth::is('guest') && Auth::is('self'))) && $this->no('active'))
 		{
 			Service::flashSession()->warning(Text::_('access-denied'));
 

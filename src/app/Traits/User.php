@@ -127,101 +127,99 @@ trait User
 			'userData'      => null,
 		];
 
-		try
-		{
-			if (IS_CMS)
-			{
-				Event::trigger('onUserBeforeRegister', [&$validData, &$errorsMsg], ['Cms']);
-			}
-			else
-			{
-				$apiSecret    = md5(Factory::getConfig()->get('secret.apiKey'));
-				$headerSecret = Service::request()->getHeader('HTTP_API_SECRET_KEY');
-
-				if (empty($apiSecret)
-					|| empty($headerSecret)
-					|| $apiSecret !== $headerSecret
-				)
-				{
-					throw new Exception(Text::_('access-denied'), 403);
-				}
-
-				$this->callback('userBeforeRegister', [&$validData, &$errorsMsg]);
-			}
-
-		}
-		catch (Throwable $e)
-		{
-			$errorsMsg[] = $e->getMessage();
-		}
-
 		if (empty($errorsMsg))
 		{
-			// Start register new user
-			State::setMark('user.registering', true);
-			$userEntity            = new UserModel;
-			$userEntity->id        = 0;
-			$userEntity->name      = $validData['name'];
-			$userEntity->username  = $validData['username'];
-			$userEntity->email     = $validData['email'];
-			$userEntity->createdAt = Date::getInstance('now', 'UTC')->toSql();
-			$userEntity->password  = Service::security()->hash($validData['password']);
-			$userEntity->roleId    = Role::getDefault()->id;
-			$userEntity->active    = 'A' === $newUserActivation ? 'Y' : 'N';
-			$userEntity->token     = 'E' === $newUserActivation ? sha1($userEntity->username . ':' . $userEntity->password) : null;
-			$userEntity->params    = [
-				'timezone' => Config::get('timezone', 'UTC'),
-				'avatar'   => '',
-			];
-
-			if ($userEntity->save())
+			try
 			{
-				$siteName                 = Config::get('siteName');
-				$responseData['userData'] = $userEntity;
-
-				if ('E' === $newUserActivation)
-				{
-					$link    = Uri::getInstance(['uri' => 'user/activate/' . $userEntity->token])->toString(true, true);
-					$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
-					$body    = Text::_('activate-email-body', ['name' => $userEntity->name, 'siteName' => $siteName, 'link' => $link]);
-					$payload = [
-						'recipient' => $userEntity->email,
-						'subject'   => $subject,
-						'body'      => str_replace('\n', PHP_EOL, $body),
-					];
-					Queue::add(SendMail::class, $payload);
-				}
-
-				$mailToAdmin = Config::get('mailToAdminWhenNewUser', 'Y') === 'Y';
-				$adminEmail  = filter_var(Config::get('adminEmail', ''), FILTER_VALIDATE_EMAIL);
-
-				if ($mailToAdmin
-					&& !empty($adminEmail)
-					&& ($adminEmail = filter_var($adminEmail, FILTER_VALIDATE_EMAIL))
-				)
-				{
-					$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
-					$body    = Text::_('email-notification-new-user-body', ['name' => $userEntity->name, 'username' => $userEntity->username, 'siteName' => $siteName]);
-					$payload = [
-						'recipient' => $adminEmail,
-						'subject'   => $subject,
-						'body'      => str_replace('\n', PHP_EOL, $body),
-					];
-					Queue::add(SendMail::class, $payload);
-				}
-
 				if (IS_CMS)
 				{
-					Event::trigger('onUserRegisterFinished', [$userEntity, $validData], ['Cms']);
+					Event::trigger('onUserBeforeRegister', [&$validData, &$errorsMsg], ['Cms']);
 				}
 				else
 				{
-					$this->callback('userRegisterFinished', [$userEntity, $validData]);
+					$apiSecret    = md5(Factory::getConfig()->get('secret.apiKey'));
+					$headerSecret = Service::request()->getHeader('HTTP_API_SECRET_KEY');
+
+					if (empty($apiSecret)
+						|| empty($headerSecret)
+						|| $apiSecret !== $headerSecret
+					)
+					{
+						throw new Exception(Text::_('access-denied'), 403);
+					}
+
+					$this->callback('userBeforeRegister', [&$validData, &$errorsMsg]);
+				}
+
+				// Start register new user
+				State::setMark('user.registering', true);
+				$userEntity            = new UserModel;
+				$userEntity->name      = $validData['name'];
+				$userEntity->username  = $validData['username'];
+				$userEntity->email     = $validData['email'];
+				$userEntity->createdAt = Date::now('UTC')->toSql();
+				$userEntity->password  = Service::security()->hash($validData['password']);
+				$userEntity->roleId    = Role::getDefault()->id;
+				$userEntity->active    = 'A' === $newUserActivation ? 'Y' : 'N';
+				$userEntity->token     = 'E' === $newUserActivation ? sha1($userEntity->username . ':' . $userEntity->password) : null;
+				$userEntity->params    = [
+					'timezone' => Config::get('timezone', 'UTC'),
+					'avatar'   => '',
+				];
+
+				if ($userEntity->create())
+				{
+					$siteName                 = Config::get('siteName');
+					$responseData['userData'] = $userEntity;
+
+					if ('E' === $newUserActivation)
+					{
+						$link    = Uri::getInstance(['uri' => 'user/activate/' . $userEntity->token])->toString(true, true);
+						$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
+						$body    = Text::_('activate-email-body', ['name' => $userEntity->name, 'siteName' => $siteName, 'link' => $link]);
+						$payload = [
+							'recipient' => $userEntity->email,
+							'subject'   => $subject,
+							'body'      => str_replace('\n', PHP_EOL, $body),
+						];
+						Queue::add(SendMail::class, $payload);
+					}
+
+					$mailToAdmin = Config::get('mailToAdminWhenNewUser', 'Y') === 'Y';
+					$adminEmail  = filter_var(Config::get('adminEmail', ''), FILTER_VALIDATE_EMAIL);
+
+					if ($mailToAdmin
+						&& !empty($adminEmail)
+						&& ($adminEmail = filter_var($adminEmail, FILTER_VALIDATE_EMAIL))
+					)
+					{
+						$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
+						$body    = Text::_('email-notification-new-user-body', ['name' => $userEntity->name, 'username' => $userEntity->username, 'siteName' => $siteName]);
+						$payload = [
+							'recipient' => $adminEmail,
+							'subject'   => $subject,
+							'body'      => str_replace('\n', PHP_EOL, $body),
+						];
+						Queue::add(SendMail::class, $payload);
+					}
+
+					if (IS_CMS)
+					{
+						Event::trigger('onUserRegisterFinished', [$userEntity, $validData], ['Cms']);
+					}
+					else
+					{
+						$this->callback('userRegisterFinished', [$userEntity, $validData]);
+					}
+				}
+				else
+				{
+					$errorsMsg[] = Text::_('user-register-failure-msg');
 				}
 			}
-			else
+			catch (Throwable $e)
 			{
-				$errorsMsg[] = Text::_('user-register-failure-msg');
+				$errorsMsg[] = $e->getMessage();
 			}
 
 			// Check errors again

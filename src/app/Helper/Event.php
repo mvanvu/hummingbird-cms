@@ -32,7 +32,7 @@ class Event
 			$groups = [$groups];
 		}
 
-		$callback = function ($handler, $group, $name) use ($eventName, $arguments) {
+		$callback = function ($handler, $group, $name) use ($eventName, $arguments, &$results) {
 			if ($handler instanceof Plugin)
 			{
 				if ($handler->isDetached())

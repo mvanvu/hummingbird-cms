@@ -4,8 +4,10 @@ namespace App\Mvc\Controller;
 
 use App\Helper\Assets;
 use App\Helper\Config;
+use App\Helper\Database;
 use App\Helper\Event;
 use App\Helper\Queue;
+use App\Helper\Service;
 use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User;
@@ -169,14 +171,14 @@ class UserController extends ControllerBase
 
 	public function registerAction()
 	{
+		$postData     = $this->request->getPost();
 		$responseData = $this->handleUserRegister($postData);
 
 		if (false === $responseData)
 		{
-			return $this->accountAction();
+			$this->accountAction();
 		}
-
-		if ($responseData['success'])
+		elseif ($responseData['success'])
 		{
 			$this->persistent->remove('user.register.data');
 			$this->view->setVar('title', $responseData['titleMessage']);
@@ -192,8 +194,7 @@ class UserController extends ControllerBase
 		{
 			$this->persistent->set('user.register.data', $postData);
 			$this->flashSession->warning(implode('<br/>', $responseData['errorMessages']));
-
-			return $this->accountAction();
+			$this->accountAction();
 		}
 	}
 
@@ -231,13 +232,10 @@ class UserController extends ControllerBase
 			|| !($user = UserModel::findFirst($params))
 		)
 		{
-			return Uri::redirect(Uri::route());
+			return Uri::redirect(Uri::route('user/account'));
 		}
 
-		$user->token  = null;
-		$user->active = 'Y';
-
-		if ($user->save())
+		if (Service::db()->update(Database::table('users'), ['token', 'active'], [null, 'Y'], 'id = ' . (int) $user->id))
 		{
 			$this->view->setVars(
 				[

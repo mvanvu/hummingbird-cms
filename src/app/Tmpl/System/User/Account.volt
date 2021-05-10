@@ -1,11 +1,11 @@
 {% set allowUserRegistration = cmsConfig.get('allowUserRegistration') === 'Y' %}
 <div id="user-account-container">
     {{ flashSession.output() }}
+    <div class="uk-alert uk-margin">
+        {{ _('user-' ~ (allowUserRegistration ? 'account' : 'login') ~ '-desc') }}
+    </div>
     <div class="uk-grid-divider uk-flex-center uk-child-width-1-2@s uk-margin" uk-grid>
         <div>
-            <div class="uk-alert uk-margin">
-                {{ _('user-' ~ (allowUserRegistration ? 'account' : 'login') ~ '-desc') }}
-            </div>
             <h3 class="uk-heading-bullet uk-h5">
                 {{ _('login') }}
             </h3>
@@ -31,6 +31,7 @@
                     <div class="uk-form-controls">
                         <input class="uk-input" id="login-password" name="password" type="password"
                                data-msg-required="{{ _('password-required-msg') | escape_attr }}"
+                               autocomplete="new-password"
                                required/>
                     </div>
                 </div>
@@ -117,7 +118,7 @@
                         </label>
                         <div class="uk-form-controls">
                             <input class="uk-input" id="register-password" name="password" type="password"
-                                   autocomplete="off"
+                                   autocomplete="new-password"
                                    required data-msg-required="{{ _('password-required-msg') | escape_attr }}"
                                    value="{{ isSet(registerData['password']) ? registerData['password'] : '' }}"/>
                         </div>
@@ -129,7 +130,7 @@
                         <div class="uk-form-controls">
                             <input class="uk-input" id="register-confirmPassword" name="confirmPassword"
                                    type="password"
-                                   autocomplete="off"
+                                   autocomplete="new-password"
                                    data-rule-equal-to="#register-password"
                                    data-msg-equal-to="{{ _('password-not-match') | escape_attr }}"
                                    value="{{ isSet(registerData['confirmPassword']) ? registerData['confirmPassword'] : '' }}"/>
