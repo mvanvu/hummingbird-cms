@@ -5,6 +5,7 @@ namespace App\Mvc\Controller;
 use App\Helper\Config;
 use App\Helper\Constant;
 use App\Helper\Language;
+use App\Helper\MetaData;
 use App\Helper\Service;
 use App\Helper\Text;
 use App\Helper\Toolbar;
@@ -375,7 +376,8 @@ class AdminControllerBase extends ControllerBase
 
 	protected function indexTitle()
 	{
-		$this->tag->setTitle(Text::_(str_replace('_', '-', $this->dispatcher->getControllerName()) . '-index-title'));
+		$title = Text::_(str_replace('_', '-', $this->dispatcher->getControllerName()) . '-index-title');
+		MetaData::getInstance()->setTitle($title);
 	}
 
 	protected function indexToolBar($activeState = null, $excludes = [])
@@ -467,13 +469,14 @@ class AdminControllerBase extends ControllerBase
 			{
 				$placeholders = null;
 			}
-
-			$this->tag->setTitle(Text::_(str_replace('_', '-', $this->dispatcher->getControllerName()) . '-edit-title', $placeholders));
+			$title = Text::_(str_replace('_', '-', $this->dispatcher->getControllerName()) . '-edit-title', $placeholders);
 		}
 		else
 		{
-			$this->tag->setTitle(Text::_(str_replace('_', '-', $this->dispatcher->getControllerName()) . '-add-title'));
+			$title = Text::_(str_replace('_', '-', $this->dispatcher->getControllerName()) . '-add-title');
 		}
+
+		MetaData::getInstance()->setTitle($title);
 	}
 
 	protected function editToolBar()

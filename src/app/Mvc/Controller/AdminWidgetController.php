@@ -109,7 +109,7 @@ class AdminWidgetController extends AdminControllerBase
 			$willRefresh  = false;
 			$formsManager = new FormsManager(
 				[
-					'general' => Form::create('Widget.data',
+					'Widget' => Form::create('Widget.data',
 						[
 							[
 								'name'      => 'title',

@@ -37,8 +37,8 @@ class LanguageSwitcher extends Widget
 		{
 			foreach ($languages as $language)
 			{
-				$code          = $language->get('locale.code');
-				$sef           = $language->get('locale.sef');
+				$code          = $language->get('attributes.code');
+				$sef           = $language->get('attributes.sef');
 				$routes[$code] = Uri::getInstance(['language' => $sef])->toString();
 
 				if (empty($routes[$code]))

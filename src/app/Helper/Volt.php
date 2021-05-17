@@ -118,9 +118,6 @@ class Volt
 			case 'reCaptcha':
 				return $helperPrefix . 'ReCaptcha::render()';
 
-			case 'metadata':
-				return $helperPrefix . 'MetaData::getInstance()->render()';
-
 			case 'language':
 				return $helperPrefix . 'Language::getActiveLanguage()';
 

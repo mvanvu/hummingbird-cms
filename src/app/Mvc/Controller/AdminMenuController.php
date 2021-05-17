@@ -10,6 +10,7 @@ use App\Mvc\Model\Config as ConfigModel;
 use App\Traits\Permission;
 use MaiVu\Php\Form\Form;
 use MaiVu\Php\Form\FormsManager;
+use MaiVu\Php\Registry;
 
 class AdminMenuController extends AdminControllerBase
 {
@@ -112,7 +113,7 @@ class AdminMenuController extends AdminControllerBase
 				);
 			}
 
-			$menuData = $formsManager->getData()->get('Menu');
+			$menuData = $formsManager->getData()->get('Menu.data', []);
 
 			if ($menuData['id'] > 0
 				&& ($menuItemEntity = ConfigModel::findFirst($menuData['id']))
@@ -195,7 +196,7 @@ class AdminMenuController extends AdminControllerBase
 		$formsManager = new FormsManager;
 		$formsManager->set(
 			'Menu',
-			Form::create('Menu',
+			Form::create('Menu.data',
 				[
 					[
 						'name'    => 'id',
@@ -467,10 +468,10 @@ class AdminMenuController extends AdminControllerBase
 			{
 				$formsManager->bind(
 					[
-						'Menu' => array_merge(
-							json_decode($item->data, true) ?: [],
-							['i18n' => $item->getI18nData()]
-						),
+						'Menu' => [
+							'data' => Registry::parseData($item->data),
+							'i18n' => $item->getI18nData(),
+						],
 					]
 				);
 			}

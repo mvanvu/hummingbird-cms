@@ -6,7 +6,7 @@
     {% endif %}
 
     {% if content is not empty %}
-        <div class="widget-title">
+        <div class="widget-content">
             {{ content }}
         </div>
     {% endif %}

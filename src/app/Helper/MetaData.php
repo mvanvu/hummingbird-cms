@@ -87,8 +87,14 @@ class MetaData
 
 	public function render()
 	{
-		$title = htmlspecialchars($this->title);
-		$tags  = ['<title>' . $title . '</title>'];
+		$title = trim(htmlspecialchars($this->title));
+
+		if (empty($title))
+		{
+			$title = Config::get('siteName');
+		}
+
+		$tags = ['<title>' . $title . '</title>'];
 
 		foreach ($this->metadata as $property => $value)
 		{

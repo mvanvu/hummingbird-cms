@@ -177,13 +177,27 @@ HTML;
 				$rawData  = $menu->data;
 				$menuData = new Registry($rawData);
 
-				if ($translate)
+				if ($translate && $translations = $menu->getTranslations())
 				{
-					$translations = $menu->getTranslations();
-
-					if (isset($translations['data']))
+					foreach (['templateId', 'icon', 'title', 'target', 'nofollow', 'params'] as $field)
 					{
-						$menuData->merge($translations['data']);
+						if (!empty($translations['data'][$field]))
+						{
+							if ('params' === $field)
+							{
+								foreach ($translations['data']['params'] as $paramName => $paramValue)
+								{
+									if ('' !== $paramValue)
+									{
+										$menuData->set('params.' . $paramName, $paramValue);
+									}
+								}
+							}
+							elseif ('' !== $translations['data'][$field])
+							{
+								$menuData->set($field, $translations['data'][$field]);
+							}
+						}
 					}
 				}
 

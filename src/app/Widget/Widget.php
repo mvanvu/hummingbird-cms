@@ -75,23 +75,31 @@ class Widget
 		$reflectionClass   = new ReflectionClass($this);
 		$renderers[$class]->setViewsDir(
 			[
-				TPL_SITE_PATH . '/Tmpl/Widget',
 				TPL_SITE_PATH . '/Widget',
 				dirname($reflectionClass->getFileName()) . '/Tmpl/',
 				TPL_SYSTEM_PATH . '/Widget/',
 			]
 		);
 
+
 		$renderers[$class]->disable();
 		$renderers[$class]->setVars(
-			[
-				'instance' => $this,
-				'renderer' => $renderers[$class],
-				'widget'   => $this->widget,
-			]
+			array_merge(
+				$this->getRenderData(),
+				[
+					'instance' => $this,
+					'renderer' => $renderers[$class],
+					'widget'   => $this->widget,
+				]
+			)
 		);
 
 		return $renderers[$class];
+	}
+
+	public function getRenderData(): array
+	{
+		return [];
 	}
 
 	public function getPartialId(): string

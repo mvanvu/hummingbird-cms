@@ -72,7 +72,21 @@ class Widget
 
 					if ($multilingual && $translations = $widget->getTranslations())
 					{
-						$data->merge($translations);
+						if (!empty($translations['data']['title']))
+						{
+							$data->set('title', $translations['data']['title']);
+						}
+
+						if (!empty($translations['data']['params']))
+						{
+							foreach ($translations['data']['params'] as $paramName => $paramValue)
+							{
+								if ('' !== $paramValue)
+								{
+									$data->set('params.' . $paramName, $paramValue);
+								}
+							}
+						}
 					}
 
 					if ($isSite

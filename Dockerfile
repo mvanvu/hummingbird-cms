@@ -69,8 +69,8 @@ RUN phpize && ./configure && make && make install
 RUN echo "extension=zephir_parser.so" >> /etc/php/7.4/cli/php.ini
 
 WORKDIR /
-RUN wget https://github.com/phalcon/cphalcon/archive/v4.1.0.tar.gz && tar -zxvf v4.1.0.tar.gz
-WORKDIR /cphalcon-4.1.0
+RUN wget https://github.com/phalcon/cphalcon/archive/v4.1.2.tar.gz && tar -zxvf v4.1.2.tar.gz
+WORKDIR /cphalcon-4.1.2
 
 RUN wget https://github.com/zephir-lang/zephir/releases/download/0.12.20/zephir.phar && chmod +x zephir.phar
 RUN php zephir.phar fullclean && php zephir.phar build
