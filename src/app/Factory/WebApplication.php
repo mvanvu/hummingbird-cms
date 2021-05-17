@@ -6,6 +6,7 @@ use App\Helper\Assets;
 use App\Helper\Config;
 use App\Helper\Constant;
 use App\Helper\Event as EventHelper;
+use App\Helper\MetaData;
 use App\Helper\State;
 use App\Helper\Template;
 use App\Helper\Text;
@@ -161,6 +162,7 @@ class WebApplication extends Application
 		if (!$this->response->isSent())
 		{
 			$content = Assets::applyContent($this->response->getContent());
+			$content = str_replace('<!--block:metadata-->', MetaData::getInstance()->render(), $content);
 
 			if (Config::is('gzip')
 				&& !ini_get('zlib.output_compression')

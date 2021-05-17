@@ -32,8 +32,6 @@ class ControllerBase extends Controller
 			{
 				$this->view->setMainView('Raw');
 			}
-
-			$this->tag->setTitle($siteName);
 		}
 
 		$this->view->setVars(
