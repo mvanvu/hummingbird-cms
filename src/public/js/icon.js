@@ -27,6 +27,6 @@ _$.ready(function ($) {
             input = drop.prev('.icon-input').val(value);
         drop.prop('hidden', true);
         input.prev('.uk-form-icon').remove();
-        input.insert('<span class="uk-form-icon"><svg class="icon-' + value + '" width="20" height="20"><use xlink:href="' + cmsCore.uri.root + '/assets/images/icons.svg#icon-' + value + '"></use></svg></span>', true);
+        input.insert('<span class="uk-form-icon"><svg class="icon-' + value + '" width="20" height="20"><use xlink:href="' + cmsCore.uri.root + '/images/icons.svg#icon-' + value + '"></use></svg></span>', true);
     });
 });
