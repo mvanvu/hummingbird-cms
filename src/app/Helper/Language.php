@@ -85,7 +85,19 @@ class Language
 			}
 			else
 			{
-				$vars        = Uri::extract();
+				if (IS_API
+					&& ($referer = Service::request()->getHTTPReferer())
+					&& ($refererUri = Uri::fromUrl($referer))
+					&& $refererUri->isInternal()
+				)
+				{
+					$vars = Uri::extract($refererUri->toPath());
+				}
+				else
+				{
+					$vars = Uri::extract();
+				}
+
 				$confKey     = $vars['client'] . 'Language';
 				$key         = 'cms_' . $confKey;
 				$defLangCode = Config::get($confKey, 'en-GB');
