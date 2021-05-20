@@ -85,43 +85,73 @@ class Language
 			}
 			else
 			{
-				if (IS_API
-					&& ($referer = Service::request()->getHTTPReferer())
-					&& ($refererUri = Uri::fromUrl($referer))
-					&& $refererUri->isInternal()
-				)
+				$activeLangCode = null;
+				$client         = Uri::getClient();
+
+				if (IS_API)
 				{
-					$vars = Uri::extract($refererUri->toPath());
-				}
-				else
-				{
-					$vars = Uri::extract();
+					$request  = Service::request();
+					$langCode = $request->getServer('HTTP_X_LANGUAGE_ISO_CODE');
+
+					if ($langCode && Language::has($langCode))
+					{
+						$activeLangCode = $langCode;
+					}
+
+					if (($referer = $request->getHTTPReferer())
+						&& ($refererUri = Uri::fromUrl($referer))
+						&& $refererUri->isInternal()
+					)
+					{
+						$client = $refererUri->getVar('client');
+
+						if (!$activeLangCode
+							&& ($langSef = $refererUri->getVar('language'))
+							&& static::hasSef($langSef)
+						)
+						{
+							$activeLangCode = static::getBySef($langSef)->get('attributes.code');
+						}
+					}
 				}
 
-				$confKey     = $vars['client'] . 'Language';
-				$key         = 'cms_' . $confKey;
+				$confKey     = $client . 'Language';
+				$cookieKey   = 'cms_' . $confKey;
 				$defLangCode = Config::get($confKey, 'en-GB');
 
-				if (!($activeLangCode = Cookie::get($key)))
+				if (!$activeLangCode)
 				{
-					// Reset cookie language
-					$activeLangCode = $defLangCode;
-					Cookie::set($key, $activeLangCode);
-				}
+					if (IS_CMS)
+					{
+						$langSef = Uri::getInstance()->getVar('language');
 
-				if (isset($vars['language'])
-					&& static::hasSef($vars['language'])
-					&& $vars['language'] !== static::get($activeLangCode)->get('attributes.sef')
-				)
-				{
-					// Update cookie language
-					$activeLangCode = static::getBySef($vars['language'])->get('attributes.code');
-					Cookie::set($key, $activeLangCode);
-				}
-				elseif (!isset($vars['language']) && $activeLangCode !== $defLangCode)
-				{
-					$activeLangCode = $defLangCode;
-					Cookie::set($key, $activeLangCode);
+						if (!($activeLangCode = Cookie::get($cookieKey, $defLangCode)) || !static::has($activeLangCode))
+						{
+							$activeLangCode = $defLangCode;
+						}
+
+						if ($langSef
+							&& static::hasSef($langSef)
+							&& $langSef !== static::get($activeLangCode)->get('attributes.sef')
+						)
+						{
+							$activeLangCode = static::getBySef($langSef)->get('attributes.code');
+						}
+						elseif (!$langSef && $activeLangCode !== $defLangCode)
+						{
+							$activeLangCode = $defLangCode;
+						}
+					}
+					else
+					{
+						$activeLangCode = $defLangCode;
+					}
+
+					if ($activeLangCode !== Cookie::get($cookieKey))
+					{
+						// Update cookie language
+						Cookie::set($cookieKey, $activeLangCode);
+					}
 				}
 
 				static::$activeLanguage = static::get($activeLangCode);

@@ -94,7 +94,10 @@ class MetaData
 			$title = Config::get('siteName');
 		}
 
-		$tags = ['<title>' . $title . '</title>'];
+		$tags = [
+			'<meta name="languageIsoCode" content="' . Language::getActiveCode() . '"/>',
+			'<title>' . $title . '</title>',
+		];
 
 		foreach ($this->metadata as $property => $value)
 		{

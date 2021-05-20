@@ -837,6 +837,7 @@ _$.http = {
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'X-Ajax-Engine': 'HummingbirdCms',
+        'X-Language-ISO-Code': '',
     },
     buildParams: function (objParams) {
         var strParams = '',
@@ -895,6 +896,12 @@ _$.http = {
             }
         });
 
+        var metaLanguage = document.head.querySelector('meta[name="languageIsoCode"]');
+
+        if (!_$.http.headers['X-Language-ISO-Code'] && metaLanguage) {
+            _$.http.headers['X-Language-ISO-Code'] = metaLanguage.getAttribute('content') || '';
+        }
+
         xhr.open(options.method || 'GET', url, typeof options.async === 'boolean' ? options.async : true);
 
         for (var globalHeader in _$.http.headers) {
@@ -903,24 +910,24 @@ _$.http = {
 
         if (options.method === 'POST') {
             var token = document.head.querySelector('meta[name="csrf"]'),
-                optionsHeader = options.headers || {};
+                optionsHeaders = options.headers || {};
 
             if (token) {
                 xhr.setRequestHeader('X-CSRF-Token', token.getAttribute('content'));
             }
 
-            if (!optionsHeader.hasOwnProperty('Content-Type')) {
-                optionsHeader['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-            }
-
-            for (var optionHeader in optionsHeader) {
-                if (optionsHeader[optionHeader]) {
-                    xhr.setRequestHeader(optionHeader, optionsHeader[optionHeader]);
-                }
+            if (!optionsHeaders.hasOwnProperty('Content-Type')) {
+                optionsHeaders['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
             }
 
             if (options.data) {
                 data = typeof options.data === 'object' && options.processData !== false ? _$.http.buildParams(options.data) : options.data;
+            }
+        }
+
+        for (var optionHeader in optionsHeaders) {
+            if (optionsHeaders[optionHeader]) {
+                xhr.setRequestHeader(optionHeader, optionsHeaders[optionHeader]);
             }
         }
 
