@@ -591,4 +591,5 @@ return [
 	'system-logs'                       => 'System logs',
 	'ip-address'                        => 'IP address',
 	'log-type-select'                   => 'Select a type',
+	'session-adapter'                   => 'Session adapter',
 ];

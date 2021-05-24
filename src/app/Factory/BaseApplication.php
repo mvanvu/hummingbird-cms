@@ -13,6 +13,7 @@ use Phalcon\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Di\FactoryDefault\Cli;
+use Phalcon\Session\Adapter\Stream;
 use Phalcon\Session\Bag;
 use Phalcon\Session\Manager;
 
@@ -93,9 +94,19 @@ class BaseApplication
 		$di->getShared('modelsManager')->setModelPrefix($dbPrefix);
 		$di->setShared('config', $config);
 		$di->setShared('db', $db);
-		$di->setShared('session', function () use ($db) {
+		$di->setShared('session', function () use ($db, $registry) {
+			$adapter = $registry->get('sessionAdapter', 'database');
+			$session = new Manager;
 
-			$session = (new Manager)->setAdapter(Session::getInstance($db));
+			if ('database' === $adapter)
+			{
+				$session->setAdapter(Session::getInstance($db));
+			}
+			else
+			{
+				$session->setAdapter(new Stream);
+			}
+
 			$session->start();
 
 			return $session;

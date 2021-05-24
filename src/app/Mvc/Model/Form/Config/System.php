@@ -56,6 +56,18 @@ return [
 		'hint'    => 'https://raw.githubusercontent.com/mvanvu/hummingbird-packages/master/packages.json',
 	],
 	[
+		'name'    => 'sessionAdapter',
+		'type'    => 'Select',
+		'label'   => 'session-adapter',
+		'rules'   => ['Options'],
+		'class'   => 'uk-select uk-width-medium',
+		'value'   => 'database',
+		'options' => [
+			'database' => 'Database',
+			'stream'   => 'File',
+		],
+	],
+	[
 		'name'  => 'sysSendFromMail',
 		'type'  => 'Email',
 		'label' => 'send-from-mail',

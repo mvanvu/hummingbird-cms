@@ -84,13 +84,16 @@ class WebApplication extends Application
 			}
 
 			// Check Session GC
-			$probability = (int) Config::get('gcProbability', 1);
-			$divisor     = (int) Config::get('gcDivisor', 100);
-			$random      = $divisor * lcg_value();
-
-			if ($probability > 0 && $random < $probability)
+			if ('database' === Config::get('sessionAdapter'))
 			{
-				State::gc();
+				$probability = (int) Config::get('gcProbability', 1);
+				$divisor     = (int) Config::get('gcDivisor', 100);
+				$random      = $divisor * lcg_value();
+
+				if ($probability > 0 && $random < $probability)
+				{
+					State::gc();
+				}
 			}
 		}
 		catch (Throwable $e)

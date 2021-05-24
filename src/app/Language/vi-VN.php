@@ -591,4 +591,5 @@ return [
 	'system-logs'                       => 'Nhật ký hệ thống',
 	'ip-address'                        => 'Địa chỉ IP',
 	'log-type-select'                   => 'Chọn loại',
+	'session-adapter'                   => 'Lưu session tại',
 ];
