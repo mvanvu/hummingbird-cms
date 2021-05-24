@@ -3,6 +3,8 @@
 namespace App\Helper;
 
 use App\Factory\Factory;
+use App\Helper\User as Auth;
+use Phalcon\Db\Enum;
 use Phalcon\Paginator\RepositoryInterface;
 
 class Nested
@@ -16,14 +18,14 @@ class Nested
 	/** @var integer */
 	protected $count = 0;
 
-	public function __construct(Uri $uri = null, RepositoryInterface $sources = null)
+	public function __construct(string $context, Uri $uri = null, RepositoryInterface $sources = null)
 	{
 		$this->uri = $uri;
-		$this->setSources($sources);
+		$this->setSources($context, $sources);
 		Assets::jQueryCore();
 	}
 
-	public function setSources(RepositoryInterface $sources = null)
+	public function setSources(string $context, RepositoryInterface $sources = null)
 	{
 		if (null === $sources)
 		{
@@ -34,6 +36,7 @@ class Nested
 			$this->count = $sources->getTotalItems();
 		}
 
+		$rootId        = static::getRootId($context);
 		$this->sources = [
 			'i' => [],
 			'p' => [],
@@ -41,7 +44,7 @@ class Nested
 
 		foreach ($sources->getItems() as $source)
 		{
-			if ($source->parentId && (int) $source->level > 2)
+			if ($source->parentId && $source->parentId != $rootId)
 			{
 				$this->sources['p'][$source->parentId][] = $source;
 			}
@@ -52,6 +55,42 @@ class Nested
 		}
 
 		return $this;
+	}
+
+	public static function getRootId(string $context): int
+	{
+		static $rootId = null;
+
+		if (null === $rootId)
+		{
+			$source = Database::table('ucm_items');
+			$db     = Service::db();
+			$root   = $db->fetchOne('SELECT id FROM ' . $source . ' WHERE context = :context AND parentId = 0 AND title = \'system-node-root\'',
+				Enum::FETCH_OBJ,
+				[
+					'context' => $context,
+				]
+			);
+
+			if (empty($root->id))
+			{
+				$db->execute('INSERT INTO ' . $source . '(context, title, state, lft, rgt, createdAt, createdBy) VALUES (:context, \'system-node-root\', \'P\', 0, 1, :createdAt, :createdBy)',
+					[
+						'context'   => $context,
+						'createdAt' => Date::now('UTC')->toSql(),
+						'createdBy' => Auth::id(),
+					]
+				);
+
+				$rootId = (int) $db->lastInsertId();
+			}
+			else
+			{
+				$rootId = (int) $root->id;
+			}
+		}
+
+		return $rootId;
 	}
 
 	public function makeTree(array $items = null)
@@ -65,7 +104,7 @@ class Nested
 
 		foreach ($items as $item)
 		{
-			$isNotRoot   = $item->level != '1' && $item->title != 'system-node-root';
+			$isNotRoot   = $item->title != 'system-node-root';
 			$hasChildren = !empty($this->sources['p'][$item->id]);
 			$title       = htmlspecialchars($item->title);
 

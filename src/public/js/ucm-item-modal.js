@@ -1,4 +1,4 @@
-cmsCore.initUcmElementModal = function (elementId) {
+$hb.initUcmElementModal = function (elementId) {
     var $ = _$,
         frame = $('#' + elementId + '-frame'),
         input = $('#' + elementId),
@@ -15,7 +15,7 @@ cmsCore.initUcmElementModal = function (elementId) {
             list.find('[data-id]').each(function () {
                 opt = document.createElement('option');
                 opt.value = $(this).attr('data-id');
-                opt.selected = true;
+                opt.checked = true;
                 input.append(opt);
             });
 

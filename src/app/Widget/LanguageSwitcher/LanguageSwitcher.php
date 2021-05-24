@@ -20,16 +20,16 @@ class LanguageSwitcher extends Widget
 		{
 			foreach ($languages as $language)
 			{
-				$code = $language->get('locale.code');
-				$sef  = $language->get('locale.sef');
+				$code = $language->get('attributes.code');
+				$sef  = $language->get('attributes.sef');
 
 				if (($translations = $displayUcmItem->getTranslations($code)) && !empty($translations['route']))
 				{
-					$routes[$code] = Uri::getInstance(['uri' => $translations['route'], 'language' => $sef]);
+					$routes[$code] = Uri::getInstance(['uri' => $translations['route'], 'language' => $sef])->toString();
 				}
 				else
 				{
-					$routes[$code] = Uri::getInstance(['uri' => $displayUcmItem->route, 'language' => $sef]);
+					$routes[$code] = Uri::getInstance(['uri' => $displayUcmItem->route, 'language' => $sef])->toString();
 				}
 			}
 		}

@@ -2,9 +2,8 @@
 
 namespace App\Mvc\Model;
 
-use App\Helper\Date;
+use App\Helper\Nested as NestedHelper;
 use App\Helper\Service;
-use App\Helper\User as Auth;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Db\Enum;
 use stdClass;
@@ -30,39 +29,7 @@ class Nested extends UcmItem
 
 	public function getRootId()
 	{
-		static $rootId = null;
-
-		if (null === $rootId)
-		{
-			/** @var Mysql $db */
-			$db     = $this->getDI()->get('db');
-			$source = $this->getSource();
-			$root   = $db->fetchOne('SELECT id FROM ' . $source . ' WHERE context = :context AND parentId = 0 AND title = \'system-node-root\'',
-				Enum::FETCH_OBJ,
-				[
-					'context' => $this->context,
-				]
-			);
-
-			if (empty($root->id))
-			{
-				$db->execute('INSERT INTO ' . $source . '(context, title, state, lft, rgt, createdAt, createdBy) VALUES (:context, \'system-node-root\', \'P\', 0, 1, :createdAt, :createdBy)',
-					[
-						'context'   => $this->context,
-						'createdAt' => Date::now('UTC')->toSql(),
-						'createdBy' => Auth::id(),
-					]
-				);
-
-				$rootId = (int) $db->lastInsertId();
-			}
-			else
-			{
-				$rootId = (int) $root->id;
-			}
-		}
-
-		return $rootId;
+		return NestedHelper::getRootId($this->context);
 	}
 
 	public function moveNodeToNewParent($toParentId)

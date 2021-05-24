@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
                         btn = $(this),
                         itemContainer = btn.parents('#menu-item-container'),
                         data;
-                    itemContainer.find('[name="Menu[id]"]').val(id);
+                    itemContainer.find('[name="Menu[data][id]"]').val(id);
                     data = itemContainer.find('[name^="Menu["]').serialize();
                     $.ajax({
                         url: cmsCore.uri.base + '/menu/saveMenu',

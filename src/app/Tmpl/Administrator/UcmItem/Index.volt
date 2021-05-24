@@ -44,6 +44,7 @@
                 {% for item in paginate.getItems() %}
                     {% set title = item.title %}
                     <tr data-sort-id="{{ item.id }}"
+                        data-id="{{ item.id }}"
                         data-sort-group="{{ item.parentId }}"
                         data-title="{{ title | escape_attr }}"
                         data-ordering="{{ item.ordering }}">

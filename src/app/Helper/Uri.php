@@ -293,7 +293,7 @@ class Uri
 
 		if (($language = $this->getVar('language'))
 			&& Language::hasSef($language)
-			&& $language !== Language::getDefault()->get('locale.sef')
+			&& $language !== Language::getDefault()->get('attributes.sef')
 		)
 		{
 			$theUri .= $language . '/';
@@ -340,7 +340,7 @@ class Uri
 		return $this;
 	}
 
-	public static function isHome()
+	public static function isHome() : bool
 	{
 		static $isHome = null;
 

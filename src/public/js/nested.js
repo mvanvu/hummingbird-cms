@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     if ('OK' === response) {
-                        UIkit.notification(cmsCore.language._('data-rebuilt-msg'), {status: 'success'});
+                        UIkit.notification($hb.language._('data-rebuilt-msg'), {status: 'success'});
                     }
                 }
             });
@@ -58,7 +58,8 @@ jQuery(document).ready(function ($) {
                         UIkit.notification(response.message, {status: response.success ? 'success' : 'danger'});
 
                         if (response.success) {
-                            list.html($(response.data).find('.dd.nestable').html());
+                            var responseData = $(response.data).find('.dd.nestable');
+                            list.html(responseData.length ? responseData.html() : '');
                             list.data('nestable').init();
                         }
                     }
@@ -66,9 +67,9 @@ jQuery(document).ready(function ($) {
             };
 
         if (action === 'U' || action === 'T') {
-            UIkit.modal.confirm(cmsCore.language._('modify-node-confirm')).then(
+            UIkit.modal.confirm($hb.language._('modify-node-confirm')).then(
                 function () {
-                    UIkit.notification('<div uk-spinner="ratio: .85"></div> ' + cmsCore.language._('please-wait-msg'), {timeout: 10000});
+                    UIkit.notification('<div uk-spinner="ratio: .85"></div> ' + $hb.language._('please-wait-msg'), {timeout: 10000});
                     modifyNode();
                 },
                 function () {

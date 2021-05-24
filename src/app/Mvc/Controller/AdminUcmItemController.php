@@ -217,7 +217,7 @@ class AdminUcmItemController extends AdminControllerBase
 			$this->view->setVars(
 				[
 					'paginate'     => $paginate,
-					'nestedHelper' => new NestedHelper($this->uri, $paginate),
+					'nestedHelper' => new NestedHelper($this->context, $this->uri, $paginate),
 				]
 			);
 		}

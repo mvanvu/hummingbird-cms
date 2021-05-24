@@ -185,7 +185,7 @@ class AdminMenuController extends AdminControllerBase
 
 		if (null === $type)
 		{
-			$type = $this->request->get('Menu', [])['type'] ?? '';
+			$type = $this->request->get('Menu', [])['data']['type'] ?? '';
 		}
 
 		foreach ($menus as $mType => $item)
@@ -270,7 +270,7 @@ class AdminMenuController extends AdminControllerBase
 			)
 		);
 
-		$formsManager->set('params', Form::create('Menu.params', $menus[$type]['params'] ?? []));
+		$formsManager->set('params', Form::create('Menu.data.params', $menus[$type]['params'] ?? []));
 
 		return $formsManager;
 	}

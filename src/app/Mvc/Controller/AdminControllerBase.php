@@ -318,27 +318,29 @@ class AdminControllerBase extends ControllerBase
 			$query->orderBy('item.[' . $ordering . '] ' . $direction);
 		}
 
+		$andWhere    = [];
 		$activeState = $this->stateField && isset($bindData[$this->stateField]) ? $bindData[$this->stateField] : null;
 
 		if ($this->stateField && (null === $activeState || '' === $activeState))
 		{
-			$query->andWhere('item.[' . $this->stateField . '] <> \'T\'');
+			$andWhere[] = 'item.[' . $this->stateField . '] <> \'T\'';
 		}
 
 		if ($this->model instanceof Nested)
 		{
-			$page  = 0;
-			$limit = 150;
-			$query->andWhere(
-				'item.id <> :rootId:',
-				[
-					'rootId' => $this->model->getRootId(),
-				]
-			)->orderBy('item.lft');
+			$page       = 0;
+			$limit      = 150;
+			$andWhere[] = 'item.id <> ' . (int) $this->model->getRootId();
+			$query->orderBy('item.lft');
 		}
 		else
 		{
 			$limit = $sessionFilterData['limit'] ?? Config::get('listLimit', 15);
+		}
+
+		if ($andWhere)
+		{
+			$query->andWhere('(' . implode(' AND ', $andWhere) . ')');
 		}
 
 		if ($this->request->isMethod('POST') && !$this->request->isAjax())
@@ -610,16 +612,23 @@ class AdminControllerBase extends ControllerBase
 			]
 		);
 
-		$insertValues = [];
-		$bindData     = [];
-		$walk         = 0;
+		$insertValues   = [];
+		$bindData       = [];
+		$walk           = 0;
+		$originFormData = $formsManager->getData()->get($this->mainEditFormName, []);
 
 		foreach ($formsManager->getI18nData(true) as $language => $i18n)
 		{
+			$originalValues  = [];
 			$translatedValue = $i18n[$this->mainEditFormName] ?? $i18n ?? [];
 
 			if (is_array($translatedValue) || is_object($translatedValue))
 			{
+				foreach ($translatedValue as $k => $v)
+				{
+					$originalValues[$k] = $originFormData[$k] ?? null;
+				}
+
 				$translatedValue = json_encode($translatedValue);
 			}
 
@@ -629,21 +638,23 @@ class AdminControllerBase extends ControllerBase
 			}
 
 			// Key data
-			$k0 = 'translationId' . $walk;
-			$k1 = 'translatedValue' . $walk;
+			$k0 = 'id' . $walk;
+			$k1 = 'ov' . $walk;
+			$k2 = 'tv' . $walk;
 			$walk++;
 
 			// Bind data
 			$bindData[$k0] = $language . '.' . $refTable . '.' . $refKey;
-			$bindData[$k1] = $translatedValue;
+			$bindData[$k1] = json_encode($originalValues);
+			$bindData[$k2] = $translatedValue;
 
 			// Insert value
-			$insertValues[] = '(:' . $k0 . ',:' . $k1 . ')';
+			$insertValues[] = '(:' . $k0 . ',:' . $k1 . ',:' . $k2 . ')';
 		}
 
 		if ($insertValues)
 		{
-			$insertSql = 'INSERT INTO ' . $prefixTable . 'translations(translationId, translatedValue)'
+			$insertSql = 'INSERT INTO ' . $prefixTable . 'translations(translationId, originalValue, translatedValue)'
 				. 'VALUES ' . implode(',', $insertValues);
 			$db->execute($insertSql, $bindData);
 		}
