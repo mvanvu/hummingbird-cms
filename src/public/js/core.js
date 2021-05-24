@@ -233,4 +233,17 @@ _$.ready(function ($) {
     });
 
     $('.cms-currency-input > input').trigger('keyup');
+
+    $('[data-m1][data-m1][data-m3]').each(function () {
+        var el = $(this),
+            m1 = $.trim(el.data('m1') || ''),
+            m2 = $.trim(el.data('m2') || ''),
+            m3 = $.trim(el.data('m3') || '');
+
+        if (m1.length && m2.length && m3.length) {
+            var email = m1 + '@' + m2 + '.' + m3;
+            el.insert('<a href="mailto:' + email + '">' + email + '</a>');
+            el.remove();
+        }
+    });
 });
