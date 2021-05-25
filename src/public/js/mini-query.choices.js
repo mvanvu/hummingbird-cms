@@ -42,12 +42,11 @@ _$.fn.choices = function (options) {
         });
 
         box.find('.choices-search').on('keyup', function () {
-            var value = _$.trim(this.value).toLowerCase().replace(/\s+/, ' ');
+            var value = _$.trim(this.value).toLowerCase().replace(/\s+/, ' ').toNonAccentVietnamese();
             setTimeout(function () {
                 if (value.length) {
                     nav.find('[data-value]').each(function () {
-
-                        if (this.getAttribute('data-text').toLowerCase().replace(/\s+/, ' ').indexOf(value) === -1) {
+                        if (this.getAttribute('data-text').replace(/\s+/, ' ').toLowerCase().toNonAccentVietnamese().indexOf(value) === -1) {
                             this.setAttribute('hidden', true);
                             var group = this.getAttribute('data-group') || '';
 
