@@ -55,7 +55,7 @@ class SearchController extends ControllerBase
 					$tranWhere[] = 'translationId LIKE :' . $bindKey . ':';
 				}
 
-				$tranQuery->andWhere('(' . implode(' OR ', $tranWhere) . ')', $bindKeys);
+				$tranQuery->orWhere('(' . implode(' OR ', $tranWhere) . ')', $bindKeys);
 				$tranKeys = $tranQuery->getQuery()->execute();
 				$itemIds  = [];
 
