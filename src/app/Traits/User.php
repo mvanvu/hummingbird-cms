@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Factory\Factory;
 use App\Helper\Config;
+use App\Helper\Database;
 use App\Helper\Date;
 use App\Helper\Event;
 use App\Helper\Queue;
@@ -20,7 +21,7 @@ use Throwable;
 
 trait User
 {
-	public function handleUserRegister(&$postData = null)
+	public function handleUserRegister(array &$postData = null)
 	{
 		$request = Service::request();
 
@@ -151,70 +152,73 @@ trait User
 					$this->callback('userBeforeRegister', [&$validData, &$errorsMsg]);
 				}
 
-				// Start register new user
-				State::setMark('user.registering', true);
-				$userEntity            = new UserModel;
-				$userEntity->name      = $validData['name'];
-				$userEntity->username  = $validData['username'];
-				$userEntity->email     = $validData['email'];
-				$userEntity->createdAt = Date::now('UTC')->toSql();
-				$userEntity->password  = Service::security()->hash($validData['password']);
-				$userEntity->roleId    = Role::getDefault()->id;
-				$userEntity->active    = 'A' === $newUserActivation ? 'Y' : 'N';
-				$userEntity->token     = 'E' === $newUserActivation ? sha1($userEntity->username . ':' . $userEntity->password) : null;
-				$userEntity->params    = [
-					'timezone' => Config::get('timezone', 'UTC'),
-					'avatar'   => '',
-				];
-
-				if ($userEntity->create())
+				if (empty($errorsMsg))
 				{
-					$siteName                 = Config::get('siteName');
-					$responseData['userData'] = $userEntity;
+					// Start register new user
+					State::setMark('user.registering', true);
+					$userEntity            = new UserModel;
+					$userEntity->name      = $validData['name'];
+					$userEntity->username  = $validData['username'];
+					$userEntity->email     = $validData['email'];
+					$userEntity->createdAt = Date::now('UTC')->toSql();
+					$userEntity->password  = Service::security()->hash($validData['password']);
+					$userEntity->roleId    = Role::getDefault()->id;
+					$userEntity->active    = 'A' === $newUserActivation ? 'Y' : 'N';
+					$userEntity->token     = 'E' === $newUserActivation ? sha1($userEntity->username . ':' . $userEntity->password) : null;
+					$userEntity->params    = [
+						'timezone' => Config::get('timezone', 'UTC'),
+						'avatar'   => '',
+					];
 
-					if ('E' === $newUserActivation)
+					if ($userEntity->create())
 					{
-						$link    = Uri::getInstance(['uri' => 'user/activate/' . $userEntity->token])->toString(true, true);
-						$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
-						$body    = Text::_('activate-email-body', ['name' => $userEntity->name, 'siteName' => $siteName, 'link' => $link]);
-						$payload = [
-							'recipient' => $userEntity->email,
-							'subject'   => $subject,
-							'body'      => str_replace('\n', PHP_EOL, $body),
-						];
-						Queue::add(SendMail::class, $payload);
-					}
+						$siteName                 = Config::get('siteName');
+						$responseData['userData'] = $userEntity;
 
-					$mailToAdmin = Config::get('mailToAdminWhenNewUser', 'Y') === 'Y';
-					$adminEmail  = filter_var(Config::get('adminEmail', ''), FILTER_VALIDATE_EMAIL);
+						if ('E' === $newUserActivation)
+						{
+							$link    = Uri::getInstance(['uri' => 'user/activate/' . $userEntity->token])->toString(true, true);
+							$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
+							$body    = Text::_('activate-email-body', ['name' => $userEntity->name, 'siteName' => $siteName, 'link' => $link]);
+							$payload = [
+								'recipient' => $userEntity->email,
+								'subject'   => $subject,
+								'body'      => str_replace('\n', PHP_EOL, $body),
+							];
+							Queue::add(SendMail::class, $payload);
+						}
 
-					if ($mailToAdmin
-						&& !empty($adminEmail)
-						&& ($adminEmail = filter_var($adminEmail, FILTER_VALIDATE_EMAIL))
-					)
-					{
-						$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
-						$body    = Text::_('email-notification-new-user-body', ['name' => $userEntity->name, 'username' => $userEntity->username, 'siteName' => $siteName]);
-						$payload = [
-							'recipient' => $adminEmail,
-							'subject'   => $subject,
-							'body'      => str_replace('\n', PHP_EOL, $body),
-						];
-						Queue::add(SendMail::class, $payload);
-					}
+						$mailToAdmin = Config::get('mailToAdminWhenNewUser', 'Y') === 'Y';
+						$adminEmail  = filter_var(Config::get('adminEmail', ''), FILTER_VALIDATE_EMAIL);
 
-					if (IS_CMS)
-					{
-						Event::trigger('onUserRegisterFinished', [$userEntity, $validData], ['Cms']);
+						if ($mailToAdmin
+							&& !empty($adminEmail)
+							&& ($adminEmail = filter_var($adminEmail, FILTER_VALIDATE_EMAIL))
+						)
+						{
+							$subject = Text::_('activate-email-subject', ['username' => $userEntity->username, 'siteName' => $siteName]);
+							$body    = Text::_('email-notification-new-user-body', ['name' => $userEntity->name, 'username' => $userEntity->username, 'siteName' => $siteName]);
+							$payload = [
+								'recipient' => $adminEmail,
+								'subject'   => $subject,
+								'body'      => str_replace('\n', PHP_EOL, $body),
+							];
+							Queue::add(SendMail::class, $payload);
+						}
+
+						if (IS_CMS)
+						{
+							Event::trigger('onUserRegisterFinished', [$userEntity, $validData], ['Cms']);
+						}
+						else
+						{
+							$this->callback('userRegisterFinished', [$userEntity, $validData]);
+						}
 					}
 					else
 					{
-						$this->callback('userRegisterFinished', [$userEntity, $validData]);
+						$errorsMsg[] = Text::_('user-register-failure-msg');
 					}
-				}
-				else
-				{
-					$errorsMsg[] = Text::_('user-register-failure-msg');
 				}
 			}
 			catch (Throwable $e)
@@ -250,5 +254,92 @@ trait User
 		$responseData['errorMessages'] = $errorsMsg;
 
 		return $responseData;
+	}
+
+	public function handleRequestAction(array &$postData = null)
+	{
+		if (null === $postData)
+		{
+			$postData = IS_API ? $this->data : $this->request->getPost();
+		}
+
+		$type   = $postData['requestType'] ?? 'P';
+		$email  = filter_var($postData['email'] ?? '', FILTER_VALIDATE_EMAIL);
+		$token  = sha1(Service::security()->getRandom()->uuid());
+		$params = [
+			'conditions' => 'email = :email: AND active = :yes:',
+			'bind'       => [
+				'email' => $email,
+				'yes'   => 'Y',
+			],
+		];
+
+		if (!empty($email)
+			&& ($user = UserModel::findFirst($params))
+			&& Service::db()->update(Database::table('users'), ['token'], [$token], 'id = ' . (int) $user->id)
+		)
+		{
+			$siteName = Config::get('siteName');
+
+			if ('P' === $type)
+			{
+				// Send reset password
+				$link    = Uri::getInstance(['uri' => 'user/reset/' . $token])->toString(false, true);
+				$subject = Text::_('user-reset-request-subject', ['siteName' => $siteName]);
+				$body    = Text::_('user-reset-request-body', ['name' => $user->name, 'link' => $link]);
+				Queue::add(
+					SendMail::class,
+					[
+						'recipient' => $email,
+						'subject'   => $subject,
+						'body'      => $body,
+					]
+				);
+
+				if (IS_CMS)
+				{
+					$this->persistent->set('user.token.' . $token, true);
+					$this->view->setVars(
+						[
+							'title'   => Text::_('user-request-completed-title', ['email' => $email]),
+							'message' => Text::_('user-request-completed-msg', ['email' => $email]),
+						]
+					);
+				}
+			}
+			else
+			{
+				// Send remind username
+				$subject = Text::_('username-remind-request-subject', ['siteName' => $siteName]);
+				$body    = Text::_('username-remind-request-body', ['name' => $user->name, 'username' => $user->username]);
+				Queue::add(
+					SendMail::class,
+					[
+						'recipient' => $user->email,
+						'subject'   => $subject,
+						'body'      => $body,
+					]
+				);
+
+				if (IS_CMS)
+				{
+					$this->view->setVars(
+						[
+							'title'   => Text::_('username-remind-completed-title', ['email' => $email]),
+							'message' => Text::_('username-remind-completed-msg', ['siteName' => $siteName, 'email' => $email]),
+						]
+					);
+				}
+			}
+
+			if (IS_CMS)
+			{
+				$this->view->pick('User/Completed');
+			}
+		}
+		elseif (IS_API)
+		{
+			return new Exception(Text::_('email-invalid-msg'));
+		}
 	}
 }

@@ -7,6 +7,7 @@ use App\Helper\Config;
 use App\Helper\Database;
 use App\Helper\Event;
 use App\Helper\Queue;
+use App\Helper\ReCaptcha;
 use App\Helper\Service;
 use App\Helper\Text;
 use App\Helper\Uri;
@@ -29,69 +30,7 @@ class UserController extends ControllerBase
 	{
 		if ($this->request->isPost())
 		{
-			$type   = $this->request->getPost('requestType', ['trim'], 'P');
-			$email  = filter_var($this->request->getPost('email', ['string'], ''), FILTER_VALIDATE_EMAIL);
-			$params = [
-				'conditions' => 'email = :email: AND active = :yes:',
-				'bind'       => [
-					'email' => $email,
-					'yes'   => 'Y',
-				],
-			];
-
-			if (!empty($email)
-				&& ($user = UserModel::findFirst($params))
-				&& $user->assign(['token' => sha1($user->username . ':' . $user->password)])->save()
-			)
-			{
-				$siteName = Config::get('siteName');
-
-				if ('P' === $type)
-				{
-					// Send reset password
-					$link    = Uri::getInstance(['uri' => 'user/reset/' . $user->token])->toString(false, true);
-					$subject = Text::_('user-reset-request-subject', ['siteName' => $siteName]);
-					$body    = Text::_('user-reset-request-body', ['name' => $user->name, 'link' => $link]);
-					Queue::add(
-						SendMail::class,
-						[
-							'recipient' => $user->email,
-							'subject'   => $subject,
-							'body'      => str_replace('\n', PHP_EOL, $body),
-						]
-					);
-					$this->view->setVars(
-						[
-							'title'   => Text::_('user-request-completed-title', ['email' => $user->email]),
-							'message' => Text::_('user-request-completed-msg', ['email' => $user->email]),
-						]
-					);
-
-					$this->persistent->set('user.token.' . $user->token, true);
-				}
-				else
-				{
-					// Send remind username
-					$subject = Text::_('username-remind-request-subject', ['siteName' => $siteName]);
-					$body    = Text::_('username-remind-request-body', ['name' => $user->name, 'username' => $user->username]);
-					Queue::add(
-						SendMail::class,
-						[
-							'recipient' => $user->email,
-							'subject'   => $subject,
-							'body'      => str_replace('\n', PHP_EOL, $body),
-						]
-					);
-					$this->view->setVars(
-						[
-							'title'   => Text::_('username-remind-completed-title', ['email' => $user->email]),
-							'message' => Text::_('username-remind-completed-msg', ['siteName' => $siteName, 'email' => $user->email]),
-						]
-					);
-				}
-
-				$this->view->pick('User/Completed');
-			}
+			$this->handleRequestAction();
 		}
 		else
 		{
@@ -171,6 +110,11 @@ class UserController extends ControllerBase
 
 	public function registerAction()
 	{
+		if (!ReCaptcha::isValid(true))
+		{
+			Uri::back();
+		}
+
 		$postData     = $this->request->getPost();
 		$responseData = $this->handleUserRegister($postData);
 
