@@ -3,17 +3,14 @@
 namespace App\Mvc\Controller;
 
 use App\Helper\Assets;
-use App\Helper\Config;
 use App\Helper\Database;
 use App\Helper\Event;
-use App\Helper\Queue;
 use App\Helper\ReCaptcha;
 use App\Helper\Service;
 use App\Helper\Text;
 use App\Helper\Uri;
 use App\Helper\User;
 use App\Mvc\Model\User as UserModel;
-use App\Queue\SendMail;
 use App\Traits\User as UserTrait;
 use Exception;
 
@@ -204,15 +201,8 @@ class UserController extends ControllerBase
 
 	public function resetAction()
 	{
-		$token = $this->dispatcher->getParam('token', ['string']);
-		$api   = false;
-
-		if (strpos($token, 'api-') === 0)
-		{
-			$token = substr($token, 4);
-			$api   = true;
-		}
-
+		$db     = Service::db();
+		$token  = $this->dispatcher->getParam('token', ['string']);
 		$params = [
 			'conditions' => 'token = :token: AND active = :yes:',
 			'bind'       => [
@@ -229,15 +219,9 @@ class UserController extends ControllerBase
 			return Uri::redirect(Uri::route('user/forgot'));
 		}
 
-		if ($api)
-		{
-			$this->persistent->set('user.token.' . $token, true);
-		}
-
 		if (!$this->persistent->has('user.token.' . $token))
 		{
-			$user->token = null;
-			$user->save();
+			$db->update(Database::table('users'), ['token'], [null], 'id = ' . (int) $user->id);
 
 			return Uri::redirect(Uri::route('user/forgot'));
 		}
@@ -260,19 +244,16 @@ class UserController extends ControllerBase
 				return Uri::redirect(Uri::route('user/reset/' . $token));
 			}
 
-			if (empty($password1)
-				|| $password1 !== $password2
-			)
+			if (empty($password1) || $password1 !== $password2)
 			{
 				$this->flashSession->warning(Text::_('pwd-empty-or-not-match-msg'));
 
 				return Uri::redirect(Uri::route('user/reset/' . $token));
 			}
 
-			$user->token    = null;
-			$user->password = $this->security->hash($password1);
+			$newPassword = $this->security->hash($password1);
 
-			if ($user->save())
+			if ($db->update(Database::table('users'), ['token', 'password'], [null, $newPassword], 'id = ' . (int) $user->id))
 			{
 				$this->persistent->remove('user.token.' . $token);
 				$this->flashSession->success(Text::_('update-password-success-msg'));
