@@ -793,7 +793,7 @@ _$.fn = {
 };
 
 _$.ready = function (callback) {
-    window.addEventListener('load', function (event) {
+    window.addEventListener('DOMContentLoaded', function (event) {
         callback.call(window, _$, event);
     });
 };
@@ -860,6 +860,7 @@ _$.http = {
         'X-Requested-With': 'XMLHttpRequest',
         'X-Ajax-Engine': 'HummingbirdCms',
         'X-Language-ISO-Code': '',
+        'X-Api-Platform': 'WebApplication',
     },
     buildParams: function (objParams) {
         var strParams = '',
