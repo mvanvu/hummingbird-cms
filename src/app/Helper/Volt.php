@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use App\Mvc\Model\UcmItem as Item;
 use MaiVu\Php\Registry;
 use Phalcon\Mvc\View\Engine\Volt\Compiler;
 
@@ -123,6 +124,9 @@ class Volt
 
 			case 'isUri':
 				return $helperPrefix . 'Uri::is(' . $resolvedArgs . ')';
+
+			case 'ucmItem':
+				return Item::class . '::findFirst(' . $resolvedArgs . ')';
 
 			case 'helper':
 				$helperMethod = str_replace('\'', '', static::$compiler->expression($exprArgs[0]['expr']));
