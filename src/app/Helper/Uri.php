@@ -157,7 +157,7 @@ class Uri
 
 	public function getVar(string $name, $default = null)
 	{
-		return isset($this->vars[$name]) ? $this->vars[$name] : $default;
+		return $this->vars[$name] ?? $default;
 	}
 
 	public static function getActive($pathOnly = false)
@@ -487,7 +487,7 @@ HTML;
 		return $this;
 	}
 
-	public function setVar($name, $value)
+	public function setVar(string $name, $value)
 	{
 		$this->vars[$name] = $value;
 

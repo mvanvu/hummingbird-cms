@@ -35,8 +35,6 @@ class System extends Plugin
 
 			Service::flashSession()->warning(Text::_('invalid-token-notice'));
 			Uri::back();
-
-			return false;
 		}
 
 		if ($request->isGet())
@@ -48,8 +46,6 @@ class System extends Plugin
 			{
 				$uri = preg_replace('/\?/', '/?', $uri, 1);
 				Uri::redirect($uri);
-
-				return false;
 			}
 
 			if (in_array($cmsEditor, ['TinyMCE', 'CodeMirror']))
@@ -58,49 +54,34 @@ class System extends Plugin
 			}
 		}
 
-		return $this->checkLanguage();
-	}
-
-	protected function checkLanguage()
-	{
-		$defaultLanguage = Language::getDefault();
-		$activeLanguage  = Language::getActiveLanguage();
-		$uri             = Uri::getActive();
-		$vars            = $uri->getVars();
-		$redirect        = false;
-
-		if (!Language::isMultilingual())
+		if (Language::isMultilingual())
 		{
-			if ($uri->getVar('client') === 'site' && $uri->hasVar('language'))
+			$uri        = Uri::getActive();
+			$defaultSef = Language::getDefault()->get('attributes.sef');
+			$activeSef  = Language::getActive()->get('attributes.sef');
+			$uriLangSef = $uri->getVar('language', null);
+			$redirect   = false;
+
+			if ($uriLangSef)
 			{
-				Uri::redirect($uri->delVar('language')->toString());
+				// Don't prepend the language SEF to the current URI
+				if ($defaultSef === $uriLangSef)
+				{
+					$uri->delVar('language');
+					$redirect = true;
+				}
 			}
-
-			return true;
-		}
-
-		if (isset($vars['language']))
-		{
-			if ($defaultLanguage->get('attributes.sef') === $vars['language'])
+			elseif ($defaultSef !== $activeSef)
 			{
-				$uri->delVar('language');
+				$uri->setVar('language', $activeSef);
 				$redirect = true;
 			}
-		}
-		elseif ($defaultLanguage->get('attributes.code') !== $activeLanguage->get('attributes.code'))
-		{
-			$uri->setVar('language', $activeLanguage->get('attributes.code'));
-			$redirect = true;
-		}
 
-		if ($redirect)
-		{
-			Uri::redirect($uri->toString());
-
-			return false;
+			if ($redirect)
+			{
+				Uri::redirect($uri->toString());
+			}
 		}
-
-		return true;
 	}
 
 	public function onRegisterMenus(&$menus)

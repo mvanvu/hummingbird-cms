@@ -7,9 +7,8 @@ use MaiVu\Php\Registry;
 
 class Language
 {
-	protected static $languages = null;
 	protected static $activeLanguage = null;
-	protected static $languagesSef = [];
+	protected static $languages = null;
 
 	public static function initialise()
 	{
@@ -39,12 +38,15 @@ class Language
 	{
 		if (null === static::$languages)
 		{
-			static::$languages = [];
+			static::$languages = [
+				'code' => [],
+				'sef'  => [],
+			];
 
 			foreach (LangModel::find('state = \'P\'') as $language)
 			{
-				static::$languagesSef[$language->sef] = $language->code;
-				static::$languages[$language->code]   = Registry::create(
+				static::$languages['sef'][$language->sef]   = $language->code;
+				static::$languages['code'][$language->code] = Registry::create(
 					[
 						'strings'    => [],
 						'attributes' => [
@@ -61,21 +63,18 @@ class Language
 				);
 			}
 
-			ksort(static::$languages);
+			ksort(static::$languages['code']);
 		}
 
-		return static::$languages;
+		return static::$languages['code'];
 	}
 
 	public static function getActiveCode()
 	{
-		return static::getActiveLanguage()->get('attributes.code');
+		return static::getActive()->get('attributes.code');
 	}
 
-	/**
-	 * @return Registry
-	 */
-	public static function getActiveLanguage()
+	public static function getActive(): Registry
 	{
 		if (null === static::$activeLanguage)
 		{
@@ -119,35 +118,25 @@ class Language
 				$cookieKey   = 'cms_' . $confKey;
 				$defLangCode = Config::get($confKey, 'en-GB');
 
-				if (!$activeLangCode)
+				if (!$activeLangCode && IS_CMS)
 				{
-					if (IS_CMS)
-					{
-						$langSef = Uri::getInstance()->getVar('language');
+					// Get current language SEF
+					$uriLangSef = Uri::getActive()->getVar('language');
 
-						if (!($activeLangCode = Cookie::get($cookieKey, $defLangCode)) || !static::has($activeLangCode))
-						{
-							$activeLangCode = $defLangCode;
-						}
-
-						if ($langSef
-							&& static::hasSef($langSef)
-							&& $langSef !== static::get($activeLangCode)->get('attributes.sef')
-						)
-						{
-							$activeLangCode = static::getBySef($langSef)->get('attributes.code');
-						}
-						elseif (!$langSef && $activeLangCode !== $defLangCode)
-						{
-							$activeLangCode = $defLangCode;
-						}
-					}
-					else
+					// Get current language iso code by Cookie
+					if (!($activeLangCode = Cookie::get($cookieKey, $defLangCode)) || !static::has($activeLangCode))
 					{
 						$activeLangCode = $defLangCode;
 					}
 
-					if ($activeLangCode !== Cookie::get($cookieKey))
+					// If the language SEF is valid but it's not match with the current language iso code then
+					// we will update the current language follows the current SEF (using by the Language Switcher widget)
+					if (static::hasSef($uriLangSef) && $uriLangSef !== static::get($activeLangCode)->get('attributes.sef'))
+					{
+						$activeLangCode = static::getBySef($uriLangSef)->get('attributes.code');
+					}
+
+					if ($activeLangCode !== Cookie::get($cookieKey, $defLangCode))
 					{
 						// Update cookie language
 						Cookie::set($cookieKey, $activeLangCode);
@@ -163,22 +152,22 @@ class Language
 
 	public static function get($langCode)
 	{
-		return static::has($langCode) ? static::$languages[$langCode] : false;
+		return static::has($langCode) ? static::$languages['code'][$langCode] : false;
 	}
 
-	public static function has($langCode)
+	public static function has($langCode): bool
 	{
-		return array_key_exists($langCode, static::$languages);
+		return $langCode && array_key_exists($langCode, static::$languages['code']);
 	}
 
-	public static function hasSef($sef)
+	public static function hasSef($sef): bool
 	{
-		return array_key_exists($sef, static::$languagesSef);
+		return $sef && array_key_exists($sef, static::$languages['sef']);
 	}
 
 	public static function getBySef($sef)
 	{
-		return static::hasSef($sef) ? static::get(static::$languagesSef[$sef]) : false;
+		return static::hasSef($sef) ? static::get(static::$languages['sef'][$sef]) : false;
 	}
 
 	/**
@@ -193,16 +182,25 @@ class Language
 			$langCode = static::getActiveCode();
 		}
 
-		if (isset(static::$languages[$langCode]))
+		if (isset(static::$languages['code'][$langCode]))
 		{
-			$strings = array_merge(static::$languages[$langCode]->get('strings', []), Registry::parseData($data));
-			static::$languages[$langCode]->set('strings', $strings);
+			$strings = array_merge(static::$languages['code'][$langCode]->get('strings', []), Registry::parseData($data));
+			static::$languages['code'][$langCode]->set('strings', $strings);
 		}
+	}
+
+	/**
+	 * @deprecated Use getActive instead
+	 */
+
+	public static function getActiveLanguage(): Registry
+	{
+		return static::getActive();
 	}
 
 	public static function _(string $string, array $placeholders = null): string
 	{
-		$active = static::getActiveLanguage();
+		$active = static::getActive();
 
 		if (strpos($string, '@') === 0)
 		{
@@ -233,7 +231,7 @@ class Language
 			if (Uri::isClient('site') && static::isMultilingual())
 			{
 				$defaultLanguage = static::getDefault('site')->get('attributes.code');
-				$currentLanguage = static::getActiveLanguage()->get('attributes.code');
+				$currentLanguage = static::getActive()->get('attributes.code');
 
 				if ($defaultLanguage !== $currentLanguage)
 				{
@@ -263,7 +261,7 @@ class Language
 			$client = Uri::isClient('site') ? 'site' : 'administrator';
 		}
 
-		$defaultLangCode = Config::get($client . 'Language');
+		$defaultLangCode = Config::get($client . 'Language', 'en-GB');
 
 		return static::get($defaultLangCode);
 	}
@@ -275,6 +273,6 @@ class Language
 			$langCode = static::getActiveCode();
 		}
 
-		return isset(static::$languages[$langCode]) ? static::$languages[$langCode]->get('strings', []) : [];
+		return isset(static::$languages['code'][$langCode]) ? static::$languages['code'][$langCode]->get('strings', []) : [];
 	}
 }
