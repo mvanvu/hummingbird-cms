@@ -82,7 +82,7 @@ class MetaData
 
 	public function setRobots(string $robots)
 	{
-		$this->metadata['siteRobots'] = trim($robots);
+		$this->metadata['robots'] = trim($robots);
 	}
 
 	public function render()
