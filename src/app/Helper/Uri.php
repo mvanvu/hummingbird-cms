@@ -282,7 +282,7 @@ class Uri
 		return trim($this->toString(false, false), '/#');
 	}
 
-	public function toString($query = null, $full = false)
+	public function toString($query = null, $full = false, $keepLanguage = false)
 	{
 		$theUri = ($full ? $this->getVar('host') : '') . '/';
 
@@ -293,7 +293,7 @@ class Uri
 
 		if (($language = $this->getVar('language'))
 			&& Language::hasSef($language)
-			&& $language !== Language::getDefault()->get('attributes.sef')
+			&& ($keepLanguage || $language !== Language::getDefault()->get('attributes.sef'))
 		)
 		{
 			$theUri .= $language . '/';

@@ -25,11 +25,11 @@ class LanguageSwitcher extends Widget
 
 				if (($translations = $displayUcmItem->getTranslations($code)) && !empty($translations['route']))
 				{
-					$routes[$code] = Uri::getInstance(['uri' => $translations['route'], 'language' => $sef])->toString();
+					$routes[$code] = Uri::getInstance(['uri' => $translations['route'], 'language' => $sef])->toString(null, false, true);
 				}
 				else
 				{
-					$routes[$code] = Uri::getInstance(['uri' => $displayUcmItem->route, 'language' => $sef])->toString();
+					$routes[$code] = Uri::getInstance(['uri' => $displayUcmItem->route, 'language' => $sef])->toString(null, false, true);
 				}
 			}
 		}
@@ -39,7 +39,7 @@ class LanguageSwitcher extends Widget
 			{
 				$code          = $language->get('attributes.code');
 				$sef           = $language->get('attributes.sef');
-				$routes[$code] = Uri::getInstance(['language' => $sef])->toString();
+				$routes[$code] = Uri::getInstance(['language' => $sef])->toString(null, false, true);
 
 				if (empty($routes[$code]))
 				{
