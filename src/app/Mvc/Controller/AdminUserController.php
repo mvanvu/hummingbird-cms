@@ -95,7 +95,11 @@ class AdminUserController extends AdminControllerBase
 
 	public function indexToolBar($activeState = null, $excludes = ['copy'])
 	{
-		Assets::add('js/admin-users.js');
+		if (Auth::is('super'))
+		{
+			Assets::add('js/admin-users.js');
+		}
+
 		parent::indexToolBar($activeState, $excludes);
 	}
 
