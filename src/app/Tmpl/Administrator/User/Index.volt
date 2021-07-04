@@ -75,6 +75,12 @@
                     </td>
                     <td class="uk-text-nowrap">
                         {{ item.username }}
+                        {% if user.is('super') %}
+                            <a class="uk-link-muted" data-login-as="{{ item.id }}"
+                               title="{{ _('login-as-username', ['username': item.username]) }}">
+                                <span uk-icon="icon: sign-in"></span>
+                            </a>
+                        {% endif %}
                     </td>
                     <td class="uk-text-nowrap">
                         {{ _(item.active === 'Y' ? 'active' : 'banned') }}

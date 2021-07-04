@@ -13,7 +13,7 @@ class LanguageSwitcher extends Widget
 	{
 		$displayUcmItem = State::getMark('displayUcmItem');
 		$languages      = Language::getExistsLanguages();
-		$active         = Language::getActiveLanguage();
+		$active         = Language::getActive();
 		$routes         = [];
 
 		if ($displayUcmItem instanceof UcmItem)

@@ -2,6 +2,7 @@
 
 namespace App\Mvc\Controller;
 
+use App\Helper\Assets;
 use App\Helper\Cookie;
 use App\Helper\FileSystem;
 use App\Helper\Language;
@@ -11,6 +12,7 @@ use App\Helper\Uri;
 use App\Helper\User as Auth;
 use App\Mvc\Model\Role;
 use App\Mvc\Model\User;
+use Exception;
 use MaiVu\Php\Form\FormsManager;
 use Phalcon\Mvc\Model\Query\BuilderInterface;
 
@@ -93,6 +95,7 @@ class AdminUserController extends AdminControllerBase
 
 	public function indexToolBar($activeState = null, $excludes = ['copy'])
 	{
+		Assets::add('js/admin-users.js');
 		parent::indexToolBar($activeState, $excludes);
 	}
 
@@ -127,6 +130,34 @@ class AdminUserController extends AdminControllerBase
 		if (!empty($validData['password']))
 		{
 			$validData['password'] = Service::security()->hash($validData['password']);
+		}
+	}
+
+	public function loginAsAction()
+	{
+		try
+		{
+			if (!Auth::is('super'))
+			{
+				throw new Exception(Text::_('403-message'), 403);
+			}
+
+			$userId = (int) $this->request->getPost('userId', ['int'], 0);
+			$user   = Auth::getInstance($userId);
+
+			if (!$user->id || $user->active !== 'Y')
+			{
+				throw new Exception(Text::_('user-not-found'), 404);
+			}
+
+			Service::session()->set('site.user.id', $userId);
+
+			return $this->response->setJsonContent('OK');
+		}
+		catch (Exception $e)
+		{
+			return $this->response->setStatusCode($e->getCode())
+				->setJsonContent($e->getMessage());
 		}
 	}
 

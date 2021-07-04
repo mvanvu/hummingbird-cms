@@ -592,4 +592,6 @@ return [
 	'ip-address'                        => 'IP address',
 	'log-type-select'                   => 'Select a type',
 	'session-adapter'                   => 'Session adapter',
+	'user-not-found'                    => 'User not found',
+	'login-as-username'                 => 'Login as user %username%?',
 ];

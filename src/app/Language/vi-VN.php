@@ -592,4 +592,6 @@ return [
 	'ip-address'                        => 'Địa chỉ IP',
 	'log-type-select'                   => 'Chọn loại',
 	'session-adapter'                   => 'Lưu session tại',
+	'user-not-found'                    => 'Thành viên không tồn tại',
+	'login-as-username'                 => 'Đăng nhập như thành viên %username%?',
 ];
