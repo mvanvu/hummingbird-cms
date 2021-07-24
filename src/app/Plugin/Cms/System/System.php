@@ -60,25 +60,16 @@ class System extends Plugin
 			$defaultSef = Language::getDefault()->get('attributes.sef');
 			$activeSef  = Language::getActive()->get('attributes.sef');
 			$uriLangSef = $uri->getVar('language', null);
-			$redirect   = false;
 
-			if ($uriLangSef)
+			if ($uriLangSef && $defaultSef === $uriLangSef)
 			{
-				// Don't prepend the language SEF to the current URI
-				if ($defaultSef === $uriLangSef)
-				{
-					$uri->delVar('language');
-					$redirect = true;
-				}
+				$uri->delVar('language');
+				Uri::redirect($uri->toString());
 			}
-			elseif ($defaultSef !== $activeSef)
+
+			if (!$uriLangSef && $defaultSef !== $activeSef)
 			{
 				$uri->setVar('language', $activeSef);
-				$redirect = true;
-			}
-
-			if ($redirect)
-			{
 				Uri::redirect($uri->toString());
 			}
 		}

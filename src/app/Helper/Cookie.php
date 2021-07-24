@@ -15,7 +15,14 @@ class Cookie
 	{
 		if (!IS_CLI)
 		{
-			setcookie(md5($name), serialize($value), time() + (86400 * 30)); // 30 days
+			setcookie(
+				md5($name),
+				serialize($value), time() + (86400 * 30),
+				'/',
+				'',
+				Uri::getCurrentHttpSchema() === 'https://',
+				true
+			); // 30 days);
 		}
 	}
 

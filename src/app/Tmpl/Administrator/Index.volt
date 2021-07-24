@@ -44,7 +44,7 @@
                                     {% for code, language in helper('Language::getExistsLanguages') %}
                                         <li>
                                             <a class="uk-link-reset uk-active"
-                                               href="{{ helper('Uri::getInstance', ['language': language.get('attributes.sef')]) }}">
+                                               href="{{ helper('Uri::getInstance', ['language': language.get('attributes.sef')]).toString(null, false, true) }}">
                                                 {{ language.get('attributes.name') }}
                                             </a>
                                         </li>
