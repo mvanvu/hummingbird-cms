@@ -5,6 +5,7 @@ namespace App\Mvc\Controller;
 use App\Helper\Assets;
 use App\Helper\Database;
 use App\Helper\FileSystem;
+use App\Helper\MetaData;
 use App\Helper\Service;
 use App\Helper\Text;
 use App\Mvc\Model\Template;
@@ -80,6 +81,7 @@ class AdminTemplateController extends AdminControllerBase
 				);
 			}
 
+			MetaData::getInstance()->ignoreRender();
 			return $this->response->setJsonContent(
 				[
 					'success' => true,

@@ -9,6 +9,7 @@ class MetaData
 	protected $title = null;
 	protected $metadata = [];
 	protected $customTags = [];
+	protected $ignoreRender = false;
 
 	protected function __construct()
 	{
@@ -31,6 +32,16 @@ class MetaData
 		}
 
 		return $instance;
+	}
+
+	public function ignoreRender()
+	{
+		$this->ignoreRender = true;
+	}
+
+	public function willRender(): bool
+	{
+		return !$this->ignoreRender;
 	}
 
 	public function addTag(string $name, array $properties = [])

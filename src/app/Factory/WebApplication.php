@@ -164,8 +164,14 @@ class WebApplication extends Application
 	{
 		if (!$this->response->isSent())
 		{
-			$content = Assets::applyContent($this->response->getContent());
-			$content = str_replace('<!--block:metadata-->', MetaData::getInstance()->render(), $content);
+			$metaData = MetaData::getInstance();
+			$content  = $this->response->getContent();
+
+			if ($metaData->willRender())
+			{
+				$content = Assets::applyContent($content);
+				$content = str_replace('<!--block:metadata-->', MetaData::getInstance()->render(), $content);
+			}
 
 			if (Config::is('gzip')
 				&& !ini_get('zlib.output_compression')
