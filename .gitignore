@@ -7,3 +7,4 @@ src/cache/*
 src/tmp/*
 src/config.php
 src/composer.phar
+vendor/*
