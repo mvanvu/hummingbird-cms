@@ -5,7 +5,7 @@ namespace App\Helper;
 use App\Mvc\Model\Config as ConfigModel;
 use App\Widget\Widget as CmsWidget;
 use MaiVu\Php\Registry;
-use Phalcon\Loader;
+use Phalcon\Autoload\Loader;
 
 class Widget
 {
@@ -134,7 +134,7 @@ class Widget
 			{
 				foreach (FileSystem::scanDirs($widgetPath) as $widgetDir)
 				{
-					(new Loader)->registerNamespaces([Constant::NAMESPACE_WIDGET => $widgetDir], true)->register();
+					(new Loader)->setNamespaces([Constant::NAMESPACE_WIDGET => $widgetDir], true)->register();
 					static::appendWidget($widgetDir);
 				}
 			}

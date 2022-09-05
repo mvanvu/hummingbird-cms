@@ -1,0 +1,64 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "c9e0b8eca94fef82c9a983e2de8fe5ae",
+    "packages": [
+        {
+            "name": "mvanvu/php-filter",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mvanvu/php-filter.git",
+                "reference": "cd517ad47d552f8617cacac877edc90a9e95680d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mvanvu/php-filter/zipball/cd517ad47d552f8617cacac877edc90a9e95680d",
+                "reference": "cd517ad47d552f8617cacac877edc90a9e95680d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "php",
+            "autoload": {
+                "psr-4": {
+                    "MaiVu\\Php\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mai Vu",
+                    "email": "maivubc@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Php Input Filter package",
+            "homepage": "https://github.com/mvanvu/php-filter",
+            "keywords": [
+                "filter",
+                "input",
+                "php"
+            ],
+            "time": "2019-12-14T08:10:04+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.4.0",
+        "ext-json": "*"
+    },
+    "platform-dev": []
+}

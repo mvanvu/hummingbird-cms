@@ -8,7 +8,7 @@ use App\Helper\State;
 use App\Helper\Text;
 use App\Helper\User as Auth;
 use MaiVu\Php\Registry;
-use Phalcon\Security;
+use Phalcon\Encryption\Security;
 
 class User extends ModelBase
 {

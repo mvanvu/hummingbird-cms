@@ -199,9 +199,16 @@ class AdminUserController extends AdminControllerBase
 				$userForm->getField('active')->set('readonly', true);
 				$role->set('class', 'uk-background-muted uk-select not-chosen uk-disabled');
 			}
+			
+			if ($this->request->isGet())
+			{
+				$pass1->setValue('')->set('required', false);
+				$pass2->setValue('')->set('required', false);
+			}
 
-			$pass1->setValue('')->set('required', false);
-			$pass2->setValue('')->set('required', false);
+			$pass1->set('required', false);
+			$pass2->set('required', false);
+			
 		}
 
 		if ($this->request->isPost() && in_array($this->dispatcher->getActionName(), ['save', 'save2close']))

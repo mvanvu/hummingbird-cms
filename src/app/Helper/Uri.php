@@ -23,29 +23,22 @@ class Uri
 
 	public function __construct(array $vars = null, $merge = true)
 	{
-		if (is_array($vars))
-		{
-			if ($merge)
-			{
+		if (is_array($vars)) {
+			if ($merge) {
 				$vars = array_merge(static::extract(), $vars);
 			}
-		}
-		else
-		{
+		} else {
 			$vars = static::extract();
 		}
 
-		if (!isset($vars['format']))
-		{
+		if (!isset($vars['format'])) {
 			$vars['format'] = Service::dispatcher()->getParam('format', ['string', 'trim'], '');
 		}
 
-		if (isset($_SERVER['QUERY_STRING']))
-		{
+		if (isset($_SERVER['QUERY_STRING'])) {
 			parse_str($_SERVER['QUERY_STRING'], $query);
 
-			if (isset($query['_url']))
-			{
+			if (isset($query['_url'])) {
 				unset($query['_url']);
 			}
 
@@ -61,8 +54,7 @@ class Uri
 		$baseUri = trim($baseUri, '/');
 		static $vars = [];
 
-		if (!isset($vars[$baseUri]))
-		{
+		if (!isset($vars[$baseUri])) {
 			$results = [
 				'uri'      => $baseUri,
 				'host'     => static::getHost(),
@@ -72,33 +64,25 @@ class Uri
 				'format'   => null,
 			];
 
-			if (strpos($baseUri . '/', ADMIN_URI_PREFIX . '/') === 0)
-			{
+			if (strpos($baseUri . '/', ADMIN_URI_PREFIX . '/') === 0) {
 				$results['client'] = 'administrator';
 				$baseUri           = ltrim(preg_replace('/^' . preg_quote(ADMIN_URI_PREFIX, '/') . '/', '', $baseUri), '/');
-			}
-			else
-			{
+			} else {
 				$results['client'] = 'site';
 			}
 
 			$parts = explode('/', $baseUri);
 
-			if (isset($parts[0]))
-			{
-				if (Language::hasSef($parts[0]))
-				{
+			if (isset($parts[0])) {
+				if (Language::hasSef($parts[0])) {
 					$results['language'] = $parts[0];
 					array_shift($parts);
 
-					if (isset($parts[0]) && $parts[0] === 'raw')
-					{
+					if (isset($parts[0]) && $parts[0] === 'raw') {
 						$results['format'] = 'raw';
 						array_shift($parts);
 					}
-				}
-				elseif ($parts[0] === 'raw')
-				{
+				} elseif ($parts[0] === 'raw') {
 					$results['format'] = 'raw';
 					array_shift($parts);
 				}
@@ -115,8 +99,7 @@ class Uri
 	{
 		static $host = null;
 
-		if (null === $host)
-		{
+		if (null === $host) {
 			$host = static::getCurrentHttpSchema() . $_SERVER['HTTP_HOST'];
 		}
 
@@ -127,15 +110,13 @@ class Uri
 	{
 		static $http = null;
 
-		if (null === $http)
-		{
+		if (null === $http) {
 			$http = 'http';
 
 			// Determine if the request was over SSL (HTTPS).
 			if ((isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) != 'off'))
 				|| (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) !== 'http')
-			)
-			{
+			) {
 				$http .= 's';
 			}
 
@@ -162,13 +143,11 @@ class Uri
 
 	public static function getActive($pathOnly = false)
 	{
-		if (!static::$active instanceof Uri)
-		{
+		if (!static::$active instanceof Uri) {
 			static::$active = static::fromUrl(static::fromServer()) ?: static::getInstance();
 		}
 
-		if ($pathOnly)
-		{
+		if ($pathOnly) {
 			return static::$active->toPath();
 		}
 
@@ -177,36 +156,30 @@ class Uri
 
 	public static function fromUrl($url)
 	{
-		if ($parts = static::parseUrl($url))
-		{
+		if ($parts = static::parseUrl($url)) {
 			$vars = [];
 			$host = [];
 
-			if (isset($parts['query']))
-			{
-				if (strpos($parts['query'], '&amp;'))
-				{
+			if (isset($parts['query'])) {
+				if (strpos($parts['query'], '&amp;')) {
 					$parts['query'] = str_replace('&amp;', '&', $parts['query']);
 				}
 
 				parse_str($parts['query'], $vars['query']);
 			}
 
-			if (isset($parts['scheme']))
-			{
+			if (isset($parts['scheme'])) {
 				$host[] = $parts['scheme'] . ':/';
 			}
 
-			if (isset($parts['host']))
-			{
+			if (isset($parts['host'])) {
 				$host[] = $parts['host'] . (isset($parts['port']) ? ':' . $parts['port'] : '');
 			}
 
 			$host = implode('/', $host);
 			$vars = static::extract(isset($parts['path']) ? $parts['path'] : '');
 
-			if (!empty($host) && $host !== static::getHost())
-			{
+			if (!empty($host) && $host !== static::getHost()) {
 				$vars['host']   = $host;
 				$vars['client'] = null;
 			}
@@ -233,10 +206,10 @@ class Uri
 		$encodedParts = parse_url($encodedURL);
 
 		// Now, decode each value of the resulting array
-		if ($encodedParts)
-		{
-			foreach ($encodedParts as $key => $value)
-			{
+		if ($encodedParts) {
+			$result = [];
+
+			foreach ($encodedParts as $key => $value) {
 				$result[$key] = urldecode(str_replace($replacements, $entities, $value));
 			}
 		}
@@ -253,20 +226,15 @@ class Uri
 	{
 		static $uriServer = null;
 
-		if (null === $uriServer)
-		{
+		if (null === $uriServer) {
 			$http = static::getCurrentHttpSchema();
 
-			if (!empty($_SERVER['PHP_SELF']) && !empty($_SERVER['REQUEST_URI']))
-			{
+			if (!empty($_SERVER['PHP_SELF']) && !empty($_SERVER['REQUEST_URI'])) {
 				$uri = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			}
-			else
-			{
+			} else {
 				$uri = $http . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
 
-				if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']))
-				{
+				if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
 					$uri .= '?' . $_SERVER['QUERY_STRING'];
 				}
 			}
@@ -286,40 +254,32 @@ class Uri
 	{
 		$theUri = ($full ? $this->getVar('host') : '') . '/';
 
-		if ($this->getVar('client') === 'administrator')
-		{
+		if ($this->getVar('client') === 'administrator') {
 			$theUri .= $this->getVar('adminPrefix', ADMIN_URI_PREFIX) . '/';
 		}
 
 		if (($language = $this->getVar('language'))
 			&& Language::hasSef($language)
 			&& ($keepLanguage || $language !== Language::getDefault()->get('attributes.sef'))
-		)
-		{
+		) {
 			$theUri .= $language . '/';
 		}
 
-		if ($format = $this->getVar('format'))
-		{
+		if ($format = $this->getVar('format')) {
 			$theUri .= $format . '/';
 		}
 
-		if ($uri = $this->getBaseUri())
-		{
+		if ($uri = $this->getBaseUri()) {
 			$theUri .= $uri . '/';
 		}
 
-		if (is_array($query))
-		{
+		if (is_array($query)) {
 			$query = array_merge($this->vars['query'], $query);
-		}
-		elseif (false !== $query)
-		{
+		} elseif (false !== $query) {
 			$query = $this->vars['query'];
 		}
 
-		if (!empty($query))
-		{
+		if (!empty($query)) {
 			$theUri .= '?' . http_build_query($query);
 		}
 
@@ -340,12 +300,11 @@ class Uri
 		return $this;
 	}
 
-	public static function isHome() : bool
+	public static function isHome(): bool
 	{
 		static $isHome = null;
 
-		if (null === $isHome)
-		{
+		if (null === $isHome) {
 			$isHome = static::clean(BASE_URI) === static::clean(static::getBaseUriPrefix());
 		}
 
@@ -361,18 +320,15 @@ class Uri
 	{
 		$uriVars = static::getActive()->getVars();
 
-		if ($uriVars['client'] === 'site')
-		{
-			if (isset($uriVars['language']))
-			{
+		if ($uriVars['client'] === 'site') {
+			if (isset($uriVars['language'])) {
 				return '/' . $uriVars['language'];
 			}
 
 			return '';
 		}
 
-		if (isset($uriVars['language']))
-		{
+		if (isset($uriVars['language'])) {
 			return '/' . ADMIN_URI_PREFIX . '/' . $uriVars['language'];
 		}
 
@@ -386,12 +342,10 @@ class Uri
 
 	public static function back(string $default = null, bool $redirect = true)
 	{
-		if ($referer = Service::request()->getServer('HTTP_REFERER'))
-		{
+		if ($referer = Service::request()->getServer('HTTP_REFERER')) {
 			$uri = Uri::fromUrl($referer);
 
-			if ($uri->isInternal())
-			{
+			if ($uri->isInternal()) {
 				$redirectUri = $uri->toString(true);
 			}
 		}
@@ -416,8 +370,7 @@ class Uri
 		$baseUri = static::clean($baseUri);
 		static $routes = [];
 
-		if (!isset($routes[$baseUri]))
-		{
+		if (!isset($routes[$baseUri])) {
 			$routes[$baseUri] = static::getInstance(['uri' => $baseUri]);
 		}
 
@@ -428,8 +381,7 @@ class Uri
 	{
 		$response = Service::response();
 
-		if ($response->isSent())
-		{
+		if ($response->isSent()) {
 			@ob_clean();
 			$lang = Text::_('locale.code');
 			echo <<<HTML
@@ -455,10 +407,8 @@ HTML;
 		$replace = [];
 		preg_match_all('/~([^~]+)~/', $stringPath, $matches);
 
-		if (!empty($matches[1]))
-		{
-			foreach ($matches[1] as $regex)
-			{
+		if (!empty($matches[1])) {
+			foreach ($matches[1] as $regex) {
 				$search[]  = '~' . preg_quote($regex, '#') . '~';
 				$replace[] = $regex;
 			}
@@ -498,16 +448,12 @@ HTML;
 	{
 		$var = $this->getQuery($name, null);
 
-		if (null === $var)
-		{
+		if (null === $var) {
 			$var = $value;
-		}
-		else
-		{
+		} else {
 			$vars = explode($separator, $var);
 
-			if (!in_array($value, $vars))
-			{
+			if (!in_array($value, $vars)) {
 				$vars[] = $value;
 			}
 

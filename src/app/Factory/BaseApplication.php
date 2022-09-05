@@ -23,21 +23,15 @@ class BaseApplication
 	{
 		static $app = null;
 
-		if (null === $app)
-		{
+		if (null === $app) {
 			$di = static::createServiceContainer();
 
-			if (IS_CLI)
-			{
+			if (IS_CLI) {
 				$app = new FlyApplication($di);
-			}
-			elseif (IS_API)
-			{
+			} elseif (IS_API) {
 				$app = new ApiApplication($di);
 				$app->setModelBinder(new ModelBinder);
-			}
-			else
-			{
+			} else {
 				$di->setShared('view', ViewBase::getInstance($di));
 				$di->setShared('router', function () {
 					// We must use Closure to bind the router
@@ -68,25 +62,21 @@ class BaseApplication
 			]
 		);
 
-		if ($extraConfig = $db->fetchColumn('SELECT data FROM ' . $dbPrefix . 'config_data WHERE context = \'cms.config\''))
-		{
+		if ($extraConfig = $db->fetchColumn('SELECT data FROM ' . $dbPrefix . 'config_data WHERE context = \'cms.config\'')) {
 			$registry->merge($extraConfig);
 		}
 
-		if (!defined('ADMIN_URI_PREFIX'))
-		{
+		if (!defined('ADMIN_URI_PREFIX')) {
 			define('ADMIN_URI_PREFIX', $registry->get('adminPrefix', 'admin'));
 		}
 
-		if (!defined('DEVELOPMENT_MODE'))
-		{
+		if (!defined('DEVELOPMENT_MODE')) {
 			define('DEVELOPMENT_MODE', $registry->get('development', 'Y') === 'Y');
 		}
 
-		if (DEVELOPMENT_MODE)
-		{
-			ini_set('display_errors', true);
-			error_reporting(E_ALL);
+		if (!DEVELOPMENT_MODE) {
+			ini_set('display_errors', false);
+			error_reporting(0);
 		}
 
 		Config::setDataContext('cms.config', $registry);
@@ -98,12 +88,9 @@ class BaseApplication
 			$adapter = $registry->get('sessionAdapter', 'database');
 			$session = new Manager;
 
-			if ('database' === $adapter)
-			{
+			if ('database' === $adapter) {
 				$session->setAdapter(Session::getInstance($db));
-			}
-			else
-			{
+			} else {
 				$session->setAdapter(new Stream);
 			}
 
@@ -112,12 +99,9 @@ class BaseApplication
 			return $session;
 		});
 
-		if (IS_CLI)
-		{
+		if (IS_CLI) {
 			$di->setShared('crypt', new Crypt('aes-256-cfb'));
-		}
-		else
-		{
+		} else {
 			$di->getShared('flashSession')
 				->setAutoescape(false)
 				->setCssClasses(

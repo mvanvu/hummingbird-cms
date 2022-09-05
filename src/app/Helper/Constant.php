@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-use Phalcon\Loader;
+use Phalcon\Autoload\Loader;
 
 class Constant
 {
@@ -33,7 +33,7 @@ class Constant
 		{
 			$namespaces[$namespace] = PLUGIN_PATH . '/' . $group . '/' . $name;
 			(new Loader)
-				->registerNamespaces(
+				->setNamespaces(
 					[
 						Constant::NAMESPACE_PLUGIN . '\\' . $group => $namespaces[$namespace],
 					]

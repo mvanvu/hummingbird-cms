@@ -15,7 +15,7 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Model\Manager;
 use Phalcon\Mvc\Model\MetaData;
 use Phalcon\Mvc\Router;
-use Phalcon\Security;
+use Phalcon\Encryption\Security;
 use Phalcon\Session\Bag as SessionBag;
 use Phalcon\Session\Manager as SessionManager;
 use Phalcon\Url;

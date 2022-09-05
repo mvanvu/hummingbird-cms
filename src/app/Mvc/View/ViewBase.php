@@ -4,7 +4,7 @@ namespace App\Mvc\View;
 
 use App\Factory\Factory;
 use App\Helper\Volt as VoltHelper;
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Volt;
 

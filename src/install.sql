@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `#__tags` (
   `checkedAt` datetime DEFAULT NULL,
   `checkedBy` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `idx_slug` (`slug`)
+  KEY `idx_slug` (`slug`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 --
 -- Table structure for table `#__templates`
@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `#__ucm_items` (
 CREATE TABLE IF NOT EXISTS `#__users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(70) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `email` varchar(150) NOT NULL,
   `username` varchar(150) NOT NULL,
   `password` varchar(225) NOT NULL,
   `roleId` int(10) unsigned NOT NULL,
@@ -421,10 +421,10 @@ CREATE TABLE IF NOT EXISTS `#__users` (
   `token` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_roleId` (`roleId`),
-  KEY `idx_name` (`name`(100)),
-  KEY `idx_active` (`roleId`),
-  UNIQUE KEY `idx_username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  KEY `idx_name` (`name`),
+  KEY `idx_active` (`active`),
+  UNIQUE KEY (`username`),
+  UNIQUE KEY (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --

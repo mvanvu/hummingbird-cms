@@ -10,7 +10,7 @@ use App\Helper\Uri;
 use App\Mvc\View\ViewBase;
 use App\Traits\Hooker;
 use MaiVu\Php\Registry;
-use Phalcon\Loader;
+use Phalcon\Autoload\Loader;
 
 class Plugin
 {
@@ -51,7 +51,7 @@ class Plugin
 		if (is_dir($pluginPath . '/app'))
 		{
 			(new Loader)
-				->registerNamespaces(['App' => $pluginPath . '/app'], true)
+				->setNamespaces(['App' => $pluginPath . '/app'], true)
 				->register();
 		}
 

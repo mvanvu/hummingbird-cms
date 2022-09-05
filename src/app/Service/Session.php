@@ -28,8 +28,7 @@ class Session extends AbstractAdapter
 		$this->db    = $db;
 		$this->table = Database::table('sessions');
 
-		if (session_status() !== PHP_SESSION_ACTIVE)
-		{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
 			session_set_save_handler(
 				[$this, 'open'],
 				[$this, 'close'],
@@ -45,8 +44,7 @@ class Session extends AbstractAdapter
 	{
 		static $instance = null;
 
-		if (null === $instance)
-		{
+		if (null === $instance) {
 			$instance = new Session($db);
 		}
 
@@ -83,8 +81,7 @@ class Session extends AbstractAdapter
 	 */
 	public function read($sessionId): string
 	{
-		if (!$this->started)
-		{
+		if (!$this->started) {
 			return '';
 		}
 
@@ -109,8 +106,7 @@ class Session extends AbstractAdapter
 	 */
 	public function write($sessionId, $data): bool
 	{
-		if (!$this->started)
-		{
+		if (!$this->started) {
 			return false;
 		}
 
@@ -143,8 +139,7 @@ class Session extends AbstractAdapter
 	 */
 	public function destroy($sessionId): bool
 	{
-		if ($this->started)
-		{
+		if ($this->started) {
 			$this->started = false;
 			$this->db->delete($this->table, 'id = ?', [$sessionId]);
 		}
@@ -157,8 +152,8 @@ class Session extends AbstractAdapter
 	 *
 	 * @return bool
 	 */
-	public function gc($maxLifeTime): bool
+	public function gc($maxLifeTime): int|false
 	{
-		return $this->db->delete($this->table, 'time < ?', [time() - (int) $maxLifeTime]);
+		return !!$this->db->delete($this->table, 'time < ?', [time() - (int) $maxLifeTime]);
 	}
 }

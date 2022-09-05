@@ -7,7 +7,7 @@ use App\Helper\Widget;
 use App\Traits\Permission;
 use PDO;
 use Phalcon\Db\Adapter\Pdo\Mysql;
-use Phalcon\Version;
+use Phalcon\Support\Version;
 
 class AdminIndexController extends ControllerBase
 {

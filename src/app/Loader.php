@@ -1,8 +1,7 @@
 <?php
 
 namespace App;
-
-use Phalcon\Loader as PhalconLoader;
+use Phalcon\Autoload\Loader as PhalconLoader;
 
 class Loader
 {
@@ -10,7 +9,7 @@ class Loader
 	{
 		if (!defined('CMS_VERSION'))
 		{
-			define('CMS_VERSION', '1.0-alpha');
+			define('CMS_VERSION', '1.1-alpha');
 			define('TMP_PATH', BASE_PATH . '/tmp');
 			define('APP_PATH', BASE_PATH . '/app');
 			define('PUBLIC_PATH', BASE_PATH . '/public');
@@ -32,10 +31,10 @@ class Loader
 			}
 
 			// Composer autoload
-			require_once BASE_PATH . '/vendor/autoload.php';
+			require_once dirname(BASE_PATH) . '/vendor/autoload.php';
 
 			// CMS autoload
-			(new PhalconLoader)->registerNamespaces(['App' => APP_PATH])->register();
+			(new PhalconLoader)->setNamespaces(['App' => APP_PATH])->register();
 		}
 	}
 }

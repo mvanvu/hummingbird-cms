@@ -6,27 +6,23 @@ use App\Helper\Database;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Http\Request;
-use Phalcon\Loader;
-use Phalcon\Security;
-use Phalcon\Version;
+use Phalcon\Autoload\Loader;
+use Phalcon\Encryption\Security;
+use Phalcon\Support\Version;
 
-if (!version_compare(PHP_VERSION, '7.2', 'ge'))
+if (!version_compare(PHP_VERSION, '8.1', 'ge'))
 {
-	die('Hummingbird CMS require PHP version 7.2 or greater');
+	die('Hummingbird CMS require PHP version 8.1 or greater');
 }
 
-if (!class_exists('PDO')
-	|| !in_array('mysql', PDO::getAvailableDrivers())
-)
+if (!class_exists('PDO') || !in_array('mysql', PDO::getAvailableDrivers()))
 {
-	die('Hummingbird CMS require Pdo Mysql driver version 5.7 or greater');
+	die('Hummingbird CMS require Pdo Mysql driver version 8.0 or greater');
 }
 
-if (!class_exists('Phalcon\\Version')
-	|| !version_compare(Version::get(), '4.0', 'ge')
-)
+if (!class_exists(Version::class) || !version_compare((new Version)->get(), '5.0', 'ge'))
 {
-	die('Hummingbird CMS require Phalcon version 4.0 or greater');
+	die('Hummingbird CMS require Phalcon version 5.0 or greater');
 }
 
 $configFile = BASE_PATH . '/config.php';
@@ -48,7 +44,7 @@ $request = new Request;
 if ($request->isAjax() && $request->isPost())
 {
 	$appPath = BASE_PATH . '/app';
-	(new Loader)->registerNamespaces(['App' => $appPath])->register();
+	(new Loader)->setNamespaces(['App' => $appPath])->register();
 
 	$dbParams = [
 		'host'     => $request->getPost('dbHost', null, 'mysql'),
