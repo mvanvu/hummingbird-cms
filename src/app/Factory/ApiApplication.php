@@ -12,8 +12,7 @@ class ApiApplication extends Micro
 {
 	public function execute()
 	{
-		try
-		{
+		try {
 			Event::trigger('onBootApi', [$this], ['Api']);
 
 			$this->before(function () {
@@ -29,9 +28,7 @@ class ApiApplication extends Micro
 			});
 
 			$this->handle($_SERVER['REQUEST_URI']);
-		}
-		catch (Throwable $e)
-		{
+		} catch (Throwable $e) {
 			$this->throw($e->getMessage(), $e->getCode());
 		}
 	}

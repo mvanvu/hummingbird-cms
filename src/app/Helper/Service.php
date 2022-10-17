@@ -5,7 +5,7 @@ namespace App\Helper;
 use App\Factory\Factory;
 use App\Mvc\View\ViewBase;
 use Phalcon\Assets\Manager as AssetManager;
-use Phalcon\Crypt;
+use Phalcon\Encryption\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Flash\Session as FlashSession;
@@ -18,7 +18,7 @@ use Phalcon\Mvc\Router;
 use Phalcon\Encryption\Security;
 use Phalcon\Session\Bag as SessionBag;
 use Phalcon\Session\Manager as SessionManager;
-use Phalcon\Url;
+use Phalcon\Mvc\Url;
 
 class Service
 {

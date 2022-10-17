@@ -29,6 +29,6 @@
         "ext-pdo": "*"
     },
      "require-dev": {
-        "phalcon/ide-stubs": "^4.1"
+        "phalcon/ide-stubs": "^5.0"
     }
 }

@@ -9,7 +9,7 @@ use App\Mvc\Model\ModelBinder;
 use App\Mvc\View\ViewBase;
 use App\Service\Session;
 use MaiVu\Php\Registry;
-use Phalcon\Crypt;
+use Phalcon\Encryption\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Di\FactoryDefault\Cli;
@@ -113,8 +113,8 @@ class BaseApplication
 					]
 				);
 
-			$di->setShared('sessionBag', function () {
-				return new Bag(Uri::getClient() . '.persistent');
+			$di->setShared('sessionBag', function () use ($di) {
+				return new Bag($di->getShared('session'), Uri::getClient() . '.persistent');
 			});
 		}
 
